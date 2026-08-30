@@ -1,0 +1,83 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { ArticleFeed } from "@/components/article-feed";
+import { ErrorState } from "@/components/error-state";
+import { ApiError } from "@/lib/api/client";
+import { getApiErrorMessage } from "@/lib/api/errors";
+import { getArticles, getSource } from "@/lib/api/news";
+import { formatLanguage } from "@/lib/format";
+
+export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "News source" };
+
+export default async function SourcePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  let source;
+  try {
+    source = await getSource(slug);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      notFound();
+    }
+    return <ErrorState message={getApiErrorMessage(error)} />;
+  }
+
+  let articles;
+  let articleError: unknown;
+  try {
+    articles = await getArticles({
+      page: 0,
+      size: 20,
+      source: source.slug,
+      sort: "publishedAt,desc",
+    });
+  } catch (error) {
+    articleError = error;
+  }
+
+  return (
+    <div className="space-y-8">
+      <header className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <p className="eyebrow">News source</p>
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
+          {source.name}
+        </h1>
+        <p className="mt-3 text-sm text-slate-600">
+          Default language: {formatLanguage(source.defaultLanguage)}
+        </p>
+        <a
+          href={source.baseUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-teal-700 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+        >
+          Visit publisher
+          <span aria-hidden="true" className="ml-2">
+            ↗
+          </span>
+        </a>
+      </header>
+      <section aria-labelledby="source-articles-title">
+        <h2
+          id="source-articles-title"
+          className="mb-5 text-2xl font-extrabold tracking-tight text-slate-950"
+        >
+          Latest articles
+        </h2>
+        {articleError ? (
+          <ErrorState message={getApiErrorMessage(articleError)} />
+        ) : (
+          <ArticleFeed
+            articles={articles?.content ?? []}
+            emptyTitle="No articles from this source"
+            emptyMessage="Articles will appear here when they are available."
+          />
+        )}
+      </section>
+    </div>
+  );
+}
