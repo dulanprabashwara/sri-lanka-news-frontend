@@ -8,7 +8,7 @@ export default function NotFound() {
         Page not found
       </h1>
       <p className="mt-3 text-slate-600">
-        The article or source you requested could not be found.
+        The article, source, or story you requested could not be found.
       </p>
       <Link
         href="/"

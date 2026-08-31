@@ -4,7 +4,10 @@ import {
   ApiResponseError,
   parseArticle,
   parsePagedArticles,
+  parsePagedStories,
   parseSource,
+  parseStoryDetail,
+  parseStorySummary,
 } from "./parsers";
 
 const source = {
@@ -22,7 +25,19 @@ const article = {
   publishedAt: "2026-08-30T06:00:00Z",
   discoveredAt: "2026-08-30T06:05:00Z",
   category: "LOCAL",
+  summary: "A concise public summary.",
+  topics: ["Sri Lanka"],
   source,
+};
+
+const story = {
+  id: "64f0c2f1289c0f0a87654321",
+  canonicalTitle: "A developing Sri Lankan story",
+  category: "LOCAL",
+  firstPublishedAt: "2026-08-30T05:00:00Z",
+  lastPublishedAt: "2026-08-30T06:00:00Z",
+  articleCount: 3,
+  sourceCount: 2,
 };
 
 test("parses the Phase 3 source DTO", () => {
@@ -48,6 +63,33 @@ test("parses a paged article response", () => {
   });
   assert.equal(parsed.content[0].source.slug, "daily-news");
   assert.equal(parsed.totalElements, 1);
+});
+
+test("parses public Story summary, page, and mixed-language detail contracts", () => {
+  assert.deepEqual(parseStorySummary(story), story);
+  const page = parsePagedStories({
+    content: [story], page: 0, size: 20, totalElements: 1,
+    totalPages: 1, first: true, last: true,
+  });
+  assert.equal(page.content[0].sourceCount, 2);
+
+  const detail = parseStoryDetail({
+    ...story,
+    articles: [article, { ...article, id: "si", originalLanguage: "si", title: "සිංහල පුවත" },
+      { ...article, id: "ta", originalLanguage: "ta", title: "தமிழ் செய்தி" }],
+    articleIds: ["private"],
+    matchingVersion: "hybrid-v1",
+    semanticEmbedding: [0.1, 0.2],
+  });
+  assert.deepEqual(detail.articles.map((item) => item.originalLanguage), ["en", "si", "ta"]);
+  assert.equal("articleIds" in detail, false);
+  assert.equal("matchingVersion" in detail, false);
+  assert.equal("semanticEmbedding" in detail, false);
+});
+
+test("rejects malformed Story dates and member Articles", () => {
+  assert.throws(() => parseStorySummary({ ...story, lastPublishedAt: "invalid" }), ApiResponseError);
+  assert.throws(() => parseStoryDetail({ ...story, articles: "private IDs" }), ApiResponseError);
 });
 
 test("rejects unsafe publisher URLs", () => {

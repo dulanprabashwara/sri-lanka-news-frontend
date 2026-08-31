@@ -24,12 +24,18 @@ export function SiteHeader() {
             </span>
           </span>
         </Link>
-        <nav aria-label="Primary navigation">
+        <nav aria-label="Primary navigation" className="flex items-center gap-1">
           <Link
             href="/"
             className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
           >
             Latest news
+          </Link>
+          <Link
+            href="/stories"
+            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          >
+            Stories
           </Link>
         </nav>
       </div>

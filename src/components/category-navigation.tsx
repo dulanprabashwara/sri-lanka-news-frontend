@@ -13,20 +13,24 @@ const featuredCategories: ArticleCategory[] = [
 
 interface CategoryNavigationProps {
   activeCategory?: ArticleCategory;
+  basePath?: "/" | "/stories";
+  label?: string;
 }
 
 export function CategoryNavigation({
   activeCategory,
+  basePath = "/",
+  label = "News categories",
 }: CategoryNavigationProps) {
   return (
     <nav
-      aria-label="News categories"
+      aria-label={label}
       className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0"
     >
       <ul className="flex min-w-max gap-2">
         <li>
           <Link
-            href="/"
+            href={basePath}
             aria-current={!activeCategory ? "page" : undefined}
             className="category-link"
           >
@@ -36,7 +40,7 @@ export function CategoryNavigation({
         {featuredCategories.map((category) => (
           <li key={category}>
             <Link
-              href={`/?category=${category}`}
+              href={`${basePath}?category=${category}`}
               aria-current={activeCategory === category ? "page" : undefined}
               className="category-link"
             >

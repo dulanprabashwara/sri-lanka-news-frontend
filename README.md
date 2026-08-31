@@ -1,6 +1,6 @@
 # Sri Lanka News Frontend
 
-Next.js frontend for browsing the public Source and Article APIs provided by the
+Next.js frontend for browsing the public Source, Article, and Story APIs provided by the
 Sri Lanka News Spring Boot backend.
 
 ## Requirements

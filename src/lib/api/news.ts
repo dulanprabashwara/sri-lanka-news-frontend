@@ -2,7 +2,10 @@ import { requestJson } from "@/lib/api/client";
 import {
   parseArticle,
   parsePagedArticles,
+  parsePagedStories,
   parseSource,
+  parseStoryDetail,
+  parseStorySummary,
 } from "@/lib/api/parsers";
 import type {
   Article,
@@ -10,6 +13,8 @@ import type {
   Language,
   PagedResponse,
   Source,
+  StoryDetail,
+  StorySummary,
 } from "@/types/api";
 
 export interface ArticleQuery {
@@ -43,4 +48,40 @@ export function getArticle(id: string): Promise<Article> {
 
 export function getSource(slug: string): Promise<Source> {
   return requestJson(`/api/v1/sources/${encodeURIComponent(slug)}`, parseSource);
+}
+
+export interface StoryQuery {
+  page?: number;
+  size?: number;
+  category?: ArticleCategory;
+  publishedFrom?: string;
+  publishedTo?: string;
+  sort?: "lastPublishedAt,asc" | "lastPublishedAt,desc";
+}
+
+export function getStories(
+  query: StoryQuery = {},
+): Promise<PagedResponse<StorySummary>> {
+  const parameters = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined) {
+      parameters.set(key, String(value));
+    }
+  });
+  const queryString = parameters.toString();
+  return requestJson(
+    `/api/v1/stories${queryString ? `?${queryString}` : ""}`,
+    parsePagedStories,
+  );
+}
+
+export function getStory(id: string): Promise<StoryDetail> {
+  return requestJson(`/api/v1/stories/${encodeURIComponent(id)}`, parseStoryDetail);
+}
+
+export function getArticleStory(articleId: string): Promise<StorySummary> {
+  return requestJson(
+    `/api/v1/articles/${encodeURIComponent(articleId)}/story`,
+    parseStorySummary,
+  );
 }

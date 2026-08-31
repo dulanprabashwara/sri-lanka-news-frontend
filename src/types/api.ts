@@ -33,7 +33,23 @@ export interface Article {
   publishedAt: string;
   discoveredAt: string;
   category: ArticleCategory | null;
+  summary: string | null;
+  topics: string[];
   source: SourceSummary;
+}
+
+export interface StorySummary {
+  id: string;
+  canonicalTitle: string;
+  category: ArticleCategory | null;
+  firstPublishedAt: string;
+  lastPublishedAt: string;
+  articleCount: number;
+  sourceCount: number;
+}
+
+export interface StoryDetail extends StorySummary {
+  articles: Article[];
 }
 
 export interface PagedResponse<T> {

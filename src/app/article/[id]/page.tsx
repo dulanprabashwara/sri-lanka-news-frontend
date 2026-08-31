@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/error-state";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
-import { getArticle } from "@/lib/api/news";
+import { getArticle, getArticleStory } from "@/lib/api/news";
 import {
   formatCategory,
   formatLanguage,
@@ -28,6 +28,13 @@ export default async function ArticlePage({
       notFound();
     }
     return <ErrorState message={getApiErrorMessage(error)} />;
+  }
+
+  let story = null;
+  try {
+    story = await getArticleStory(id);
+  } catch {
+    // Story navigation is optional and must not prevent the Article from rendering.
   }
 
   return (
@@ -71,6 +78,14 @@ export default async function ArticlePage({
           </div>
         ) : null}
       </dl>
+      {story ? (
+        <Link
+          href={`/story/${encodeURIComponent(story.id)}`}
+          className="mt-8 inline-flex rounded-lg border border-teal-700 px-4 py-2 text-sm font-bold text-teal-800 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+        >
+          View full story coverage
+        </Link>
+      ) : null}
       <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6">
         <h2 className="text-lg font-bold text-amber-950">
           Continue with the publisher
