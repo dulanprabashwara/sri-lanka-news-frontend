@@ -70,3 +70,11 @@ literal normalized strings, so translated equivalents are not merged. Single-sou
 Stories display a neutral waiting state, and comparison failures never prevent the
 main Story page from rendering. Full publisher content and private processing,
 embedding, model, prompt, and clustering metadata are never expected by frontend types.
+
+Story timelines use assigned Article publication timestamps and stable Article IDs to
+display currently available publisher reports chronologically. Relative labels are measured
+from the earliest available report and do not represent event occurrence, discovery,
+causation, copying, or publisher intent. The timeline makes no AI/provider call, remains
+visible for single-report Stories, and fails independently from the main Story page.
+Timeline types include only public summaries and attribution; private content, hashes,
+embeddings, processing, model/prompt, clustering, and MongoDB metadata are excluded.

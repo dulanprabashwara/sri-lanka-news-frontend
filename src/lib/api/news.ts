@@ -7,6 +7,7 @@ import {
   parseSource,
   parseStoryDetail,
   parseStorySummary,
+  parseStoryTimeline,
 } from "@/lib/api/parsers";
 import type {
   Article,
@@ -17,6 +18,7 @@ import type {
   Source,
   StoryDetail,
   StorySummary,
+  StoryTimeline,
 } from "@/types/api";
 
 export interface ArticleQuery {
@@ -85,6 +87,13 @@ export function getStoryCoverage(id: string): Promise<CoverageComparison> {
   return requestJson(
     `/api/v1/stories/${encodeURIComponent(id)}/coverage`,
     parseCoverageComparison,
+  );
+}
+
+export function getStoryTimeline(id: string): Promise<StoryTimeline> {
+  return requestJson(
+    `/api/v1/stories/${encodeURIComponent(id)}/timeline`,
+    parseStoryTimeline,
   );
 }
 

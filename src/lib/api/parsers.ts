@@ -12,7 +12,10 @@ import {
   type SourceSummary,
   type StoryDetail,
   type StorySummary,
+  type StoryTimeline,
   type SourceCoverage,
+  type TimelineEvent,
+  type TimelineSource,
 } from "@/types/api";
 
 export class ApiResponseError extends Error {
@@ -150,6 +153,35 @@ function parseCoverageArticle(value: unknown): CoverageArticle {
   };
 }
 
+function parseTimelineSource(value: unknown): TimelineSource {
+  if (!isRecord(value)) {
+    throw new ApiResponseError("Invalid timeline source in API response.");
+  }
+  return {
+    name: requireString(value.name, "timeline source name"),
+    slug: requireString(value.slug, "timeline source slug"),
+  };
+}
+
+function parseTimelineEvent(value: unknown): TimelineEvent {
+  if (!isRecord(value)) {
+    throw new ApiResponseError("Invalid timeline event in API response.");
+  }
+  return {
+    articleId: requireString(value.articleId, "timeline article ID"),
+    title: requireString(value.title, "timeline article title"),
+    summary: optionalString(value.summary, "timeline article summary"),
+    originalLanguage: parseLanguage(value.originalLanguage),
+    publishedAt: requireDate(value.publishedAt, "timeline publication date"),
+    originalUrl: requireHttpUrl(value.originalUrl, "timeline original URL"),
+    source: parseTimelineSource(value.source),
+    minutesFromFirstReport: requireNumber(
+      value.minutesFromFirstReport,
+      "timeline relative minutes",
+    ),
+  };
+}
+
 function parseSourceCoverage(value: unknown): SourceCoverage {
   if (!isRecord(value) || !Array.isArray(value.languages) ||
       !Array.isArray(value.articles) || !Array.isArray(value.entities) ||
@@ -238,6 +270,21 @@ export function parseCoverageComparison(value: unknown): CoverageComparison {
     sharedTopics: parseStrings(value.sharedTopics, "shared topic"),
     sharedEntities: value.sharedEntities.map(parseCoverageEntity),
     sources: value.sources.map(parseSourceCoverage),
+  };
+}
+
+export function parseStoryTimeline(value: unknown): StoryTimeline {
+  if (!isRecord(value) || !Array.isArray(value.events)) {
+    throw new ApiResponseError("Invalid Story timeline response.");
+  }
+  return {
+    storyId: requireString(value.storyId, "timeline story ID"),
+    canonicalTitle: requireString(value.canonicalTitle, "timeline Story title"),
+    firstPublishedAt: requireDate(value.firstPublishedAt, "timeline first publication date"),
+    lastPublishedAt: requireDate(value.lastPublishedAt, "timeline latest publication date"),
+    eventCount: requireNumber(value.eventCount, "timeline event count"),
+    sourceCount: requireNumber(value.sourceCount, "timeline source count"),
+    events: value.events.map(parseTimelineEvent),
   };
 }
 

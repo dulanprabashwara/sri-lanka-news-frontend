@@ -95,6 +95,32 @@ export interface CoverageComparison {
   sources: SourceCoverage[];
 }
 
+export interface TimelineSource {
+  name: string;
+  slug: string;
+}
+
+export interface TimelineEvent {
+  articleId: string;
+  title: string;
+  summary: string | null;
+  originalLanguage: Language;
+  publishedAt: string;
+  originalUrl: string;
+  source: TimelineSource;
+  minutesFromFirstReport: number;
+}
+
+export interface StoryTimeline {
+  storyId: string;
+  canonicalTitle: string;
+  firstPublishedAt: string;
+  lastPublishedAt: string;
+  eventCount: number;
+  sourceCount: number;
+  events: TimelineEvent[];
+}
+
 export interface PagedResponse<T> {
   content: T[];
   page: number;

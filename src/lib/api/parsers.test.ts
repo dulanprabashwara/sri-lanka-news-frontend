@@ -9,6 +9,7 @@ import {
   parseSource,
   parseStoryDetail,
   parseStorySummary,
+  parseStoryTimeline,
 } from "./parsers";
 
 const source = {
@@ -150,6 +151,49 @@ test("parses safe single-source and multi-source coverage contracts", () => {
 test("rejects malformed coverage metadata", () => {
   assert.throws(() => parseCoverageComparison({ storyId: story.id }), ApiResponseError);
 });
+
+test("parses a safe multilingual Story timeline and ignores private fields", () => {
+  const timeline = parseStoryTimeline({
+    storyId: story.id,
+    canonicalTitle: story.canonicalTitle,
+    firstPublishedAt: "2026-08-30T18:00:00Z",
+    lastPublishedAt: "2026-08-30T19:30:00Z",
+    eventCount: 3,
+    sourceCount: 2,
+    events: [
+      timelineEvent("en", "English report", 0),
+      timelineEvent("si", "සිංහල පුවත", 23),
+      timelineEvent("ta", "தமிழ் செய்தி", 90),
+    ],
+    articleIds: ["private"],
+    matchingVersion: "hybrid-v1",
+  });
+  assert.deepEqual(timeline.events.map((event) => event.originalLanguage), ["en", "si", "ta"]);
+  assert.deepEqual(timeline.events.map((event) => event.minutesFromFirstReport), [0, 23, 90]);
+  assert.equal("articleIds" in timeline, false);
+  assert.equal("matchingVersion" in timeline, false);
+  assert.equal("sourceId" in timeline.events[0], false);
+  assert.equal("extractedContent" in timeline.events[0], false);
+});
+
+test("rejects malformed Story timeline events", () => {
+  assert.throws(() => parseStoryTimeline({ storyId: story.id, events: "private" }), ApiResponseError);
+});
+
+function timelineEvent(language: "en" | "si" | "ta", title: string, minutes: number) {
+  return {
+    articleId: `${language}-article`,
+    title,
+    summary: "Public summary",
+    originalLanguage: language,
+    publishedAt: "2026-08-30T18:00:00Z",
+    originalUrl: `https://example.com/${language}`,
+    source: { name: `${language} publisher`, slug: `${language}-publisher` },
+    minutesFromFirstReport: minutes,
+    contentHash: "private",
+    semanticEmbedding: [0.1],
+  };
+}
 
 test("rejects unsafe publisher URLs", () => {
   assert.throws(
