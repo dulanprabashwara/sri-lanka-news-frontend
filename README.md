@@ -61,3 +61,12 @@ Pages fetch data in Server Components. Requests therefore run from the Next.js
 server to the Spring Boot API instead of directly from the browser, so Phase 4
 does not require a browser CORS policy or a proxy/BFF. The backend must still be
 reachable from the machine or deployment running Next.js.
+
+Story detail pages request deterministic publisher coverage metadata on the server.
+The comparison uses existing topics and entities and does not call an AI provider.
+Source-specific metadata means only that it is absent from other currently available
+reports; it does not imply intentional omission. Cross-language equality is limited to
+literal normalized strings, so translated equivalents are not merged. Single-source
+Stories display a neutral waiting state, and comparison failures never prevent the
+main Story page from rendering. Full publisher content and private processing,
+embedding, model, prompt, and clustering metadata are never expected by frontend types.

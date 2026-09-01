@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   ApiResponseError,
+  parseCoverageComparison,
   parseArticle,
   parsePagedArticles,
   parsePagedStories,
@@ -90,6 +91,64 @@ test("parses public Story summary, page, and mixed-language detail contracts", (
 test("rejects malformed Story dates and member Articles", () => {
   assert.throws(() => parseStorySummary({ ...story, lastPublishedAt: "invalid" }), ApiResponseError);
   assert.throws(() => parseStoryDetail({ ...story, articles: "private IDs" }), ApiResponseError);
+});
+
+test("parses safe single-source and multi-source coverage contracts", () => {
+  const single = parseCoverageComparison({
+    storyId: story.id,
+    canonicalTitle: story.canonicalTitle,
+    articleCount: 1,
+    sourceCount: 1,
+    comparisonAvailable: false,
+    sharedTopics: [],
+    sharedEntities: [],
+    sources: [{
+      source: { name: "Daily News", slug: "daily-news" },
+      reportCount: 1,
+      languages: ["en"],
+      firstPublishedAt: article.publishedAt,
+      lastPublishedAt: article.publishedAt,
+      articles: [{
+        id: article.id,
+        title: article.title,
+        summary: article.summary,
+        originalLanguage: article.originalLanguage,
+        publishedAt: article.publishedAt,
+        originalUrl: article.originalUrl,
+        extractedContent: "must be ignored",
+      }],
+      topics: ["Transport"],
+      uniqueTopics: ["Transport"],
+      entities: [{ name: "Colombo", type: "LOCATION" }],
+      uniqueEntities: [{ name: "Colombo", type: "LOCATION" }],
+    }],
+    matchingVersion: "hybrid-v1",
+    semanticEmbedding: [0.1],
+  });
+  assert.equal(single.comparisonAvailable, false);
+  assert.equal(single.sources[0].articles[0].summary, article.summary);
+  assert.equal("matchingVersion" in single, false);
+  assert.equal("semanticEmbedding" in single, false);
+  assert.equal("extractedContent" in single.sources[0].articles[0], false);
+
+  const multi = parseCoverageComparison({
+    ...single,
+    sourceCount: 2,
+    comparisonAvailable: true,
+    sharedTopics: ["Transport"],
+    sharedEntities: [{ name: "Colombo", type: "LOCATION" }],
+    sources: [single.sources[0], {
+      ...single.sources[0],
+      source: { name: "සිංහල පුවත්", slug: "sinhala-news" },
+      languages: ["si", "ta"],
+    }],
+  });
+  assert.equal(multi.comparisonAvailable, true);
+  assert.deepEqual(multi.sources[1].languages, ["si", "ta"]);
+});
+
+test("rejects malformed coverage metadata", () => {
+  assert.throws(() => parseCoverageComparison({ storyId: story.id }), ApiResponseError);
 });
 
 test("rejects unsafe publisher URLs", () => {

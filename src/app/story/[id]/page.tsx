@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/error-state";
 import { StoryArticleReport } from "@/components/story-article-report";
+import { CoverageComparison } from "@/components/coverage-comparison";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getStory } from "@/lib/api/news";
+import { getOptionalStoryCoverage } from "@/lib/api/coverage";
 import { formatCategory, formatPublishedAt } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +23,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
     }
     return <ErrorState title="Unable to load story" message={getApiErrorMessage(error)} />;
   }
+  const coverage = await getOptionalStoryCoverage(id);
   return (
     <div className="space-y-8">
       <header className="max-w-4xl">
@@ -45,6 +48,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           </div>
         )}
       </section>
+      <CoverageComparison coverage={coverage} />
     </div>
   );
 }

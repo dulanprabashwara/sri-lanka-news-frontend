@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getArticleStory, getStories, getStory } from "./news";
+import { getArticleStory, getStories, getStory, getStoryCoverage } from "./news";
 
 const story = {
   id: "64f0c2f1289c0f0a87654321",
@@ -37,16 +37,22 @@ test("uses dedicated Story list, detail, and Article lookup endpoints", async ()
     if (path === `/api/v1/stories/${story.id}`) {
       return Response.json({ ...story, articles: [] });
     }
+    if (path === `/api/v1/stories/${story.id}/coverage`) {
+      return Response.json({ ...story, storyId: story.id, comparisonAvailable: false,
+        sharedTopics: [], sharedEntities: [], sources: [] });
+    }
     return Response.json(story);
   }) as typeof fetch;
 
   await getStories({ page: 0, size: 20, category: "LOCAL", sort: "lastPublishedAt,desc" });
   await getStory(story.id);
+  await getStoryCoverage(story.id);
   await getArticleStory("64f0c2f1289c0f0a12345678");
 
   assert.deepEqual(paths, [
     "/api/v1/stories?page=0&size=20&category=LOCAL&sort=lastPublishedAt%2Cdesc",
     `/api/v1/stories/${story.id}`,
+    `/api/v1/stories/${story.id}/coverage`,
     "/api/v1/articles/64f0c2f1289c0f0a12345678/story",
   ]);
 });

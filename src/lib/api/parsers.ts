@@ -2,12 +2,17 @@ import {
   ARTICLE_CATEGORIES,
   type Article,
   type ArticleCategory,
+  type CoverageArticle,
+  type CoverageComparison,
+  type CoverageEntity,
+  type CoverageSource,
   type Language,
   type PagedResponse,
   type Source,
   type SourceSummary,
   type StoryDetail,
   type StorySummary,
+  type SourceCoverage,
 } from "@/types/api";
 
 export class ApiResponseError extends Error {
@@ -111,6 +116,60 @@ function parseSourceSummary(value: unknown): SourceSummary {
   };
 }
 
+function parseCoverageEntity(value: unknown): CoverageEntity {
+  if (!isRecord(value)) {
+    throw new ApiResponseError("Invalid coverage entity in API response.");
+  }
+  return {
+    name: requireString(value.name, "coverage entity name"),
+    type: requireString(value.type, "coverage entity type"),
+  };
+}
+
+function parseCoverageSource(value: unknown): CoverageSource {
+  if (!isRecord(value)) {
+    throw new ApiResponseError("Invalid coverage source in API response.");
+  }
+  return {
+    name: requireString(value.name, "coverage source name"),
+    slug: requireString(value.slug, "coverage source slug"),
+  };
+}
+
+function parseCoverageArticle(value: unknown): CoverageArticle {
+  if (!isRecord(value)) {
+    throw new ApiResponseError("Invalid coverage article in API response.");
+  }
+  return {
+    id: requireString(value.id, "coverage article ID"),
+    title: requireString(value.title, "coverage article title"),
+    summary: optionalString(value.summary, "coverage article summary"),
+    originalLanguage: parseLanguage(value.originalLanguage),
+    publishedAt: requireDate(value.publishedAt, "coverage publication date"),
+    originalUrl: requireHttpUrl(value.originalUrl, "coverage original URL"),
+  };
+}
+
+function parseSourceCoverage(value: unknown): SourceCoverage {
+  if (!isRecord(value) || !Array.isArray(value.languages) ||
+      !Array.isArray(value.articles) || !Array.isArray(value.entities) ||
+      !Array.isArray(value.uniqueEntities)) {
+    throw new ApiResponseError("Invalid source coverage in API response.");
+  }
+  return {
+    source: parseCoverageSource(value.source),
+    reportCount: requireNumber(value.reportCount, "coverage report count"),
+    languages: value.languages.map(parseLanguage),
+    firstPublishedAt: requireDate(value.firstPublishedAt, "coverage first publication date"),
+    lastPublishedAt: requireDate(value.lastPublishedAt, "coverage latest publication date"),
+    articles: value.articles.map(parseCoverageArticle),
+    topics: parseStrings(value.topics, "coverage topic"),
+    uniqueTopics: parseStrings(value.uniqueTopics, "source-specific topic"),
+    entities: value.entities.map(parseCoverageEntity),
+    uniqueEntities: value.uniqueEntities.map(parseCoverageEntity),
+  };
+}
+
 export function parseSource(value: unknown): Source {
   if (!isRecord(value)) {
     throw new ApiResponseError("Invalid source response.");
@@ -162,6 +221,23 @@ export function parseStoryDetail(value: unknown): StoryDetail {
   return {
     ...parseStorySummary(value),
     articles: value.articles.map(parseArticle),
+  };
+}
+
+export function parseCoverageComparison(value: unknown): CoverageComparison {
+  if (!isRecord(value) || !Array.isArray(value.sharedEntities) ||
+      !Array.isArray(value.sources)) {
+    throw new ApiResponseError("Invalid coverage comparison response.");
+  }
+  return {
+    storyId: requireString(value.storyId, "coverage story ID"),
+    canonicalTitle: requireString(value.canonicalTitle, "coverage story title"),
+    articleCount: requireNumber(value.articleCount, "coverage article count"),
+    sourceCount: requireNumber(value.sourceCount, "coverage source count"),
+    comparisonAvailable: requireBoolean(value.comparisonAvailable, "comparison availability"),
+    sharedTopics: parseStrings(value.sharedTopics, "shared topic"),
+    sharedEntities: value.sharedEntities.map(parseCoverageEntity),
+    sources: value.sources.map(parseSourceCoverage),
   };
 }
 

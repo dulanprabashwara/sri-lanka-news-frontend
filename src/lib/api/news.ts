@@ -1,6 +1,7 @@
 import { requestJson } from "@/lib/api/client";
 import {
   parseArticle,
+  parseCoverageComparison,
   parsePagedArticles,
   parsePagedStories,
   parseSource,
@@ -10,6 +11,7 @@ import {
 import type {
   Article,
   ArticleCategory,
+  CoverageComparison,
   Language,
   PagedResponse,
   Source,
@@ -77,6 +79,13 @@ export function getStories(
 
 export function getStory(id: string): Promise<StoryDetail> {
   return requestJson(`/api/v1/stories/${encodeURIComponent(id)}`, parseStoryDetail);
+}
+
+export function getStoryCoverage(id: string): Promise<CoverageComparison> {
+  return requestJson(
+    `/api/v1/stories/${encodeURIComponent(id)}/coverage`,
+    parseCoverageComparison,
+  );
 }
 
 export function getArticleStory(articleId: string): Promise<StorySummary> {

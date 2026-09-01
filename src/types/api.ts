@@ -52,6 +52,49 @@ export interface StoryDetail extends StorySummary {
   articles: Article[];
 }
 
+export interface CoverageEntity {
+  name: string;
+  type: string;
+}
+
+export interface CoverageArticle {
+  id: string;
+  title: string;
+  summary: string | null;
+  originalLanguage: Language;
+  publishedAt: string;
+  originalUrl: string;
+}
+
+export interface CoverageSource {
+  name: string;
+  slug: string;
+}
+
+export interface SourceCoverage {
+  source: CoverageSource;
+  reportCount: number;
+  languages: Language[];
+  firstPublishedAt: string;
+  lastPublishedAt: string;
+  articles: CoverageArticle[];
+  topics: string[];
+  uniqueTopics: string[];
+  entities: CoverageEntity[];
+  uniqueEntities: CoverageEntity[];
+}
+
+export interface CoverageComparison {
+  storyId: string;
+  canonicalTitle: string;
+  articleCount: number;
+  sourceCount: number;
+  comparisonAvailable: boolean;
+  sharedTopics: string[];
+  sharedEntities: CoverageEntity[];
+  sources: SourceCoverage[];
+}
+
 export interface PagedResponse<T> {
   content: T[];
   page: number;
