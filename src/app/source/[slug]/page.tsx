@@ -6,16 +6,20 @@ import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticles, getSource } from "@/lib/api/news";
 import { formatLanguage } from "@/lib/format";
+import { readDisplayLanguage } from "@/lib/language";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "News source" };
 
 export default async function SourcePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ lang?: string | string[] }>;
 }) {
   const { slug } = await params;
+  const displayLanguage = readDisplayLanguage((await searchParams).lang);
   let source;
   try {
     source = await getSource(slug);
@@ -34,6 +38,7 @@ export default async function SourcePage({
       size: 20,
       source: source.slug,
       sort: "publishedAt,desc",
+      displayLanguage,
     });
   } catch (error) {
     articleError = error;
@@ -73,6 +78,7 @@ export default async function SourcePage({
         ) : (
           <ArticleFeed
             articles={articles?.content ?? []}
+            displayLanguage={displayLanguage}
             emptyTitle="No articles from this source"
             emptyMessage="Articles will appear here when they are available."
           />

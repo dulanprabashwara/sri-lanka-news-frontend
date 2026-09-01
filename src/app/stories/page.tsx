@@ -5,6 +5,7 @@ import { StoryList } from "@/components/story-list";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getStories } from "@/lib/api/news";
 import { ARTICLE_CATEGORIES, type ArticleCategory } from "@/types/api";
+import { readDisplayLanguage } from "@/lib/language";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Latest Stories" };
@@ -19,9 +20,11 @@ function readCategory(value: string | string[] | undefined) {
 export default async function StoriesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string | string[] }>;
+  searchParams: Promise<{ category?: string | string[]; lang?: string | string[] }>;
 }) {
-  const category = readCategory((await searchParams).category);
+  const resolvedParams = await searchParams;
+  const category = readCategory(resolvedParams.category);
+  const displayLanguage = readDisplayLanguage(resolvedParams.lang);
   let stories;
   try {
     stories = await getStories({
@@ -29,12 +32,13 @@ export default async function StoriesPage({
       size: 20,
       category,
       sort: "lastPublishedAt,desc",
+      displayLanguage,
     });
   } catch (error) {
     return (
       <div className="space-y-8">
         <StoryPageHeader />
-        <CategoryNavigation activeCategory={category} basePath="/stories" label="Story categories" />
+        <CategoryNavigation activeCategory={category} basePath="/stories" label="Story categories" displayLanguage={displayLanguage} />
         <ErrorState title="Unable to load stories" message={getApiErrorMessage(error)} />
       </div>
     );
@@ -42,8 +46,8 @@ export default async function StoriesPage({
   return (
     <div className="space-y-8">
       <StoryPageHeader />
-      <CategoryNavigation activeCategory={category} basePath="/stories" label="Story categories" />
-      <StoryList stories={stories.content} />
+      <CategoryNavigation activeCategory={category} basePath="/stories" label="Story categories" displayLanguage={displayLanguage} />
+      <StoryList stories={stories.content} displayLanguage={displayLanguage} />
     </div>
   );
 }

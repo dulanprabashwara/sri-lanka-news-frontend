@@ -13,6 +13,24 @@ export const ARTICLE_CATEGORIES = [
 
 export type ArticleCategory = (typeof ARTICLE_CATEGORIES)[number];
 export type Language = "en" | "si" | "ta";
+export type DisplayLanguage = Language;
+
+export interface LocalizedContent {
+  requestedLanguage: Language;
+  resolvedLanguage: Language;
+  translated: boolean;
+  fallback: boolean;
+  title: string;
+  summary: string | null;
+}
+
+export interface LocalizedStoryContent {
+  requestedLanguage: Language;
+  resolvedLanguage: Language;
+  translated: boolean;
+  fallback: boolean;
+  title: string;
+}
 
 export interface SourceSummary {
   name: string;
@@ -36,6 +54,7 @@ export interface Article {
   summary: string | null;
   topics: string[];
   source: SourceSummary;
+  localizedContent?: LocalizedContent;
 }
 
 export interface StorySummary {
@@ -46,6 +65,7 @@ export interface StorySummary {
   lastPublishedAt: string;
   articleCount: number;
   sourceCount: number;
+  localizedContent?: LocalizedStoryContent;
 }
 
 export interface StoryDetail extends StorySummary {
@@ -64,6 +84,7 @@ export interface CoverageArticle {
   originalLanguage: Language;
   publishedAt: string;
   originalUrl: string;
+  localizedContent?: LocalizedContent;
 }
 
 export interface CoverageSource {
@@ -93,6 +114,7 @@ export interface CoverageComparison {
   sharedTopics: string[];
   sharedEntities: CoverageEntity[];
   sources: SourceCoverage[];
+  localizedContent?: LocalizedStoryContent;
 }
 
 export interface TimelineSource {
@@ -109,6 +131,7 @@ export interface TimelineEvent {
   originalUrl: string;
   source: TimelineSource;
   minutesFromFirstReport: number;
+  localizedContent?: LocalizedContent;
 }
 
 export interface StoryTimeline {
@@ -119,6 +142,7 @@ export interface StoryTimeline {
   eventCount: number;
   sourceCount: number;
   events: TimelineEvent[];
+  localizedContent?: LocalizedStoryContent;
 }
 
 export interface PagedResponse<T> {

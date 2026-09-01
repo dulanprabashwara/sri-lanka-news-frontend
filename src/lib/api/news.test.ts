@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  getArticle,
+  getArticles,
   getArticleStory,
   getStories,
   getStory,
@@ -23,6 +25,40 @@ const originalFetch = globalThis.fetch;
 
 test.beforeEach(() => {
   process.env.API_BASE_URL = "http://localhost:8080";
+});
+
+test("sends displayLanguage independently from the original language filter", async () => {
+  const paths: string[] = [];
+  globalThis.fetch = (async (input: string | URL | Request) => {
+    const url = new URL(String(input));
+    paths.push(url.pathname + url.search);
+    if (url.pathname === "/api/v1/articles") {
+      return Response.json({ content: [], page: 0, size: 20, totalElements: 0,
+        totalPages: 0, first: true, last: true });
+    }
+    if (url.pathname.startsWith("/api/v1/stories/") && url.pathname.endsWith("/coverage")) {
+      return Response.json({ ...story, storyId: story.id, comparisonAvailable: false,
+        sharedTopics: [], sharedEntities: [], sources: [] });
+    }
+    return Response.json({
+      id: "64f0c2f1289c0f0a12345678", title: "Original", originalUrl: "https://example.com/1",
+      originalLanguage: "en", authors: [], publishedAt: "2026-09-01T00:00:00Z",
+      discoveredAt: "2026-09-01T00:01:00Z", category: "LOCAL", summary: "Summary", topics: [],
+      source: { name: "Publisher", slug: "publisher", baseUrl: "https://example.com" },
+      localizedContent: { requestedLanguage: "si", resolvedLanguage: "si", translated: true,
+        fallback: false, title: "සිංහල", summary: "සාරාංශය" },
+    });
+  }) as typeof fetch;
+
+  await getArticles({ language: "en", displayLanguage: "si" });
+  await getArticle("64f0c2f1289c0f0a12345678", "si");
+  await getStoryCoverage(story.id, "si");
+
+  assert.deepEqual(paths, [
+    "/api/v1/articles?language=en&displayLanguage=si",
+    "/api/v1/articles/64f0c2f1289c0f0a12345678?displayLanguage=si",
+    `/api/v1/stories/${story.id}/coverage?displayLanguage=si`,
+  ]);
 });
 
 test.after(() => {

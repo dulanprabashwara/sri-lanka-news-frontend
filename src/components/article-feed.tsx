@@ -1,16 +1,18 @@
 import { ArticleCard } from "@/components/article-card";
-import type { Article } from "@/types/api";
+import type { Article, DisplayLanguage } from "@/types/api";
 
 interface ArticleFeedProps {
   articles: Article[];
   emptyTitle?: string;
   emptyMessage?: string;
+  displayLanguage?: DisplayLanguage;
 }
 
 export function ArticleFeed({
   articles,
   emptyTitle = "No articles yet",
   emptyMessage = "New articles will appear here when they are available.",
+  displayLanguage,
 }: ArticleFeedProps) {
   if (articles.length === 0) {
     return (
@@ -23,7 +25,7 @@ export function ArticleFeed({
   return (
     <div className="grid gap-4 sm:gap-5">
       {articles.map((article) => (
-        <ArticleCard key={article.id} article={article} />
+        <ArticleCard key={article.id} article={article} displayLanguage={displayLanguage} />
       ))}
     </div>
   );

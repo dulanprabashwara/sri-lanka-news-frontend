@@ -7,6 +7,8 @@ import {
   type CoverageEntity,
   type CoverageSource,
   type Language,
+  type LocalizedContent,
+  type LocalizedStoryContent,
   type PagedResponse,
   type Source,
   type SourceSummary,
@@ -95,6 +97,33 @@ function parseLanguage(value: unknown): Language {
   throw new ApiResponseError("Invalid language in API response.");
 }
 
+function parseLocalizedContent(value: unknown): LocalizedContent | undefined {
+  if (value === null || value === undefined) return undefined;
+  if (!isRecord(value)) throw new ApiResponseError("Invalid localized content.");
+  return {
+    requestedLanguage: parseLanguage(value.requestedLanguage),
+    resolvedLanguage: parseLanguage(value.resolvedLanguage),
+    translated: requireBoolean(value.translated, "localized translated indicator"),
+    fallback: requireBoolean(value.fallback, "localized fallback indicator"),
+    title: requireString(value.title, "localized title"),
+    summary: optionalString(value.summary, "localized summary"),
+  };
+}
+
+function parseLocalizedStoryContent(
+  value: unknown,
+): LocalizedStoryContent | undefined {
+  if (value === null || value === undefined) return undefined;
+  if (!isRecord(value)) throw new ApiResponseError("Invalid localized Story content.");
+  return {
+    requestedLanguage: parseLanguage(value.requestedLanguage),
+    resolvedLanguage: parseLanguage(value.resolvedLanguage),
+    translated: requireBoolean(value.translated, "localized Story translated indicator"),
+    fallback: requireBoolean(value.fallback, "localized Story fallback indicator"),
+    title: requireString(value.title, "localized Story title"),
+  };
+}
+
 function parseCategory(value: unknown): ArticleCategory | null {
   if (value === null || value === undefined) {
     return null;
@@ -143,6 +172,7 @@ function parseCoverageArticle(value: unknown): CoverageArticle {
   if (!isRecord(value)) {
     throw new ApiResponseError("Invalid coverage article in API response.");
   }
+  const localizedContent = parseLocalizedContent(value.localizedContent);
   return {
     id: requireString(value.id, "coverage article ID"),
     title: requireString(value.title, "coverage article title"),
@@ -150,6 +180,7 @@ function parseCoverageArticle(value: unknown): CoverageArticle {
     originalLanguage: parseLanguage(value.originalLanguage),
     publishedAt: requireDate(value.publishedAt, "coverage publication date"),
     originalUrl: requireHttpUrl(value.originalUrl, "coverage original URL"),
+    ...(localizedContent ? { localizedContent } : {}),
   };
 }
 
@@ -167,6 +198,7 @@ function parseTimelineEvent(value: unknown): TimelineEvent {
   if (!isRecord(value)) {
     throw new ApiResponseError("Invalid timeline event in API response.");
   }
+  const localizedContent = parseLocalizedContent(value.localizedContent);
   return {
     articleId: requireString(value.articleId, "timeline article ID"),
     title: requireString(value.title, "timeline article title"),
@@ -179,6 +211,7 @@ function parseTimelineEvent(value: unknown): TimelineEvent {
       value.minutesFromFirstReport,
       "timeline relative minutes",
     ),
+    ...(localizedContent ? { localizedContent } : {}),
   };
 }
 
@@ -216,6 +249,7 @@ export function parseArticle(value: unknown): Article {
   if (!isRecord(value) || !Array.isArray(value.authors)) {
     throw new ApiResponseError("Invalid article response.");
   }
+  const localizedContent = parseLocalizedContent(value.localizedContent);
   return {
     id: requireString(value.id, "article ID"),
     title: requireString(value.title, "article title"),
@@ -228,6 +262,7 @@ export function parseArticle(value: unknown): Article {
     summary: optionalString(value.summary, "article summary"),
     topics: parseStrings(value.topics, "article topic"),
     source: parseSourceSummary(value.source),
+    ...(localizedContent ? { localizedContent } : {}),
   };
 }
 
@@ -235,6 +270,7 @@ export function parseStorySummary(value: unknown): StorySummary {
   if (!isRecord(value)) {
     throw new ApiResponseError("Invalid story response.");
   }
+  const localizedContent = parseLocalizedStoryContent(value.localizedContent);
   return {
     id: requireString(value.id, "story ID"),
     canonicalTitle: requireString(value.canonicalTitle, "story title"),
@@ -243,6 +279,7 @@ export function parseStorySummary(value: unknown): StorySummary {
     lastPublishedAt: requireDate(value.lastPublishedAt, "latest publication date"),
     articleCount: requireNumber(value.articleCount, "article count"),
     sourceCount: requireNumber(value.sourceCount, "source count"),
+    ...(localizedContent ? { localizedContent } : {}),
   };
 }
 
@@ -261,6 +298,7 @@ export function parseCoverageComparison(value: unknown): CoverageComparison {
       !Array.isArray(value.sources)) {
     throw new ApiResponseError("Invalid coverage comparison response.");
   }
+  const localizedContent = parseLocalizedStoryContent(value.localizedContent);
   return {
     storyId: requireString(value.storyId, "coverage story ID"),
     canonicalTitle: requireString(value.canonicalTitle, "coverage story title"),
@@ -270,6 +308,7 @@ export function parseCoverageComparison(value: unknown): CoverageComparison {
     sharedTopics: parseStrings(value.sharedTopics, "shared topic"),
     sharedEntities: value.sharedEntities.map(parseCoverageEntity),
     sources: value.sources.map(parseSourceCoverage),
+    ...(localizedContent ? { localizedContent } : {}),
   };
 }
 
@@ -277,6 +316,7 @@ export function parseStoryTimeline(value: unknown): StoryTimeline {
   if (!isRecord(value) || !Array.isArray(value.events)) {
     throw new ApiResponseError("Invalid Story timeline response.");
   }
+  const localizedContent = parseLocalizedStoryContent(value.localizedContent);
   return {
     storyId: requireString(value.storyId, "timeline story ID"),
     canonicalTitle: requireString(value.canonicalTitle, "timeline Story title"),
@@ -285,6 +325,7 @@ export function parseStoryTimeline(value: unknown): StoryTimeline {
     eventCount: requireNumber(value.eventCount, "timeline event count"),
     sourceCount: requireNumber(value.sourceCount, "timeline source count"),
     events: value.events.map(parseTimelineEvent),
+    ...(localizedContent ? { localizedContent } : {}),
   };
 }
 

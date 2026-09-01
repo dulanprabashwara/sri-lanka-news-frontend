@@ -10,19 +10,23 @@ import {
   formatLanguage,
   formatPublishedAt,
 } from "@/lib/format";
+import { articleContent, readDisplayLanguage, translationLabel, withDisplayLanguage } from "@/lib/language";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Article" };
 
 export default async function ArticlePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ lang?: string | string[] }>;
 }) {
   const { id } = await params;
+  const displayLanguage = readDisplayLanguage((await searchParams).lang);
   let article;
   try {
-    article = await getArticle(id);
+    article = await getArticle(id, displayLanguage);
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       notFound();
@@ -32,20 +36,24 @@ export default async function ArticlePage({
 
   let story = null;
   try {
-    story = await getArticleStory(id);
+    story = await getArticleStory(id, displayLanguage);
   } catch {
     // Story navigation is optional and must not prevent the Article from rendering.
   }
 
+  const content = articleContent(article);
+  const provenance = translationLabel(content.localization, article.originalLanguage);
   return (
     <article className="mx-auto max-w-3xl">
       <Link
-        href={`/source/${encodeURIComponent(article.source.slug)}`}
+        href={withDisplayLanguage(`/source/${encodeURIComponent(article.source.slug)}`, displayLanguage)}
         className="eyebrow rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
       >
         {article.source.name}
       </Link>
-      <h1 className="page-title mt-4">{article.title}</h1>
+      <h1 className="page-title mt-4">{content.title}</h1>
+      {content.summary ? <p className="page-intro">{content.summary}</p> : null}
+      {provenance ? <p className="mt-3 text-sm font-semibold text-violet-700">{provenance} · Platform translation</p> : null}
       <dl className="mt-8 grid gap-4 border-y border-slate-200 py-6 text-sm sm:grid-cols-2">
         <div>
           <dt className="font-semibold text-slate-500">Published</dt>
@@ -80,7 +88,7 @@ export default async function ArticlePage({
       </dl>
       {story ? (
         <Link
-          href={`/story/${encodeURIComponent(story.id)}`}
+          href={withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage)}
           className="mt-8 inline-flex rounded-lg border border-teal-700 px-4 py-2 text-sm font-bold text-teal-800 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
         >
           View full story coverage

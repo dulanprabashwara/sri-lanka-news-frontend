@@ -78,3 +78,16 @@ causation, copying, or publisher intent. The timeline makes no AI/provider call,
 visible for single-report Stories, and fails independently from the main Story page.
 Timeline types include only public summaries and attribution; private content, hashes,
 embeddings, processing, model/prompt, clustering, and MongoDB metadata are excluded.
+
+## Multilingual display
+
+The header offers Original, English, Sinhala, and Tamil display modes. The selection uses the
+shareable `lang=en|si|ta` query parameter so Server Components can request the matching backend
+`displayLanguage`; no `lang` parameter means Original. Internal Article, Source, Story, coverage,
+and timeline links preserve the selection. External publisher URLs are never modified.
+
+Localized pages display only translated titles and existing AI-generated summaries and label them
+as platform translations. Original publisher language attribution remains visible, missing
+translations fall back safely, and full scraped publisher content is never translated or publicly
+republished. Coverage topic/entity chips can remain in their source language because Phase 17 does
+not perform semantic multilingual metadata merging.

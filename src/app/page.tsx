@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/error-state";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticles } from "@/lib/api/news";
 import { formatCategory } from "@/lib/format";
+import { readDisplayLanguage } from "@/lib/language";
 import {
   ARTICLE_CATEGORIES,
   type ArticleCategory,
@@ -12,7 +13,7 @@ import {
 export const dynamic = "force-dynamic";
 
 interface HomePageProps {
-  searchParams: Promise<{ category?: string | string[] }>;
+  searchParams: Promise<{ category?: string | string[]; lang?: string | string[] }>;
 }
 
 function readCategory(value: string | string[] | undefined) {
@@ -23,7 +24,9 @@ function readCategory(value: string | string[] | undefined) {
 }
 
 export default async function Home({ searchParams }: HomePageProps) {
-  const category = readCategory((await searchParams).category);
+  const resolvedParams = await searchParams;
+  const category = readCategory(resolvedParams.category);
+  const displayLanguage = readDisplayLanguage(resolvedParams.lang);
 
   let articles;
   try {
@@ -32,6 +35,7 @@ export default async function Home({ searchParams }: HomePageProps) {
       size: 20,
       category,
       sort: "publishedAt,desc",
+      displayLanguage,
     });
   } catch (error) {
     return (
@@ -44,7 +48,7 @@ export default async function Home({ searchParams }: HomePageProps) {
             every story.
           </p>
         </header>
-        <CategoryNavigation activeCategory={category} />
+        <CategoryNavigation activeCategory={category} displayLanguage={displayLanguage} />
         <ErrorState message={getApiErrorMessage(error)} />
       </div>
     );
@@ -64,9 +68,10 @@ export default async function Home({ searchParams }: HomePageProps) {
           every story.
         </p>
       </header>
-      <CategoryNavigation activeCategory={category} />
+      <CategoryNavigation activeCategory={category} displayLanguage={displayLanguage} />
       <ArticleFeed
         articles={articles.content}
+        displayLanguage={displayLanguage}
         emptyTitle={category ? "No articles in this category" : undefined}
         emptyMessage={
           category

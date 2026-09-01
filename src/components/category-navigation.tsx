@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatCategory } from "@/lib/format";
-import type { ArticleCategory } from "@/types/api";
+import { withDisplayLanguage } from "@/lib/language";
+import type { ArticleCategory, DisplayLanguage } from "@/types/api";
 
 const featuredCategories: ArticleCategory[] = [
   "LOCAL",
@@ -15,12 +16,14 @@ interface CategoryNavigationProps {
   activeCategory?: ArticleCategory;
   basePath?: "/" | "/stories";
   label?: string;
+  displayLanguage?: DisplayLanguage;
 }
 
 export function CategoryNavigation({
   activeCategory,
   basePath = "/",
   label = "News categories",
+  displayLanguage,
 }: CategoryNavigationProps) {
   return (
     <nav
@@ -30,7 +33,7 @@ export function CategoryNavigation({
       <ul className="flex min-w-max gap-2">
         <li>
           <Link
-            href={basePath}
+            href={withDisplayLanguage(basePath, displayLanguage)}
             aria-current={!activeCategory ? "page" : undefined}
             className="category-link"
           >
@@ -40,7 +43,7 @@ export function CategoryNavigation({
         {featuredCategories.map((category) => (
           <li key={category}>
             <Link
-              href={`${basePath}?category=${category}`}
+              href={withDisplayLanguage(`${basePath}?category=${category}`, displayLanguage)}
               aria-current={activeCategory === category ? "page" : undefined}
               className="category-link"
             >

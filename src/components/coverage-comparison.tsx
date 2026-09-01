@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { formatLanguage, formatPublishedAt } from "@/lib/format";
-import type { CoverageEntity, CoverageComparison as Coverage } from "@/types/api";
+import { translationLabel, withDisplayLanguage } from "@/lib/language";
+import type { CoverageEntity, CoverageComparison as Coverage, DisplayLanguage } from "@/types/api";
 
-export function CoverageComparison({ coverage }: { coverage: Coverage | null }) {
+export function CoverageComparison({ coverage, displayLanguage }: { coverage: Coverage | null; displayLanguage?: DisplayLanguage }) {
   return (
     <section aria-labelledby="coverage-comparison-title" className="border-t border-slate-200 pt-8">
       <div className="max-w-3xl">
@@ -40,7 +41,7 @@ export function CoverageComparison({ coverage }: { coverage: Coverage | null }) 
 
           <div className="grid gap-5">
             {coverage.sources.map((source) => (
-              <SourceCoverageCard key={source.source.slug} coverage={source} />
+              <SourceCoverageCard key={source.source.slug} coverage={source} displayLanguage={displayLanguage} />
             ))}
           </div>
         </div>
@@ -49,7 +50,7 @@ export function CoverageComparison({ coverage }: { coverage: Coverage | null }) 
   );
 }
 
-function SourceCoverageCard({ coverage }: { coverage: Coverage["sources"][number] }) {
+function SourceCoverageCard({ coverage, displayLanguage }: { coverage: Coverage["sources"][number]; displayLanguage?: DisplayLanguage }) {
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -88,10 +89,11 @@ function SourceCoverageCard({ coverage }: { coverage: Coverage["sources"][number
                 <span>{formatLanguage(article.originalLanguage)}</span>
                 <time dateTime={article.publishedAt}>{formatPublishedAt(article.publishedAt)}</time>
               </div>
-              <Link href={`/article/${encodeURIComponent(article.id)}`} className="mt-1 block font-bold text-slate-900 hover:text-teal-800 hover:underline">
-                {article.title}
+              <Link href={withDisplayLanguage(`/article/${encodeURIComponent(article.id)}`, displayLanguage)} className="mt-1 block font-bold text-slate-900 hover:text-teal-800 hover:underline">
+                {article.localizedContent?.title ?? article.title}
               </Link>
-              {article.summary ? <p className="mt-2 leading-6 text-slate-600">{article.summary}</p> : null}
+              {(article.localizedContent?.summary ?? article.summary) ? <p className="mt-2 leading-6 text-slate-600">{article.localizedContent?.summary ?? article.summary}</p> : null}
+              {translationLabel(article.localizedContent, article.originalLanguage) ? <p className="mt-2 text-xs font-semibold text-violet-700">{translationLabel(article.localizedContent, article.originalLanguage)} · Platform translation</p> : null}
               <a href={article.originalUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block font-semibold text-teal-700 hover:underline">
                 Original publisher ↗
               </a>

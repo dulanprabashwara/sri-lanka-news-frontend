@@ -27,6 +27,7 @@ export interface ArticleQuery {
   source?: string;
   category?: ArticleCategory;
   language?: Language;
+  displayLanguage?: Language;
   sort?: "publishedAt,asc" | "publishedAt,desc";
 }
 
@@ -46,8 +47,9 @@ export function getArticles(
   );
 }
 
-export function getArticle(id: string): Promise<Article> {
-  return requestJson(`/api/v1/articles/${encodeURIComponent(id)}`, parseArticle);
+export function getArticle(id: string, displayLanguage?: Language): Promise<Article> {
+  const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
+  return requestJson(`/api/v1/articles/${encodeURIComponent(id)}${query}`, parseArticle);
 }
 
 export function getSource(slug: string): Promise<Source> {
@@ -61,6 +63,7 @@ export interface StoryQuery {
   publishedFrom?: string;
   publishedTo?: string;
   sort?: "lastPublishedAt,asc" | "lastPublishedAt,desc";
+  displayLanguage?: Language;
 }
 
 export function getStories(
@@ -79,27 +82,31 @@ export function getStories(
   );
 }
 
-export function getStory(id: string): Promise<StoryDetail> {
-  return requestJson(`/api/v1/stories/${encodeURIComponent(id)}`, parseStoryDetail);
+export function getStory(id: string, displayLanguage?: Language): Promise<StoryDetail> {
+  const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
+  return requestJson(`/api/v1/stories/${encodeURIComponent(id)}${query}`, parseStoryDetail);
 }
 
-export function getStoryCoverage(id: string): Promise<CoverageComparison> {
+export function getStoryCoverage(id: string, displayLanguage?: Language): Promise<CoverageComparison> {
+  const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
   return requestJson(
-    `/api/v1/stories/${encodeURIComponent(id)}/coverage`,
+    `/api/v1/stories/${encodeURIComponent(id)}/coverage${query}`,
     parseCoverageComparison,
   );
 }
 
-export function getStoryTimeline(id: string): Promise<StoryTimeline> {
+export function getStoryTimeline(id: string, displayLanguage?: Language): Promise<StoryTimeline> {
+  const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
   return requestJson(
-    `/api/v1/stories/${encodeURIComponent(id)}/timeline`,
+    `/api/v1/stories/${encodeURIComponent(id)}/timeline${query}`,
     parseStoryTimeline,
   );
 }
 
-export function getArticleStory(articleId: string): Promise<StorySummary> {
+export function getArticleStory(articleId: string, displayLanguage?: Language): Promise<StorySummary> {
+  const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
   return requestJson(
-    `/api/v1/articles/${encodeURIComponent(articleId)}/story`,
+    `/api/v1/articles/${encodeURIComponent(articleId)}/story${query}`,
     parseStorySummary,
   );
 }

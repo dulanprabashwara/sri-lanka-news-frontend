@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { formatLanguage, formatPublishedAt } from "@/lib/format";
-import type { StoryTimeline as Timeline } from "@/types/api";
+import { translationLabel, withDisplayLanguage } from "@/lib/language";
+import type { DisplayLanguage, StoryTimeline as Timeline } from "@/types/api";
 
-export function StoryTimeline({ timeline }: { timeline: Timeline | null }) {
+export function StoryTimeline({ timeline, displayLanguage }: { timeline: Timeline | null; displayLanguage?: DisplayLanguage }) {
   return (
     <section aria-labelledby="story-timeline-title" className="border-t border-slate-200 pt-8">
       <div className="max-w-3xl">
@@ -32,11 +33,12 @@ export function StoryTimeline({ timeline }: { timeline: Timeline | null }) {
                 </div>
                 <p className="mt-3 text-sm font-bold text-slate-700">{event.source.name}</p>
                 <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-950">
-                  <Link href={`/article/${encodeURIComponent(event.articleId)}`} className="hover:text-teal-800 hover:underline">
-                    {event.title}
+                  <Link href={withDisplayLanguage(`/article/${encodeURIComponent(event.articleId)}`, displayLanguage)} className="hover:text-teal-800 hover:underline">
+                    {event.localizedContent?.title ?? event.title}
                   </Link>
                 </h3>
-                {event.summary ? <p className="mt-3 text-sm leading-6 text-slate-600">{event.summary}</p> : null}
+                {(event.localizedContent?.summary ?? event.summary) ? <p className="mt-3 text-sm leading-6 text-slate-600">{event.localizedContent?.summary ?? event.summary}</p> : null}
+                {translationLabel(event.localizedContent, event.originalLanguage) ? <p className="mt-2 text-xs font-semibold text-violet-700">{translationLabel(event.localizedContent, event.originalLanguage)} · Platform translation</p> : null}
                 <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600">
                   <span className="rounded-full bg-slate-100 px-3 py-1">{formatLanguage(event.originalLanguage)}</span>
                   <a href={event.originalUrl} target="_blank" rel="noopener noreferrer" className="text-teal-700 hover:underline">

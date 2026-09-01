@@ -1,7 +1,7 @@
 import { StoryCard } from "@/components/story-card";
-import type { StorySummary } from "@/types/api";
+import type { DisplayLanguage, StorySummary } from "@/types/api";
 
-export function StoryList({ stories }: { stories: StorySummary[] }) {
+export function StoryList({ stories, displayLanguage }: { stories: StorySummary[]; displayLanguage?: DisplayLanguage }) {
   if (stories.length === 0) {
     return (
       <div className="state-panel" role="status">
@@ -14,7 +14,7 @@ export function StoryList({ stories }: { stories: StorySummary[] }) {
   }
   return (
     <div className="grid gap-4 sm:gap-5">
-      {stories.map((story) => <StoryCard key={story.id} story={story} />)}
+      {stories.map((story) => <StoryCard key={story.id} story={story} displayLanguage={displayLanguage} />)}
     </div>
   );
 }

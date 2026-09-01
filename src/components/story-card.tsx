@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { formatCategory, formatPublishedAt } from "@/lib/format";
-import type { StorySummary } from "@/types/api";
+import { storyTitle, withDisplayLanguage } from "@/lib/language";
+import type { DisplayLanguage, StorySummary } from "@/types/api";
 
-export function StoryCard({ story }: { story: StorySummary }) {
+export function StoryCard({ story, displayLanguage }: { story: StorySummary; displayLanguage?: DisplayLanguage }) {
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md sm:p-6">
       <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -17,10 +18,10 @@ export function StoryCard({ story }: { story: StorySummary }) {
       </div>
       <h2 className="mt-4 text-xl font-bold leading-snug tracking-tight text-slate-950 sm:text-2xl">
         <Link
-          href={`/story/${encodeURIComponent(story.id)}`}
+          href={withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage)}
           className="rounded-sm hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
         >
-          {story.canonicalTitle}
+          {storyTitle(story)}
         </Link>
       </h2>
       <p className="mt-4 text-sm font-medium text-slate-600">
