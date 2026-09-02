@@ -40,6 +40,8 @@ a {
   letter-spacing: -0.04em;
   color: #020617;
   text-transform: none;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .page-intro {

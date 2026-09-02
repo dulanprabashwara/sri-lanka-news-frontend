@@ -122,7 +122,7 @@ export function AskStoryAnswer({ response }: { response: AskStoryResponse }) {
             <p className="font-bold text-slate-950">
               [{citation.number}] {citation.source.name}
             </p>
-            <p className="mt-1 text-slate-600">{citation.title}</p>
+            <p className="mt-1 text-slate-600 break-words">{citation.title}</p>
             <time className="mt-1 block text-xs text-slate-500" dateTime={citation.publishedAt}>
               {formatPublishedAt(citation.publishedAt)}
             </time>

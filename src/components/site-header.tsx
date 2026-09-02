@@ -20,10 +20,10 @@ export function SiteHeader({ authenticated = false, admin = false }: { authentic
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-6xl flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 px-4 py-4 sm:px-6 lg:px-8">
         <Link
           href={withDisplayLanguage("/", displayLanguage)}
-          className="group flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+          className="group flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700 shrink-0"
           aria-label="Sri Lanka News home"
         >
           <span
@@ -41,20 +41,20 @@ export function SiteHeader({ authenticated = false, admin = false }: { authentic
             </span>
           </span>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-2 w-full sm:w-auto">
           <label className="sr-only" htmlFor="display-language">Display language</label>
           <select
             id="display-language"
             value={displayLanguage ?? "original"}
             onChange={(event) => selectLanguage(event.target.value)}
-            className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm font-semibold text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+            className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm font-semibold text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:w-auto"
           >
             <option value="original">Original</option>
             <option value="en">English</option>
             <option value="si">සිංහල</option>
             <option value="ta">தமிழ்</option>
           </select>
-          <nav aria-label="Primary navigation" className="flex items-center gap-1">
+          <nav aria-label="Primary navigation" className="flex flex-wrap items-center gap-1 sm:gap-1 w-full sm:w-auto">
           <Link
             href={withDisplayLanguage("/", displayLanguage)}
             className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
@@ -79,13 +79,13 @@ export function SiteHeader({ authenticated = false, admin = false }: { authentic
           >
             Search
           </Link>
-          {authenticated ? <Link href={withDisplayLanguage("/for-you", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">For You</Link> : null}
-          {authenticated ? <Link href={withDisplayLanguage("/bookmarks", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Bookmarks</Link> : null}
-          {authenticated ? <Link href={withDisplayLanguage("/following", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Following</Link> : null}
-          {admin ? <Link href={withDisplayLanguage("/admin", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Admin</Link> : null}
+          {authenticated ? <Link href={withDisplayLanguage("/for-you", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">For You</Link> : null}
+          {authenticated ? <Link href={withDisplayLanguage("/bookmarks", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">Bookmarks</Link> : null}
+          {authenticated ? <Link href={withDisplayLanguage("/following", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">Following</Link> : null}
+          {admin ? <Link href={withDisplayLanguage("/admin", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">Admin</Link> : null}
           <Link
             href={withDisplayLanguage(authenticated ? "/account" : `/auth/login?next=${encodeURIComponent(withDisplayLanguage("/account", displayLanguage))}`, displayLanguage)}
-            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800"
+            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
           >
             {authenticated ? "Account" : "Sign in"}
           </Link>

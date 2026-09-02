@@ -31,7 +31,7 @@ export function ArticleCard({ article, displayLanguage }: ArticleCardProps) {
           {formatPublishedAt(article.publishedAt)}
         </time>
       </div>
-      <h2 className="text-xl font-bold leading-snug tracking-tight text-slate-950 sm:text-2xl">
+      <h2 className="text-xl font-bold leading-snug tracking-tight text-slate-950 sm:text-2xl break-words">
         <Link
           href={withDisplayLanguage(`/article/${encodeURIComponent(article.id)}`, displayLanguage)}
           className="rounded-sm hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
@@ -39,7 +39,7 @@ export function ArticleCard({ article, displayLanguage }: ArticleCardProps) {
           {content.title}
         </Link>
       </h2>
-      {content.summary ? <p className="mt-3 text-sm leading-6 text-slate-600">{content.summary}</p> : null}
+      {content.summary ? <p className="mt-3 text-sm leading-6 text-slate-600 break-words">{content.summary}</p> : null}
       {provenance ? <p className="mt-2 text-xs font-semibold text-violet-700">{provenance} · Platform translation</p> : null}
       <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-slate-600">
         {article.category ? (

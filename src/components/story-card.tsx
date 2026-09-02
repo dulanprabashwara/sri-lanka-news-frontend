@@ -26,7 +26,7 @@ export function StoryCard({ story, displayLanguage, reasons }: {
           Updated {formatPublishedAt(story.lastPublishedAt)}
         </time>
       </div>
-      <h2 className="mt-4 text-xl font-bold leading-snug tracking-tight text-slate-950 sm:text-2xl">
+      <h2 className="mt-4 text-xl font-bold leading-snug tracking-tight text-slate-950 sm:text-2xl break-words">
         <Link
           href={withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage)}
           className="rounded-sm hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
