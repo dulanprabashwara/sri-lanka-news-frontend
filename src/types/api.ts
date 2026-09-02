@@ -199,3 +199,26 @@ export interface FollowBatchStatus {
   sources: Array<{ slug: string; followed: boolean; followedAt: string | null }>;
   topics: Array<{ topic: string; followed: boolean; followedAt: string | null }>;
 }
+
+export type RecommendationReasonType =
+  | "FOLLOWED_SOURCE"
+  | "FOLLOWED_TOPIC"
+  | "PREFERRED_CATEGORY";
+
+export interface RecommendationReason {
+  type: RecommendationReasonType;
+  label: string;
+}
+
+export interface ForYouItem {
+  article: Article;
+  personalized: boolean;
+  reasons: RecommendationReason[];
+}
+
+export interface ForYouFeed extends PagedResponse<ForYouItem> {
+  personalization: {
+    personalized: boolean;
+    signalCount: number;
+  };
+}

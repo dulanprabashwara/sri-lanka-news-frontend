@@ -51,8 +51,7 @@ categories. Article and Story pages offer owner-scoped bookmarks, and `/bookmark
 protected, filterable saved-content list. These operations use Server Actions so access tokens and
 the server-only backend URL are not exposed to client components. An explicit `?lang=en|si|ta`
 always overrides a saved language preference; guests and `ORIGINAL` preferences retain original
-publisher-language behavior. Preferred categories are stored for a later phase and do not reorder
-the public feed.
+publisher-language behavior. Preferred categories do not reorder the public Latest News feed.
 
 In the Supabase Dashboard, enable the Email provider, set the local Site URL to
 `http://localhost:3000`, and allow `http://localhost:3000/auth/confirm` plus
@@ -66,8 +65,22 @@ detail pages. `/following` lists and filters those Source and Topic interests an
 unfollowing. Calls continue through server-only authenticated data access and Server Actions;
 follow data and access tokens are not placed in public DTOs or shared caches. Topic labels retain
 their stored language and are not translated or semantically merged. Following records interests
-only and does not personalize or reorder public feeds until Phase 21. Existing `?lang=en|si|ta`
+only and never reorders the public Latest News feed. Existing `?lang=en|si|ta`
 state is preserved through login and internal Source links.
+
+## For You
+
+Authenticated users can open `/for-you` from the header. The page uses only followed Sources,
+followed Topics, and preferred Categories explicitly saved by that user. Matching Articles show
+compact, deterministic reasons; recent unmatched Articles follow as unlabeled fallback content.
+Users without signals see a short onboarding notice and the latest fallback feed rather than an
+empty page. Topic identity remains exact and language-specific.
+
+The page preserves `?lang=en|si|ta`, or uses the saved display preference when no explicit language
+is present. Translation availability changes presentation only, never ranking. Access tokens stay
+server-side, and no click history, impressions, reading time, behavioral profiling, Gemini,
+embeddings, or shared Redis personalization cache is used. `/` remains the unchanged public Latest
+News experience.
 
 ## Scripts
 

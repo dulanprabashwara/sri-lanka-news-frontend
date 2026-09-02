@@ -17,6 +17,8 @@ import {
   listFollows,
   parseFollowBatchStatus,
   parsePagedFollows,
+  getForYouFeed,
+  parseForYouFeed,
 } from "./user";
 
 const originalBaseUrl = process.env.API_BASE_URL;
@@ -112,4 +114,41 @@ test("uses one protected batch request and owner-free follow mutations", async (
   assert.deepEqual(requests[2]?.body, { topic: "Drug Trafficking" });
   assert.deepEqual(requests[4]?.body, { sourceSlugs: [], topics: ["Cricket", "Elections"] });
   assert.ok(requests.every((request) => request.body == null || !("userId" in (request.body as Record<string, unknown>))));
+});
+
+test("parses a privacy-safe personalized feed with reasons and fallback", () => {
+  const feed = parseForYouFeed({
+    content: [
+      {
+        article: { id: "a1", title: "Headline", originalUrl: "https://example.com/a1", originalLanguage: "en", authors: [], publishedAt: "2026-09-02T10:00:00Z", discoveredAt: "2026-09-02T10:01:00Z", category: "LOCAL", summary: null, topics: [], source: { name: "NewsFirst", slug: "newsfirst", baseUrl: "https://example.com" } },
+        personalized: true,
+        reasons: [{ type: "FOLLOWED_SOURCE", label: "NewsFirst", score: 40 }],
+        score: 40,
+        userId: "private",
+      },
+      {
+        article: { id: "a2", title: "Fallback", originalUrl: "https://example.com/a2", originalLanguage: "si", authors: [], publishedAt: "2026-09-02T09:00:00Z", discoveredAt: "2026-09-02T09:01:00Z", category: null, summary: null, topics: [], source: { name: "Hiru", slug: "hiru", baseUrl: "https://example.com" } },
+        personalized: false,
+        reasons: [],
+      },
+    ],
+    page: 0, size: 20, totalElements: 2, totalPages: 1, first: true, last: true,
+    personalization: { personalized: true, signalCount: 2, userId: "private" },
+  });
+  assert.equal(feed.content[0]?.reasons[0]?.type, "FOLLOWED_SOURCE");
+  assert.equal(feed.content[1]?.personalized, false);
+  assert.equal("score" in feed.content[0]!, false);
+  assert.equal("userId" in feed.personalization, false);
+});
+
+test("uses the protected For You endpoint with bounded pagination and language", async () => {
+  let request: { path: string; authorization: string | null } | undefined;
+  globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+    const url = new URL(String(input));
+    request = { path: url.pathname + url.search, authorization: new Headers(init?.headers).get("authorization") };
+    return Response.json({ content: [], page: 2, size: 20, totalElements: 0, totalPages: 0, first: false, last: true, personalization: { personalized: false, signalCount: 0 } });
+  }) as typeof fetch;
+  const feed = await getForYouFeed("jwt", { page: 2, displayLanguage: "ta" });
+  assert.deepEqual(request, { path: "/api/v1/me/for-you?page=2&size=20&displayLanguage=ta", authorization: "Bearer jwt" });
+  assert.equal(feed.personalization.personalized, false);
 });

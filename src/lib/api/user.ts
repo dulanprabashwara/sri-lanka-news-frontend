@@ -12,6 +12,9 @@ import type {
   FollowBatchStatus,
   FollowStatus,
   FollowTargetType,
+  ForYouFeed,
+  ForYouItem,
+  RecommendationReason,
   UserPreferences,
 } from "@/types/api";
 
@@ -177,4 +180,59 @@ export function listFollows(accessToken: string, options: { page?: number; size?
   const parameters = new URLSearchParams({ page: String(options.page ?? 0), size: String(options.size ?? 20) });
   if (options.type) parameters.set("type", options.type);
   return requestJson(`/api/v1/me/follows?${parameters}`, parsePagedFollows, { accessToken });
+}
+
+function parseRecommendationReason(value: unknown): RecommendationReason {
+  const data = record(value);
+  const type = data.type;
+  if (type !== "FOLLOWED_SOURCE" && type !== "FOLLOWED_TOPIC" && type !== "PREFERRED_CATEGORY") {
+    throw new Error("Invalid For You response.");
+  }
+  return { type, label: string(data.label) };
+}
+
+function parseForYouItem(value: unknown): ForYouItem {
+  const data = record(value);
+  if (typeof data.personalized !== "boolean" || !Array.isArray(data.reasons)) {
+    throw new Error("Invalid For You response.");
+  }
+  return {
+    article: parseArticle(data.article),
+    personalized: data.personalized,
+    reasons: data.reasons.map(parseRecommendationReason),
+  };
+}
+
+export function parseForYouFeed(value: unknown): ForYouFeed {
+  const data = record(value);
+  if (!Array.isArray(data.content)) throw new Error("Invalid For You response.");
+  const pagination = parsePagedStories({ ...data, content: [] });
+  const personalization = record(data.personalization);
+  if (typeof personalization.personalized !== "boolean"
+      || typeof personalization.signalCount !== "number"
+      || !Number.isInteger(personalization.signalCount)
+      || personalization.signalCount < 0) {
+    throw new Error("Invalid For You response.");
+  }
+  return {
+    ...pagination,
+    content: data.content.map(parseForYouItem),
+    personalization: {
+      personalized: personalization.personalized,
+      signalCount: personalization.signalCount,
+    },
+  };
+}
+
+export function getForYouFeed(accessToken: string, options: {
+  page?: number;
+  size?: number;
+  displayLanguage?: DisplayLanguage;
+} = {}) {
+  const parameters = new URLSearchParams({
+    page: String(options.page ?? 0),
+    size: String(options.size ?? 20),
+  });
+  if (options.displayLanguage) parameters.set("displayLanguage", options.displayLanguage);
+  return requestJson(`/api/v1/me/for-you?${parameters}`, parseForYouFeed, { accessToken });
 }
