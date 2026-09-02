@@ -21,6 +21,8 @@ export class ApiUnavailableError extends Error {
 interface RequestOptions {
   fetcher?: typeof fetch;
   accessToken?: string;
+  method?: "GET" | "POST" | "PUT" | "DELETE";
+  body?: unknown;
 }
 
 function readErrorMessage(payload: unknown, fallback: string): string {
@@ -47,12 +49,15 @@ export async function requestJson<T>(
   try {
     response = await fetcher(requestUrl, {
       cache: "no-store",
+      method: options.method ?? "GET",
       headers: {
         Accept: "application/json",
+        ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
         ...(options.accessToken
           ? { Authorization: `Bearer ${options.accessToken}` }
           : {}),
       },
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
     });
   } catch {
     throw new ApiUnavailableError();
@@ -78,4 +83,25 @@ export async function requestJson<T>(
     );
   }
   return parser(payload);
+}
+
+export async function requestNoContent(
+  path: string,
+  options: RequestOptions,
+): Promise<void> {
+  const fetcher = options.fetcher ?? fetch;
+  let response: Response;
+  try {
+    response = await fetcher(`${getApiBaseUrl()}${path}`, {
+      cache: "no-store",
+      method: options.method ?? "DELETE",
+      headers: {
+        Accept: "application/json",
+        ...(options.accessToken ? { Authorization: `Bearer ${options.accessToken}` } : {}),
+      },
+    });
+  } catch {
+    throw new ApiUnavailableError();
+  }
+  if (!response.ok) throw new ApiError(`Request failed with status ${response.status}.`, response.status);
 }

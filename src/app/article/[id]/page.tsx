@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/error-state";
+import { BookmarkButton } from "@/components/bookmark-button";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticle, getArticleStory } from "@/lib/api/news";
+import { getBookmarkStatus, getPreferences, preferredDisplayLanguage } from "@/lib/api/user";
+import { getAuthenticatedAccessToken } from "@/lib/auth";
 import {
   formatCategory,
   formatLanguage,
@@ -23,7 +26,13 @@ export default async function ArticlePage({
   searchParams: Promise<{ lang?: string | string[] }>;
 }) {
   const { id } = await params;
-  const displayLanguage = readDisplayLanguage((await searchParams).lang);
+  const explicitLanguage = readDisplayLanguage((await searchParams).lang);
+  const accessToken = await getAuthenticatedAccessToken();
+  let displayLanguage = explicitLanguage;
+  if (!displayLanguage && accessToken) {
+    try { displayLanguage = preferredDisplayLanguage((await getPreferences(accessToken)).preferredDisplayLanguage); } catch { /* Preference lookup is non-critical. */ }
+  }
+  const currentPath = withDisplayLanguage(`/article/${encodeURIComponent(id)}`, displayLanguage);
   let article;
   try {
     article = await getArticle(id, displayLanguage);
@@ -41,6 +50,11 @@ export default async function ArticlePage({
     // Story navigation is optional and must not prevent the Article from rendering.
   }
 
+  let bookmarked = false;
+  if (accessToken) {
+    try { bookmarked = (await getBookmarkStatus(accessToken, "ARTICLE", id)).bookmarked; } catch { /* Bookmark state is non-critical. */ }
+  }
+
   const content = articleContent(article);
   const provenance = translationLabel(content.localization, article.originalLanguage);
   return (
@@ -52,6 +66,7 @@ export default async function ArticlePage({
         {article.source.name}
       </Link>
       <h1 className="page-title mt-4">{content.title}</h1>
+      <div className="mt-5"><BookmarkButton type="ARTICLE" targetId={id} initialBookmarked={bookmarked} authenticated={Boolean(accessToken)} path={currentPath} /></div>
       {content.summary ? <p className="page-intro">{content.summary}</p> : null}
       {provenance ? <p className="mt-3 text-sm font-semibold text-violet-700">{provenance} · Platform translation</p> : null}
       <dl className="mt-8 grid gap-4 border-y border-slate-200 py-6 text-sm sm:grid-cols-2">

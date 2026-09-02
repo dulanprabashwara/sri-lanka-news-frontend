@@ -9,3 +9,10 @@ export async function getValidatedAuth() {
   if (error || !data?.claims?.sub) return null;
   return { supabase, claims: data.claims };
 }
+
+export async function getAuthenticatedAccessToken() {
+  const auth = await getValidatedAuth();
+  if (!auth) return null;
+  const { data } = await auth.supabase.auth.getSession();
+  return data.session?.access_token ?? null;
+}

@@ -154,3 +154,28 @@ export interface PagedResponse<T> {
   first: boolean;
   last: boolean;
 }
+
+export type PreferredDisplayLanguage = "ORIGINAL" | "EN" | "SI" | "TA";
+
+export interface UserPreferences {
+  preferredDisplayLanguage: PreferredDisplayLanguage;
+  preferredCategories: ArticleCategory[];
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export type BookmarkTargetType = "ARTICLE" | "STORY";
+
+export interface BookmarkStatus {
+  bookmarked: boolean;
+  createdAt: string | null;
+}
+
+export interface Bookmark {
+  bookmarkId: string;
+  targetType: BookmarkTargetType;
+  targetId: string;
+  createdAt: string;
+  article: Article | null;
+  story: StorySummary | null;
+}

@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { PreferencesForm } from "@/components/preferences-form";
 import { ApiError } from "@/lib/api/client";
 import { getCurrentUser } from "@/lib/api/me";
+import { getPreferences } from "@/lib/api/user";
 import { getValidatedAuth } from "@/lib/auth";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 
@@ -17,8 +20,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!accessToken) redirect("/auth/login?next=/account");
 
   let user;
+  let preferences;
   try {
-    user = await getCurrentUser(accessToken);
+    [user, preferences] = await Promise.all([getCurrentUser(accessToken), getPreferences(accessToken)]);
   } catch (cause) {
     if (cause instanceof ApiError && cause.status === 401) redirect("/auth/login?next=/account");
     throw cause;
@@ -32,6 +36,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <dt className="text-sm font-semibold text-slate-500">Email</dt>
         <dd className="text-slate-900">{user.email ?? "Not available"}</dd>
       </dl>
+      <Link href={withDisplayLanguage("/bookmarks", language)} className="mt-6 inline-flex rounded-lg border border-teal-700 px-4 py-2 font-semibold text-teal-800">View bookmarks</Link>
+      <PreferencesForm initial={preferences} />
       <form action={`/auth/logout?next=${encodeURIComponent(withDisplayLanguage("/", language))}`} method="post" className="mt-8">
         <button className="rounded-lg border border-slate-300 px-4 py-2 font-semibold text-slate-700">Sign out</button>
       </form>

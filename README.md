@@ -45,7 +45,14 @@ configuration. Do not commit real deployment configuration or secrets.
 Authentication is optional for browsing. Public news, Stories, comparison, timeline, and
 multilingual routes remain available to guests. Supabase owns email/password sessions; the
 frontend stores them through `@supabase/ssr` cookies and validates server identity with
-`getClaims()` before forwarding an access token only to Spring's protected `/api/v1/me`.
+`getClaims()` before forwarding an access token only to Spring's protected `/api/v1/me` routes.
+The account page lets authenticated users explicitly save a preferred display language and
+categories. Article and Story pages offer owner-scoped bookmarks, and `/bookmarks` provides a
+protected, filterable saved-content list. These operations use Server Actions so access tokens and
+the server-only backend URL are not exposed to client components. An explicit `?lang=en|si|ta`
+always overrides a saved language preference; guests and `ORIGINAL` preferences retain original
+publisher-language behavior. Preferred categories are stored for a later phase and do not reorder
+the public feed.
 
 In the Supabase Dashboard, enable the Email provider, set the local Site URL to
 `http://localhost:3000`, and allow `http://localhost:3000/auth/confirm` plus
