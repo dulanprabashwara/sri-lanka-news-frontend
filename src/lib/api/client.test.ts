@@ -36,6 +36,25 @@ test("returns parsed data for a successful response", async () => {
   assert.equal(result, "ok");
 });
 
+test("forwards a bearer token only when explicitly requested", async () => {
+  const fetcher = (async (_input: string | URL | Request, init?: RequestInit) => {
+    assert.equal(new Headers(init?.headers).get("Authorization"), "Bearer validated-token");
+    return Response.json({ value: "ok" });
+  }) as typeof fetch;
+  await requestJson("/api/v1/me", (payload) => payload, {
+    fetcher,
+    accessToken: "validated-token",
+  });
+});
+
+test("public requests do not receive an authorization header", async () => {
+  const fetcher = (async (_input: string | URL | Request, init?: RequestInit) => {
+    assert.equal(new Headers(init?.headers).get("Authorization"), null);
+    return Response.json({ value: "ok" });
+  }) as typeof fetch;
+  await requestJson("/api/v1/articles", (payload) => payload, { fetcher });
+});
+
 test("surfaces centralized backend errors for non-2xx responses", async () => {
   const fetcher = (async () =>
     Response.json(

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 
-export function SiteHeader() {
+export function SiteHeader({ authenticated = false }: { authenticated?: boolean }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -66,6 +66,12 @@ export function SiteHeader() {
             className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
           >
             Stories
+          </Link>
+          <Link
+            href={withDisplayLanguage(authenticated ? "/account" : `/auth/login?next=${encodeURIComponent(withDisplayLanguage("/account", displayLanguage))}`, displayLanguage)}
+            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800"
+          >
+            {authenticated ? "Account" : "Sign in"}
           </Link>
           </nav>
         </div>

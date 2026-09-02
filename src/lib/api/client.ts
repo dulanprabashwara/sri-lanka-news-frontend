@@ -20,6 +20,7 @@ export class ApiUnavailableError extends Error {
 
 interface RequestOptions {
   fetcher?: typeof fetch;
+  accessToken?: string;
 }
 
 function readErrorMessage(payload: unknown, fallback: string): string {
@@ -46,7 +47,12 @@ export async function requestJson<T>(
   try {
     response = await fetcher(requestUrl, {
       cache: "no-store",
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+        ...(options.accessToken
+          ? { Authorization: `Bearer ${options.accessToken}` }
+          : {}),
+      },
     });
   } catch {
     throw new ApiUnavailableError();

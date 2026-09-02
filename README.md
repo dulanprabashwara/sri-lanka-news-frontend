@@ -23,6 +23,8 @@ Sri Lanka News Spring Boot backend.
 
    ```dotenv
    API_BASE_URL=http://localhost:8080
+   NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
    ```
 
 4. Start the Spring Boot backend.
@@ -37,6 +39,20 @@ Sri Lanka News Spring Boot backend.
 
 Environment-specific API URLs belong in local or deployment environment
 configuration. Do not commit real deployment configuration or secrets.
+
+## Supabase authentication
+
+Authentication is optional for browsing. Public news, Stories, comparison, timeline, and
+multilingual routes remain available to guests. Supabase owns email/password sessions; the
+frontend stores them through `@supabase/ssr` cookies and validates server identity with
+`getClaims()` before forwarding an access token only to Spring's protected `/api/v1/me`.
+
+In the Supabase Dashboard, enable the Email provider, set the local Site URL to
+`http://localhost:3000`, and allow `http://localhost:3000/auth/confirm` plus
+`http://localhost:3000/auth/reset-password` as redirect destinations. Choose whether email
+confirmation is required and configure SMTP for reliable production confirmation/recovery mail.
+Verify the project uses asymmetric JWT signing keys and exposes Auth JWKS. Never add a service-role
+key, secret key, database password, signing private key, or legacy JWT secret to this frontend.
 
 ## Scripts
 
