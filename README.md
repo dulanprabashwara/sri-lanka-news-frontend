@@ -61,6 +61,14 @@ confirmation is required and configure SMTP for reliable production confirmation
 Verify the project uses asymmetric JWT signing keys and exposes Auth JWKS. Never add a service-role
 key, secret key, database password, signing private key, or legacy JWT secret to this frontend.
 
+Authenticated users can follow publishers from Source pages and AI-generated topics from Article
+detail pages. `/following` lists and filters those Source and Topic interests and supports
+unfollowing. Calls continue through server-only authenticated data access and Server Actions;
+follow data and access tokens are not placed in public DTOs or shared caches. Topic labels retain
+their stored language and are not translated or semantically merged. Following records interests
+only and does not personalize or reorder public feeds until Phase 21. Existing `?lang=en|si|ta`
+state is preserved through login and internal Source links.
+
 ## Scripts
 
 - `npm run dev` starts the development server.

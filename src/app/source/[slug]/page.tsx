@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleFeed } from "@/components/article-feed";
 import { ErrorState } from "@/components/error-state";
+import { FollowButton } from "@/components/follow-button";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticles, getSource } from "@/lib/api/news";
+import { getSourceFollowStatus } from "@/lib/api/user";
+import { getAuthenticatedAccessToken } from "@/lib/auth";
 import { formatLanguage } from "@/lib/format";
-import { readDisplayLanguage } from "@/lib/language";
+import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "News source" };
@@ -20,6 +23,8 @@ export default async function SourcePage({
 }) {
   const { slug } = await params;
   const displayLanguage = readDisplayLanguage((await searchParams).lang);
+  const currentPath = withDisplayLanguage(`/source/${encodeURIComponent(slug)}`, displayLanguage);
+  const accessToken = await getAuthenticatedAccessToken();
   let source;
   try {
     source = await getSource(slug);
@@ -28,6 +33,11 @@ export default async function SourcePage({
       notFound();
     }
     return <ErrorState message={getApiErrorMessage(error)} />;
+  }
+
+  let followed = false;
+  if (accessToken) {
+    try { followed = (await getSourceFollowStatus(accessToken, slug)).followed; } catch { /* Follow status is non-critical. */ }
   }
 
   let articles;
@@ -54,11 +64,12 @@ export default async function SourcePage({
         <p className="mt-3 text-sm text-slate-600">
           Default language: {formatLanguage(source.defaultLanguage)}
         </p>
+        <div className="mt-5"><FollowButton type="SOURCE" target={slug} initialFollowed={followed} authenticated={Boolean(accessToken)} path={currentPath} /></div>
         <a
           href={source.baseUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-5 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-teal-700 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          className="mt-5 ml-3 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-teal-700 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
         >
           Visit publisher
           <span aria-hidden="true" className="ml-2">

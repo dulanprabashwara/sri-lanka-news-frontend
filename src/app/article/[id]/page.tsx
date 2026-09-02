@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/error-state";
 import { BookmarkButton } from "@/components/bookmark-button";
+import { TopicFollowList } from "@/components/topic-follow-list";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticle, getArticleStory } from "@/lib/api/news";
-import { getBookmarkStatus, getPreferences, preferredDisplayLanguage } from "@/lib/api/user";
+import { getBookmarkStatus, getFollowBatchStatus, getPreferences, preferredDisplayLanguage } from "@/lib/api/user";
 import { getAuthenticatedAccessToken } from "@/lib/auth";
 import {
   formatCategory,
@@ -51,8 +52,10 @@ export default async function ArticlePage({
   }
 
   let bookmarked = false;
+  let followedTopics: string[] = [];
   if (accessToken) {
     try { bookmarked = (await getBookmarkStatus(accessToken, "ARTICLE", id)).bookmarked; } catch { /* Bookmark state is non-critical. */ }
+    try { followedTopics = (await getFollowBatchStatus(accessToken, [], article.topics)).topics.filter((topic) => topic.followed).map((topic) => topic.topic); } catch { /* Follow state is non-critical. */ }
   }
 
   const content = articleContent(article);
@@ -101,6 +104,7 @@ export default async function ArticlePage({
           </div>
         ) : null}
       </dl>
+      <TopicFollowList topics={article.topics} followedTopics={followedTopics} authenticated={Boolean(accessToken)} path={currentPath} />
       {story ? (
         <Link
           href={withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage)}

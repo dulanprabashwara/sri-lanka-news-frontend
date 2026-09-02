@@ -8,6 +8,10 @@ import type {
   DisplayLanguage,
   PagedResponse,
   PreferredDisplayLanguage,
+  Follow,
+  FollowBatchStatus,
+  FollowStatus,
+  FollowTargetType,
   UserPreferences,
 } from "@/types/api";
 
@@ -107,4 +111,70 @@ export function preferredDisplayLanguage(value: PreferredDisplayLanguage): Displ
 
 export function resolveDisplayLanguage(explicit: DisplayLanguage | undefined, preference?: PreferredDisplayLanguage): DisplayLanguage | undefined {
   return explicit ?? (preference ? preferredDisplayLanguage(preference) : undefined);
+}
+
+export function parseFollowStatus(value: unknown): FollowStatus {
+  const data = record(value);
+  if (typeof data.followed !== "boolean") throw new Error("Invalid follow response.");
+  return { followed: data.followed, followedAt: nullableDate(data.followedAt) };
+}
+
+export function parseFollow(value: unknown): Follow {
+  const data = record(value);
+  if (data.targetType !== "SOURCE" && data.targetType !== "TOPIC") throw new Error("Invalid follow response.");
+  const source = data.source == null ? null : record(data.source);
+  const topic = data.topic == null ? null : record(data.topic);
+  return {
+    followId: string(data.followId),
+    targetType: data.targetType,
+    createdAt: string(data.createdAt),
+    source: source == null ? null : { name: string(source.name), slug: string(source.slug), baseUrl: string(source.baseUrl) },
+    topic: topic == null ? null : { label: string(topic.label) },
+  };
+}
+
+export function parsePagedFollows(value: unknown): PagedResponse<Follow> {
+  const data = record(value);
+  if (!Array.isArray(data.content)) throw new Error("Invalid follow list response.");
+  const pagination = parsePagedStories({ ...data, content: [] });
+  return { ...pagination, content: data.content.map(parseFollow) };
+}
+
+export function parseFollowBatchStatus(value: unknown): FollowBatchStatus {
+  const data = record(value);
+  if (!Array.isArray(data.sources) || !Array.isArray(data.topics)) throw new Error("Invalid follow status response.");
+  return {
+    sources: data.sources.map((item) => { const value = record(item); return { slug: string(value.slug), ...parseFollowStatus(value) }; }),
+    topics: data.topics.map((item) => { const value = record(item); return { topic: string(value.topic), ...parseFollowStatus(value) }; }),
+  };
+}
+
+export function getSourceFollowStatus(accessToken: string, slug: string) {
+  return requestJson(`/api/v1/me/follows/sources/${encodeURIComponent(slug)}`, parseFollowStatus, { accessToken });
+}
+
+export function createSourceFollow(accessToken: string, slug: string) {
+  return requestJson(`/api/v1/me/follows/sources/${encodeURIComponent(slug)}`, parseFollowStatus, { accessToken, method: "POST" });
+}
+
+export function deleteSourceFollow(accessToken: string, slug: string) {
+  return requestNoContent(`/api/v1/me/follows/sources/${encodeURIComponent(slug)}`, { accessToken, method: "DELETE" });
+}
+
+export function createTopicFollow(accessToken: string, topic: string) {
+  return requestJson("/api/v1/me/follows/topics", parseFollowStatus, { accessToken, method: "POST", body: { topic } });
+}
+
+export function deleteTopicFollow(accessToken: string, topic: string) {
+  return requestNoContent(`/api/v1/me/follows/topics?topic=${encodeURIComponent(topic)}`, { accessToken, method: "DELETE" });
+}
+
+export function getFollowBatchStatus(accessToken: string, sourceSlugs: string[], topics: string[]) {
+  return requestJson("/api/v1/me/follows/status", parseFollowBatchStatus, { accessToken, method: "POST", body: { sourceSlugs, topics } });
+}
+
+export function listFollows(accessToken: string, options: { page?: number; size?: number; type?: FollowTargetType } = {}) {
+  const parameters = new URLSearchParams({ page: String(options.page ?? 0), size: String(options.size ?? 20) });
+  if (options.type) parameters.set("type", options.type);
+  return requestJson(`/api/v1/me/follows?${parameters}`, parsePagedFollows, { accessToken });
 }

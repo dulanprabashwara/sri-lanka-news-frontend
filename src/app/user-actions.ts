@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { getAuthenticatedAccessToken } from "@/lib/auth";
-import { createBookmark, deleteBookmark, updatePreferences } from "@/lib/api/user";
-import type { ArticleCategory, BookmarkTargetType, PreferredDisplayLanguage } from "@/types/api";
+import { createBookmark, createSourceFollow, createTopicFollow, deleteBookmark, deleteSourceFollow, deleteTopicFollow, updatePreferences } from "@/lib/api/user";
+import type { ArticleCategory, BookmarkTargetType, FollowTargetType, PreferredDisplayLanguage } from "@/types/api";
 
 async function token() {
   const value = await getAuthenticatedAccessToken();
@@ -30,5 +30,20 @@ export async function setBookmarkAction(input: { type: BookmarkTargetType; targe
     return { ok: true as const, bookmarked: !input.bookmarked };
   } catch (error) {
     return { ok: false as const, message: error instanceof Error ? error.message : "Unable to update bookmark." };
+  }
+}
+
+export async function setFollowAction(input: { type: FollowTargetType; target: string; followed: boolean }) {
+  try {
+    const accessToken = await token();
+    if (input.type === "SOURCE") {
+      if (input.followed) await deleteSourceFollow(accessToken, input.target);
+      else await createSourceFollow(accessToken, input.target);
+    } else if (input.followed) await deleteTopicFollow(accessToken, input.target);
+    else await createTopicFollow(accessToken, input.target);
+    revalidatePath("/following");
+    return { ok: true as const, followed: !input.followed };
+  } catch (error) {
+    return { ok: false as const, message: error instanceof Error ? error.message : "Unable to update follow." };
   }
 }

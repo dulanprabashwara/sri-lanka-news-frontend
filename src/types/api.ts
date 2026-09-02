@@ -179,3 +179,23 @@ export interface Bookmark {
   article: Article | null;
   story: StorySummary | null;
 }
+
+export type FollowTargetType = "SOURCE" | "TOPIC";
+
+export interface FollowStatus {
+  followed: boolean;
+  followedAt: string | null;
+}
+
+export interface Follow {
+  followId: string;
+  targetType: FollowTargetType;
+  createdAt: string;
+  source: SourceSummary | null;
+  topic: { label: string } | null;
+}
+
+export interface FollowBatchStatus {
+  sources: Array<{ slug: string; followed: boolean; followedAt: string | null }>;
+  topics: Array<{ topic: string; followed: boolean; followedAt: string | null }>;
+}
