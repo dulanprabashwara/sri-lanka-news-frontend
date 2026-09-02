@@ -15,6 +15,8 @@ import {
   type StoryDetail,
   type StorySummary,
   type StoryTimeline,
+  type TrendingReason,
+  type TrendingStory,
   type SourceCoverage,
   type TimelineEvent,
   type TimelineSource,
@@ -283,6 +285,32 @@ export function parseStorySummary(value: unknown): StorySummary {
     sourceCount: requireNumber(value.sourceCount, "source count"),
     ...(localizedContent ? { localizedContent } : {}),
   };
+}
+
+function parseTrendingReason(value: unknown): TrendingReason {
+  if (
+    value === "RECENTLY_UPDATED" ||
+    value === "MULTIPLE_SOURCES" ||
+    value === "MULTIPLE_REPORTS"
+  ) {
+    return value;
+  }
+  throw new ApiResponseError("Invalid Trending reason in API response.");
+}
+
+export function parseTrendingStories(value: unknown): TrendingStory[] {
+  if (!Array.isArray(value)) {
+    throw new ApiResponseError("Invalid Trending Stories response.");
+  }
+  return value.map((item) => {
+    if (!isRecord(item) || !Array.isArray(item.reasons)) {
+      throw new ApiResponseError("Invalid Trending Story response.");
+    }
+    return {
+      ...parseStorySummary(item),
+      reasons: item.reasons.map(parseTrendingReason),
+    };
+  });
 }
 
 export function parseStoryDetail(value: unknown): StoryDetail {

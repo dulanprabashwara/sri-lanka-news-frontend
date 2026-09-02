@@ -68,6 +68,15 @@ export interface StorySummary {
   localizedContent?: LocalizedStoryContent;
 }
 
+export type TrendingReason =
+  | "RECENTLY_UPDATED"
+  | "MULTIPLE_SOURCES"
+  | "MULTIPLE_REPORTS";
+
+export interface TrendingStory extends StorySummary {
+  reasons: TrendingReason[];
+}
+
 export interface StoryDetail extends StorySummary {
   articles: Article[];
 }

@@ -68,6 +68,12 @@ export function SiteHeader({ authenticated = false }: { authenticated?: boolean 
             Stories
           </Link>
           <Link
+            href={withDisplayLanguage("/trending", displayLanguage)}
+            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          >
+            Trending
+          </Link>
+          <Link
             href={withDisplayLanguage("/search", displayLanguage)}
             className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
           >

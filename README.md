@@ -113,6 +113,19 @@ clears both question and answer because there is no conversation, browser storag
 tracking, or Redis answer cache. Normal requests use one temporary embedding call and one grounded
 generation call; provider quota and production rate limiting remain later hardening work.
 
+## Trending Stories
+
+`/trending` is a guest-accessible Server Component experience for Stories receiving recent and
+broad publisher coverage. Trending is not a popularity claim: the platform collects no clicks,
+views, social signals, searches, or other behavior for this ranking. The backend deterministically
+combines report recency, report count, and distinct publisher count inside a configured recent
+window, then returns understandable reason labels without raw scores.
+
+Category filters and `?lang=en|si|ta` are shareable and preserved in Story links. Display language
+changes only localized presentation, never ranking. The page uses no client state, AI request,
+Redis dependency, personalization, or authentication and includes independent loading, empty, and
+safe failure states.
+
 ## Scripts
 
 - `npm run dev` starts the development server.

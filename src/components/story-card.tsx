@@ -1,9 +1,19 @@
 import Link from "next/link";
 import { formatCategory, formatPublishedAt } from "@/lib/format";
 import { storyTitle, withDisplayLanguage } from "@/lib/language";
-import type { DisplayLanguage, StorySummary } from "@/types/api";
+import type { DisplayLanguage, StorySummary, TrendingReason } from "@/types/api";
 
-export function StoryCard({ story, displayLanguage }: { story: StorySummary; displayLanguage?: DisplayLanguage }) {
+const reasonLabels: Record<TrendingReason, string> = {
+  RECENTLY_UPDATED: "Recently updated",
+  MULTIPLE_SOURCES: "Multiple publishers",
+  MULTIPLE_REPORTS: "Multiple reports",
+};
+
+export function StoryCard({ story, displayLanguage, reasons }: {
+  story: StorySummary;
+  displayLanguage?: DisplayLanguage;
+  reasons?: TrendingReason[];
+}) {
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md sm:p-6">
       <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -29,6 +39,15 @@ export function StoryCard({ story, displayLanguage }: { story: StorySummary; dis
         <span aria-hidden="true"> · </span>
         {story.sourceCount} {story.sourceCount === 1 ? "source" : "sources"}
       </p>
+      {reasons && reasons.length > 0 ? (
+        <ul aria-label="Why this Story is trending" className="mt-4 flex flex-wrap gap-2">
+          {reasons.map((reason) => (
+            <li key={reason} className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-800">
+              {reasonLabels[reason]}
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </article>
   );
 }

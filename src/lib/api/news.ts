@@ -9,6 +9,7 @@ import {
   parseStorySummary,
   parseStoryTimeline,
   parseAskStoryResponse,
+  parseTrendingStories,
 } from "@/lib/api/parsers";
 import type {
   Article,
@@ -21,6 +22,7 @@ import type {
   StorySummary,
   StoryTimeline,
   AskStoryResponse,
+  TrendingStory,
 } from "@/types/api";
 
 export interface ArticleQuery {
@@ -81,6 +83,26 @@ export function getStories(
   return requestJson(
     `/api/v1/stories${queryString ? `?${queryString}` : ""}`,
     parsePagedStories,
+  );
+}
+
+export interface TrendingQuery {
+  limit?: number;
+  category?: ArticleCategory;
+  displayLanguage?: Language;
+}
+
+export function getTrendingStories(
+  query: TrendingQuery = {},
+): Promise<TrendingStory[]> {
+  const parameters = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined) parameters.set(key, String(value));
+  });
+  const queryString = parameters.toString();
+  return requestJson(
+    `/api/v1/stories/trending${queryString ? `?${queryString}` : ""}`,
+    parseTrendingStories,
   );
 }
 

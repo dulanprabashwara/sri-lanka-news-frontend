@@ -22,6 +22,33 @@ test("renders a Story card with public counts and detail link", () => {
   assert.match(html, /2 sources/);
 });
 
+test("renders only backend-provided Trending reason labels and preserves language", () => {
+  const html = renderToStaticMarkup(createElement(StoryCard, {
+    story: {
+      id: "64f0c2f1289c0f0a87654321",
+      canonicalTitle: "A developing Sri Lankan story",
+      category: "LOCAL",
+      firstPublishedAt: "2026-08-30T05:00:00Z",
+      lastPublishedAt: "2026-08-30T06:00:00Z",
+      articleCount: 3,
+      sourceCount: 2,
+      localizedContent: {
+        requestedLanguage: "si", resolvedLanguage: "si", translated: true,
+        fallback: false, title: "සිංහල කතාව",
+      },
+    },
+    displayLanguage: "si",
+    reasons: ["RECENTLY_UPDATED", "MULTIPLE_SOURCES"],
+  }));
+
+  assert.match(html, /සිංහල කතාව/);
+  assert.match(html, /Recently updated/);
+  assert.match(html, /Multiple publishers/);
+  assert.doesNotMatch(html, /Multiple reports/);
+  assert.match(html, /href="\/story\/64f0c2f1289c0f0a87654321\?lang=si"/);
+  assert.doesNotMatch(html, /score|sourceIds|articleIds/);
+});
+
 test("renders Unicode member report, summary, internal link, and publisher link", () => {
   const html = renderToStaticMarkup(createElement(StoryArticleReport, { article: {
     id: "64f0c2f1289c0f0a12345678",

@@ -9,6 +9,7 @@ import {
   getStoryCoverage,
   getStoryTimeline,
   askStory,
+  getTrendingStories,
 } from "./news";
 
 const story = {
@@ -130,4 +131,31 @@ test("uses dedicated Story list, detail, and Article lookup endpoints", async ()
     `/api/v1/stories/${story.id}/timeline`,
     "/api/v1/articles/64f0c2f1289c0f0a12345678/story",
   ]);
+});
+
+test("uses the guest Trending endpoint with category and presentation language", async () => {
+  let path = "";
+  let authorization: string | null = "unexpected";
+  globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+    const url = new URL(String(input));
+    path = url.pathname + url.search;
+    authorization = new Headers(init?.headers).get("Authorization");
+    return Response.json([{ ...story, reasons: [
+      "RECENTLY_UPDATED", "MULTIPLE_SOURCES", "MULTIPLE_REPORTS",
+    ] }]);
+  }) as typeof fetch;
+
+  const result = await getTrendingStories({
+    limit: 5,
+    category: "LOCAL",
+    displayLanguage: "si",
+  });
+
+  assert.equal(path,
+    "/api/v1/stories/trending?limit=5&category=LOCAL&displayLanguage=si");
+  assert.equal(authorization, null);
+  assert.deepEqual(result[0].reasons, [
+    "RECENTLY_UPDATED", "MULTIPLE_SOURCES", "MULTIPLE_REPORTS",
+  ]);
+  assert.equal("score" in result[0], false);
 });

@@ -14,7 +14,7 @@ const featuredCategories: ArticleCategory[] = [
 
 interface CategoryNavigationProps {
   activeCategory?: ArticleCategory;
-  basePath?: "/" | "/stories";
+  basePath?: "/" | "/stories" | "/trending";
   label?: string;
   displayLanguage?: DisplayLanguage;
 }
