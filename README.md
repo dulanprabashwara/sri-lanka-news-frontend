@@ -84,15 +84,18 @@ News experience.
 
 ## Search
 
-`/search` is a public Server Component page backed by `GET /api/v1/search/articles`. It searches
-stored public headlines, AI summaries, topics, and available English, Sinhala, and Tamil title and
-summary translations. The form supports category and original-language filters, preserves the
-current `?lang=en|si|ta` display choice, and provides paginated results plus clear initial, empty,
-loading, and error states. Search uses the existing public-safe Article cards and never requests or
-displays extracted publisher content.
+`/search` is a public Server Component page with independent Keyword and Semantic modes. Keyword
+mode remains the default and continues to use `GET /api/v1/search/articles`; Semantic mode uses
+`GET /api/v1/search/semantic` to find conceptually similar reports. Mode switches preserve the
+query, Source state, category, original-language filter, and current `?lang=en|si|ta` display
+choice. Both modes reuse public-safe localized Article cards and provide initial, empty, loading,
+pagination, and error states without displaying raw similarity scores.
 
-Search is lexical MongoDB text search only. It requires no login, sends no access token, stores no
-query or behavioral history, and does not invoke Gemini, embeddings, personalization, or Redis.
+Search requires no login and sends no access token. Semantic mode creates one temporary query
+embedding but stores neither the query nor vector and never re-embeds Articles, translates queries,
+invokes generative AI, personalizes ranking, or uses Redis. If semantic search is unavailable, the
+page retains the user's state and offers Keyword search. Semantic quality across English, Sinhala,
+and Tamil depends on the configured embedding model.
 
 ## Scripts
 

@@ -226,3 +226,12 @@ export interface ForYouFeed extends PagedResponse<ForYouItem> {
 export interface TextSearchResponse extends PagedResponse<Article> {
   query: string;
 }
+
+export interface SemanticSearchResponse {
+  query: string;
+  content: Article[];
+  page: number;
+  size: number;
+  hasMore: boolean;
+  first: boolean;
+}

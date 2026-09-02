@@ -29,3 +29,23 @@ test("renders useful Unicode empty-search guidance", () => {
   assert.match(html, /ක්‍රිකට්/);
   assert.match(html, /\/\?lang=si/);
 });
+
+test("renders semantic empty guidance and keyword fallback without a score", () => {
+  const html = renderToStaticMarkup(createElement(SearchResults, {
+    query: "road accident", articles: [], displayLanguage: "en", mode: "semantic",
+    keywordHref: "/search?q=road+accident&mode=text&category=LOCAL&language=si&lang=en",
+  }));
+  assert.match(html, /No semantically related reports found/);
+  assert.match(html, /Try Keyword search/);
+  assert.match(html, /mode=text/);
+  assert.doesNotMatch(html, /similarity|confidence|0\.\d+/i);
+});
+
+test("semantic results reuse localized Article cards without exposing similarity", () => {
+  const html = renderToStaticMarkup(createElement(SearchResults, {
+    query: "election", articles: [article], displayLanguage: "ta", mode: "semantic",
+  }));
+  assert.match(html, /தேர்தல் செய்திகள்/);
+  assert.match(html, /\/article\/article-si\?lang=ta/);
+  assert.doesNotMatch(html, /similarity|confidence|semanticEmbedding|vectorSearchScore/i);
+});
