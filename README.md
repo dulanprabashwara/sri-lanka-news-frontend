@@ -97,6 +97,22 @@ invokes generative AI, personalizes ranking, or uses Redis. If semantic search i
 page retains the user's state and offers Keyword search. Semantic quality across English, Sinhala,
 and Tamil depends on the configured embedding model.
 
+## Ask This Story
+
+Story detail pages include a guest-accessible, one-question/one-answer Ask This Story panel. It
+submits through a Server Action so `API_BASE_URL` remains server-only and passes the current
+`?lang=en|si|ta` selection for an English, Sinhala, or Tamil answer. The backend grounds every
+answer only in reports assigned to that Story, reuses existing Article embeddings, and returns
+backend-validated citations linking to original publishers. Inline citation markers connect to an
+accessible Sources used list; similarity, model, token, prompt, vector, and extracted-content data
+are not displayed.
+
+The panel has idle, submitting, answered, insufficient-evidence, and unavailable states. A failed
+request retains the question. Changing language does not regenerate an old answer, and reloading
+clears both question and answer because there is no conversation, browser storage, account history,
+tracking, or Redis answer cache. Normal requests use one temporary embedding call and one grounded
+generation call; provider quota and production rate limiting remain later hardening work.
+
 ## Scripts
 
 - `npm run dev` starts the development server.

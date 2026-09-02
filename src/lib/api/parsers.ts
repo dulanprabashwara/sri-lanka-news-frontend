@@ -18,6 +18,8 @@ import {
   type SourceCoverage,
   type TimelineEvent,
   type TimelineSource,
+  type AskStoryResponse,
+  type AskStoryCitation,
 } from "@/types/api";
 
 export class ApiResponseError extends Error {
@@ -356,5 +358,34 @@ export function parsePagedStories(value: unknown): PagedResponse<StorySummary> {
     totalPages: requireNumber(value.totalPages, "total pages"),
     first: requireBoolean(value.first, "first page indicator"),
     last: requireBoolean(value.last, "last page indicator"),
+  };
+}
+
+function parseAskStoryCitation(value: unknown): AskStoryCitation {
+  if (!isRecord(value) || !isRecord(value.source)) {
+    throw new ApiResponseError("Invalid Ask This Story citation response.");
+  }
+  return {
+    number: requireNumber(value.number, "citation number"),
+    articleId: requireString(value.articleId, "citation article ID"),
+    title: requireString(value.title, "citation title"),
+    source: {
+      name: requireString(value.source.name, "citation source name"),
+      slug: requireString(value.source.slug, "citation source slug"),
+    },
+    publishedAt: requireDate(value.publishedAt, "citation publication date"),
+    originalUrl: requireHttpUrl(value.originalUrl, "citation original URL"),
+  };
+}
+
+export function parseAskStoryResponse(value: unknown): AskStoryResponse {
+  if (!isRecord(value) || !Array.isArray(value.citations)) {
+    throw new ApiResponseError("Invalid Ask This Story response.");
+  }
+  return {
+    storyId: requireString(value.storyId, "Ask This Story ID"),
+    answerable: requireBoolean(value.answerable, "answerable indicator"),
+    answer: requireString(value.answer, "grounded answer"),
+    citations: value.citations.map(parseAskStoryCitation),
   };
 }

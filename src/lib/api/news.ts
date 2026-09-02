@@ -8,6 +8,7 @@ import {
   parseStoryDetail,
   parseStorySummary,
   parseStoryTimeline,
+  parseAskStoryResponse,
 } from "@/lib/api/parsers";
 import type {
   Article,
@@ -19,6 +20,7 @@ import type {
   StoryDetail,
   StorySummary,
   StoryTimeline,
+  AskStoryResponse,
 } from "@/types/api";
 
 export interface ArticleQuery {
@@ -108,5 +110,23 @@ export function getArticleStory(articleId: string, displayLanguage?: Language): 
   return requestJson(
     `/api/v1/articles/${encodeURIComponent(articleId)}/story${query}`,
     parseStorySummary,
+  );
+}
+
+export function askStory(
+  storyId: string,
+  question: string,
+  displayLanguage?: Language,
+): Promise<AskStoryResponse> {
+  return requestJson(
+    `/api/v1/stories/${encodeURIComponent(storyId)}/ask`,
+    parseAskStoryResponse,
+    {
+      method: "POST",
+      body: {
+        question,
+        ...(displayLanguage ? { displayLanguage } : {}),
+      },
+    },
   );
 }

@@ -235,3 +235,22 @@ export interface SemanticSearchResponse {
   hasMore: boolean;
   first: boolean;
 }
+
+export interface AskStoryCitation {
+  number: number;
+  articleId: string;
+  title: string;
+  source: {
+    name: string;
+    slug: string;
+  };
+  publishedAt: string;
+  originalUrl: string;
+}
+
+export interface AskStoryResponse {
+  storyId: string;
+  answerable: boolean;
+  answer: string;
+  citations: AskStoryCitation[];
+}

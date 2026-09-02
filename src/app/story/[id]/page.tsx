@@ -5,6 +5,7 @@ import { StoryArticleReport } from "@/components/story-article-report";
 import { CoverageComparison } from "@/components/coverage-comparison";
 import { StoryTimeline } from "@/components/story-timeline";
 import { BookmarkButton } from "@/components/bookmark-button";
+import { AskThisStory } from "@/components/ask-this-story";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getStory } from "@/lib/api/news";
@@ -57,6 +58,7 @@ export default async function StoryPage({ params, searchParams }: { params: Prom
           <span>Latest report {formatPublishedAt(story.lastPublishedAt)}</span>
         </div>
       </header>
+      <AskThisStory storyId={id} displayLanguage={displayLanguage} />
       <section aria-labelledby="story-reports-title">
         <h2 id="story-reports-title" className="mb-5 text-2xl font-extrabold tracking-tight text-slate-950">
           Publisher reports

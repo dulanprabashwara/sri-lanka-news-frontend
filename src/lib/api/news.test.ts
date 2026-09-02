@@ -8,6 +8,7 @@ import {
   getStory,
   getStoryCoverage,
   getStoryTimeline,
+  askStory,
 } from "./news";
 
 const story = {
@@ -25,6 +26,33 @@ const originalFetch = globalThis.fetch;
 
 test.beforeEach(() => {
   process.env.API_BASE_URL = "http://localhost:8080";
+});
+
+test("submits a guest Story question with the selected display language", async () => {
+  let requestPath = "";
+  let requestBody = "";
+  let authorization: string | null = "unexpected";
+  globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+    requestPath = new URL(String(input)).pathname;
+    requestBody = String(init?.body);
+    authorization = new Headers(init?.headers).get("Authorization");
+    return Response.json({
+      storyId: story.id,
+      answerable: false,
+      answer: "ප්‍රමාණවත් තොරතුරු නොමැත.",
+      citations: [],
+    });
+  }) as typeof fetch;
+
+  const result = await askStory(story.id, "මොකක්ද සිදු වුණේ?", "si");
+
+  assert.equal(requestPath, `/api/v1/stories/${story.id}/ask`);
+  assert.equal(authorization, null);
+  assert.deepEqual(JSON.parse(requestBody), {
+    question: "මොකක්ද සිදු වුණේ?",
+    displayLanguage: "si",
+  });
+  assert.equal(result.answerable, false);
 });
 
 test("sends displayLanguage independently from the original language filter", async () => {
