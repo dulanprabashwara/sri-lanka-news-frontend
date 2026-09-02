@@ -67,6 +67,12 @@ export function SiteHeader({ authenticated = false }: { authenticated?: boolean 
           >
             Stories
           </Link>
+          <Link
+            href={withDisplayLanguage("/search", displayLanguage)}
+            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          >
+            Search
+          </Link>
           {authenticated ? <Link href={withDisplayLanguage("/for-you", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">For You</Link> : null}
           {authenticated ? <Link href={withDisplayLanguage("/bookmarks", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Bookmarks</Link> : null}
           {authenticated ? <Link href={withDisplayLanguage("/following", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Following</Link> : null}

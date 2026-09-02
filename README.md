@@ -82,6 +82,18 @@ server-side, and no click history, impressions, reading time, behavioral profili
 embeddings, or shared Redis personalization cache is used. `/` remains the unchanged public Latest
 News experience.
 
+## Search
+
+`/search` is a public Server Component page backed by `GET /api/v1/search/articles`. It searches
+stored public headlines, AI summaries, topics, and available English, Sinhala, and Tamil title and
+summary translations. The form supports category and original-language filters, preserves the
+current `?lang=en|si|ta` display choice, and provides paginated results plus clear initial, empty,
+loading, and error states. Search uses the existing public-safe Article cards and never requests or
+displays extracted publisher content.
+
+Search is lexical MongoDB text search only. It requires no login, sends no access token, stores no
+query or behavioral history, and does not invoke Gemini, embeddings, personalization, or Redis.
+
 ## Scripts
 
 - `npm run dev` starts the development server.

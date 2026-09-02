@@ -222,3 +222,7 @@ export interface ForYouFeed extends PagedResponse<ForYouItem> {
     signalCount: number;
   };
 }
+
+export interface TextSearchResponse extends PagedResponse<Article> {
+  query: string;
+}
