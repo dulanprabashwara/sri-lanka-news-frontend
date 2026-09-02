@@ -263,3 +263,39 @@ export interface AskStoryResponse {
   answer: string;
   citations: AskStoryCitation[];
 }
+
+export type ProcessingStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED"
+  | "RETRYING";
+
+export interface AdminArticle {
+  articleId: string;
+  title: string;
+  source: { name: string; slug: string };
+  processingStatus: ProcessingStatus;
+  discoveredAt: string;
+  publishedAt: string;
+}
+
+export interface AdminSource {
+  id: string;
+  name: string;
+  slug: string;
+  baseUrl: string;
+  defaultLanguage: Language;
+  ingestionType: "RSS" | "HTML";
+  enabled: boolean;
+  articleCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminOverview {
+  sources: { total: number };
+  articles: Record<"total" | "pending" | "processing" | "completed" | "retrying" | "failed", number>;
+  stories: { total: number };
+  recentFailures: AdminArticle[];
+}

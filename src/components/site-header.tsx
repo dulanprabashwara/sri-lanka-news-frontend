@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 
-export function SiteHeader({ authenticated = false }: { authenticated?: boolean }) {
+export function SiteHeader({ authenticated = false, admin = false }: { authenticated?: boolean; admin?: boolean }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -82,6 +82,7 @@ export function SiteHeader({ authenticated = false }: { authenticated?: boolean 
           {authenticated ? <Link href={withDisplayLanguage("/for-you", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">For You</Link> : null}
           {authenticated ? <Link href={withDisplayLanguage("/bookmarks", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Bookmarks</Link> : null}
           {authenticated ? <Link href={withDisplayLanguage("/following", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Following</Link> : null}
+          {admin ? <Link href={withDisplayLanguage("/admin", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800">Admin</Link> : null}
           <Link
             href={withDisplayLanguage(authenticated ? "/account" : `/auth/login?next=${encodeURIComponent(withDisplayLanguage("/account", displayLanguage))}`, displayLanguage)}
             className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800"

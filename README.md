@@ -126,6 +126,20 @@ changes only localized presentation, never ranking. The page uses no client stat
 Redis dependency, personalization, or authentication and includes independent loading, empty, and
 safe failure states.
 
+## Admin
+
+`/admin` is a protected, server-rendered operational dashboard. The backend authorizes access from
+the verified Supabase JWT `sub`; email does not grant access. Guests are redirected through the
+existing sign-in flow, authenticated non-admins receive an “Admin access required” state, and the
+header shows Admin only after the backend confirms authorization.
+
+The dashboard shows bounded processing metadata, status totals, Story and Source counts, and a
+read-only Source table. A Retry action appears only for failed Articles and reuses the backend's
+existing asynchronous processing event. Access tokens remain server-side, and the UI never expects
+or renders extracted content, hashes, embeddings, prompts, raw provider errors, Redis payloads, or
+configured admin IDs. There is no CMS, content mutation, Source toggle, user management, analytics,
+Gemini call, or Redis read in the Admin view.
+
 ## Scripts
 
 - `npm run dev` starts the development server.

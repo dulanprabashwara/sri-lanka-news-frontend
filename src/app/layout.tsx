@@ -3,6 +3,7 @@ import { Suspense, type ReactNode } from "react";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getValidatedAuth } from "@/lib/auth";
+import { getAdminMe } from "@/lib/api/admin";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,11 +15,20 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const authenticated = Boolean(await getValidatedAuth());
+  const auth = await getValidatedAuth();
+  const authenticated = Boolean(auth);
+  let admin = false;
+  if (auth) {
+    const { data } = await auth.supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (token) {
+      try { admin = (await getAdminMe(token)).admin; } catch { admin = false; }
+    }
+  }
   return (
     <html lang="en" className="h-full">
       <body className="flex min-h-full flex-col">
-        <Suspense><SiteHeader authenticated={authenticated} /></Suspense>
+        <Suspense><SiteHeader authenticated={authenticated} admin={admin} /></Suspense>
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
           {children}
         </main>
