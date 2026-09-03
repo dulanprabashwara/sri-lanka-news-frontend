@@ -299,3 +299,42 @@ export interface AdminOverview {
   stories: { total: number };
   recentFailures: AdminArticle[];
 }
+
+export type IngestionHealthStatus = "HEALTHY" | "WARNING" | "STALE" | "FAILING" | "PAUSED" | "NEVER_RUN";
+
+export interface AdminIngestionSource {
+  sourceId: string;
+  sourceSlug: string;
+  displayName: string;
+  language: Language;
+  enabled: boolean;
+  intervalMinutes: number;
+  jitterSeconds: number;
+  health: IngestionHealthStatus;
+  lastAttemptAt: string | null;
+  lastSuccessAt: string | null;
+  lastFailureAt: string | null;
+  lastRunStatus: string | null;
+  lastRunId: string | null;
+  lastDiscovered: number | null;
+  lastSubmitted: number | null;
+  lastSucceeded: number | null;
+  lastFailed: number | null;
+  consecutiveFailures: number;
+}
+
+export interface AdminRunHistoryResponse {
+  runId: string;
+  sourceSlug: string;
+  triggerType: string;
+  status: string;
+  scheduledFor: string | null;
+  startedAt: string | null;
+  finishedAt: string | null;
+  articlesDiscovered: number | null;
+  articlesSubmitted: number | null;
+  articlesSucceeded: number | null;
+  articlesFailed: number | null;
+  safeErrorCode: string | null;
+  safeErrorMessage: string | null;
+}

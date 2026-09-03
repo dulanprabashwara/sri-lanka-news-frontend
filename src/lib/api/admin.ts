@@ -1,4 +1,4 @@
-import { requestJson } from "@/lib/api/client";
+import { requestJson, requestNoContent } from "@/lib/api/client";
 import type {
   AdminArticle, AdminOverview, AdminSource, ProcessingStatus,
 } from "@/types/api";
@@ -109,4 +109,35 @@ export function getAdminArticles(accessToken: string, limit = 25) {
 export function retryAdminArticle(articleId: string, accessToken: string) {
   return requestJson(`/api/v1/admin/articles/${encodeURIComponent(articleId)}/retry`,
     parseAdminArticle, { accessToken, method: "POST" });
+}
+
+export function getAdminIngestionSources(accessToken: string) {
+  return requestJson("/api/v1/admin/ingestion/sources", (value) => {
+    if (!Array.isArray(value)) throw new Error("Invalid response");
+    return value;
+  }, { accessToken });
+}
+
+export function updateAdminIngestionSettings(
+  sourceSlug: string,
+  settings: { enabled: boolean; intervalMinutes: number; jitterSeconds: number },
+  accessToken: string
+) {
+  return requestNoContent(
+    `/api/v1/admin/ingestion/sources/${encodeURIComponent(sourceSlug)}/settings`,
+    { accessToken, method: "PUT", body: settings }
+  );
+}
+
+export function triggerManualIngestionRun(sourceSlug: string, accessToken: string) {
+  return requestNoContent(
+    `/api/v1/admin/ingestion/sources/${encodeURIComponent(sourceSlug)}/trigger`,
+    { accessToken, method: "POST" }
+  );
+}
+
+export function getAdminIngestionRuns(accessToken: string, page = 0, size = 50) {
+  return requestJson(`/api/v1/admin/ingestion/runs?page=${page}&size=${size}`, (value) => {
+    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminRunHistoryResponse>;
+  }, { accessToken });
 }

@@ -97,8 +97,10 @@ export async function requestNoContent(
       method: options.method ?? "DELETE",
       headers: {
         Accept: "application/json",
+        ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
         ...(options.accessToken ? { Authorization: `Bearer ${options.accessToken}` } : {}),
       },
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
     });
   } catch {
     throw new ApiUnavailableError();

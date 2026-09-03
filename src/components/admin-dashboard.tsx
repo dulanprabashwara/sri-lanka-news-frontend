@@ -15,8 +15,15 @@ export function AdminDashboard({ overview, articles, sources, retryAction }: {
   ] as const;
   return (
     <div className="space-y-10">
-      <header><p className="eyebrow">Operations</p><h1 className="page-title">Admin</h1>
-        <p className="page-intro">Monitor publisher ingestion and processing health.</p></header>
+      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow">Operations</p><h1 className="page-title">Admin</h1>
+          <p className="page-intro">Monitor publisher ingestion and processing health.</p>
+        </div>
+        <a href="/admin/ingestion" className="inline-flex rounded-lg bg-teal-600 px-4 py-2 font-semibold text-white hover:bg-teal-700">
+          Ingestion Controls
+        </a>
+      </header>
       <section aria-labelledby="overview-heading">
         <h2 id="overview-heading" className="text-xl font-bold text-slate-950">Overview</h2>
         <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
