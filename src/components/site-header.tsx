@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
+import NotificationBadge from "./notifications/NotificationBadge";
 
 export function SiteHeader({ authenticated = false, admin = false }: { authenticated?: boolean; admin?: boolean }) {
   const pathname = usePathname();
@@ -82,6 +83,7 @@ export function SiteHeader({ authenticated = false, admin = false }: { authentic
           {authenticated ? <Link href={withDisplayLanguage("/for-you", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">For You</Link> : null}
           {authenticated ? <Link href={withDisplayLanguage("/bookmarks", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">Bookmarks</Link> : null}
           {authenticated ? <Link href={withDisplayLanguage("/following", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">Following</Link> : null}
+          {authenticated && <NotificationBadge />}
           {admin ? <Link href={withDisplayLanguage("/admin", displayLanguage)} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">Admin</Link> : null}
           <Link
             href={withDisplayLanguage(authenticated ? "/account" : `/auth/login?next=${encodeURIComponent(withDisplayLanguage("/account", displayLanguage))}`, displayLanguage)}
