@@ -42,6 +42,16 @@ export interface Source extends SourceSummary {
   defaultLanguage: Language;
 }
 
+export interface ArticleLeadMedia {
+  url: string;
+  type: "IMAGE" | "VIDEO" | "AUDIO" | "UNKNOWN";
+  altText: string | null;
+  caption: string | null;
+  credit: string | null;
+  width: number | null;
+  height: number | null;
+}
+
 export interface Article {
   id: string;
   title: string;
@@ -54,7 +64,20 @@ export interface Article {
   summary: string | null;
   topics: string[];
   source: SourceSummary;
+  leadMedia?: ArticleLeadMedia;
   localizedContent?: LocalizedContent;
+}
+
+export interface StoryRepresentativeMedia {
+  url: string;
+  type: "IMAGE" | "VIDEO" | "AUDIO" | "UNKNOWN";
+  altText: string | null;
+  caption: string | null;
+  credit: string | null;
+  width: number | null;
+  height: number | null;
+  articleId: string;
+  source: string;
 }
 
 export interface StorySummary {
@@ -65,6 +88,7 @@ export interface StorySummary {
   lastPublishedAt: string;
   articleCount: number;
   sourceCount: number;
+  representativeMedia?: StoryRepresentativeMedia;
   localizedContent?: LocalizedStoryContent;
 }
 

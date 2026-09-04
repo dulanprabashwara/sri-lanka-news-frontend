@@ -9,6 +9,8 @@ import {
   type Language,
   type LocalizedContent,
   type LocalizedStoryContent,
+  type ArticleLeadMedia,
+  type StoryRepresentativeMedia,
   type PagedResponse,
   type Source,
   type SourceSummary,
@@ -61,6 +63,13 @@ function optionalString(value: unknown, field: string): string | null {
     return null;
   }
   return requireString(value, field);
+}
+
+function optionalNumber(value: unknown, field: string): number | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  return requireNumber(value, field);
 }
 
 function parseStrings(value: unknown, field: string): string[] {
@@ -125,6 +134,36 @@ function parseLocalizedStoryContent(
     translated: requireBoolean(value.translated, "localized Story translated indicator"),
     fallback: requireBoolean(value.fallback, "localized Story fallback indicator"),
     title: requireString(value.title, "localized Story title"),
+  };
+}
+
+function parseArticleLeadMedia(value: unknown): ArticleLeadMedia | undefined {
+  if (value === null || value === undefined) return undefined;
+  if (!isRecord(value)) throw new ApiResponseError("Invalid lead media.");
+  return {
+    url: requireHttpUrl(value.url, "lead media URL"),
+    type: requireString(value.type, "lead media type") as any,
+    altText: optionalString(value.altText, "lead media alt text"),
+    caption: optionalString(value.caption, "lead media caption"),
+    credit: optionalString(value.credit, "lead media credit"),
+    width: optionalNumber(value.width, "lead media width"),
+    height: optionalNumber(value.height, "lead media height"),
+  };
+}
+
+function parseStoryRepresentativeMedia(value: unknown): StoryRepresentativeMedia | undefined {
+  if (value === null || value === undefined) return undefined;
+  if (!isRecord(value)) throw new ApiResponseError("Invalid representative media.");
+  return {
+    url: requireHttpUrl(value.url, "representative media URL"),
+    type: requireString(value.type, "representative media type") as any,
+    altText: optionalString(value.altText, "representative media alt text"),
+    caption: optionalString(value.caption, "representative media caption"),
+    credit: optionalString(value.credit, "representative media credit"),
+    width: optionalNumber(value.width, "representative media width"),
+    height: optionalNumber(value.height, "representative media height"),
+    articleId: requireString(value.articleId, "representative media article ID"),
+    source: requireString(value.source, "representative media source"),
   };
 }
 
@@ -266,6 +305,7 @@ export function parseArticle(value: unknown): Article {
     summary: optionalString(value.summary, "article summary"),
     topics: parseStrings(value.topics, "article topic"),
     source: parseSourceSummary(value.source),
+    ...(value.leadMedia ? { leadMedia: parseArticleLeadMedia(value.leadMedia) } : {}),
     ...(localizedContent ? { localizedContent } : {}),
   };
 }
@@ -283,6 +323,7 @@ export function parseStorySummary(value: unknown): StorySummary {
     lastPublishedAt: requireDate(value.lastPublishedAt, "latest publication date"),
     articleCount: requireNumber(value.articleCount, "article count"),
     sourceCount: requireNumber(value.sourceCount, "source count"),
+    ...(value.representativeMedia ? { representativeMedia: parseStoryRepresentativeMedia(value.representativeMedia) } : {}),
     ...(localizedContent ? { localizedContent } : {}),
   };
 }

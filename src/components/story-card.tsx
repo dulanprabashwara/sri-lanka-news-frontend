@@ -15,9 +15,21 @@ export function StoryCard({ story, displayLanguage, reasons }: {
   reasons?: TrendingReason[];
 }) {
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md sm:p-6">
-      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {story.category ? (
+    <article className="rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md overflow-hidden flex flex-col sm:flex-row">
+      {story.representativeMedia?.type === "IMAGE" ? (
+        <div className="sm:w-1/3 shrink-0 relative bg-slate-100 aspect-video sm:aspect-auto">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={story.representativeMedia.url}
+            alt={story.representativeMedia.altText || storyTitle(story)}
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      ) : null}
+      <div className="p-5 sm:p-6 flex flex-col grow">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {story.category ? (
           <span className="rounded-full bg-amber-50 px-3 py-1 text-amber-900">
             {formatCategory(story.category)}
           </span>
@@ -47,7 +59,8 @@ export function StoryCard({ story, displayLanguage, reasons }: {
             </li>
           ))}
         </ul>
-      ) : null}
+        ) : null}
+      </div>
     </article>
   );
 }
