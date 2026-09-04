@@ -21,8 +21,11 @@ test("uses bearer authentication for bounded admin endpoints and parses safe DTO
     authorizations.push(new Headers(init?.headers).get("Authorization"));
     if (url.pathname.endsWith("/me")) return Response.json({ admin: true });
     if (url.pathname.endsWith("/overview")) return Response.json({
-      sources: { total: 3 }, articles: { total: 10, pending: 1, processing: 1,
-        completed: 6, retrying: 1, failed: 1 }, stories: { total: 4 }, recentFailures: [],
+      sources: { total: 3, enabled: 3, paused: 0, failing: 0 }, articles: { total: 10, pending: 1, processing: 1,
+        completed: 6, retrying: 1, failed: 1 }, stories: { total: 4, createdRecently: 1, recentActive: 2 },
+        ingestion: { totalRuns: 10, completedRuns: 10, failedRuns: 0, currentlyRunning: 1, failingSources: 0 },
+        users: { totalProfiles: 100, totalBookmarks: 50, totalFollows: 20 },
+        recentFailures: [],
     });
     if (url.pathname.endsWith("/sources")) return Response.json([{
       id: "source-1", name: "NewsFirst", slug: "newsfirst", baseUrl: "https://example.com",

@@ -11,21 +11,19 @@ test("renders operational counts, processing, sources, and retry only for failur
   const completed = { ...failed, articleId: "article-2", title: "Completed report",
     processingStatus: "COMPLETED" as const };
   const html = renderToStaticMarkup(createElement(AdminDashboard, {
-    overview: { sources: { total: 3 }, articles: { total: 20, pending: 1,
-      processing: 1, completed: 16, retrying: 0, failed: 2 }, stories: { total: 8 },
-      recentFailures: [failed] },
-    articles: [failed, completed],
-    sources: [{ id: "source-1", name: "NewsFirst", slug: "newsfirst",
-      baseUrl: "https://example.com", defaultLanguage: "en", ingestionType: "HTML",
-      enabled: true, articleCount: 12, createdAt: "2026-09-01T00:00:00Z",
-      updatedAt: "2026-09-01T00:00:00Z" }],
+    overview: { 
+      sources: { total: 3, enabled: 3, paused: 0, failing: 0 }, 
+      articles: { total: 20, pending: 1, processing: 1, completed: 16, retrying: 0, failed: 2 }, 
+      stories: { total: 8, createdRecently: 2, recentActive: 3 },
+      ingestion: { totalRuns: 10, completedRuns: 9, failedRuns: 1, currentlyRunning: 0, failingSources: 0 },
+      users: { totalProfiles: 100, totalBookmarks: 50, totalFollows: 20 },
+      recentFailures: [failed] 
+    },
     retryAction: async () => {},
   }));
 
-  assert.match(html, /Failed processing/);
+  assert.match(html, /Processing Failed/);
   assert.match(html, /Failed report/);
-  assert.match(html, /Completed report/);
-  assert.match(html, /NewsFirst/);
   assert.equal((html.match(/>Retry</g) ?? []).length, 1);
   assert.doesNotMatch(html, /extractedContent|contentHash|embedding|API_KEY|token/);
 });

@@ -19,10 +19,8 @@ export default async function AdminPage() {
   let denied = false;
   try {
     await getAdminMe(token);
-    const [overview, articles, sources] = await Promise.all([
-      getAdminOverview(token), getAdminArticles(token), getAdminSources(token),
-    ]);
-    dashboard = { overview, articles, sources };
+    const overview = await getAdminOverview(token);
+    dashboard = { overview };
   } catch (error) {
     if (error instanceof ApiError && error.status === 401) redirect("/auth/login?next=/admin");
     if (error instanceof ApiError && error.status === 403) {
@@ -32,6 +30,5 @@ export default async function AdminPage() {
     }
   }
   if (denied) return <div className="state-panel" role="alert"><h1 className="text-2xl font-bold text-slate-950">Admin access required.</h1><p className="mt-2 text-slate-600">Your authenticated account is not configured as an administrator.</p></div>;
-  return <AdminDashboard overview={dashboard!.overview} articles={dashboard!.articles}
-    sources={dashboard!.sources} retryAction={retryFailedArticle} />;
+  return <AdminDashboard overview={dashboard!.overview} retryAction={retryFailedArticle} />;
 }

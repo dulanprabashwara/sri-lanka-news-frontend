@@ -50,8 +50,10 @@ export function parseAdminOverview(value: unknown): AdminOverview {
   const sources = record(overview.sources, "Source counts");
   const articles = record(overview.articles, "Article counts");
   const stories = record(overview.stories, "Story counts");
+  const ingestion = record(overview.ingestion, "Ingestion counts");
+  const users = record(overview.users, "User counts");
   return {
-    sources: { total: number(sources.total, "Source total") },
+    sources: { total: number(sources.total, "total"), enabled: number(sources.enabled, "enabled"), paused: number(sources.paused, "paused"), failing: number(sources.failing, "failing") },
     articles: {
       total: number(articles.total, "Article total"),
       pending: number(articles.pending, "pending total"),
@@ -60,7 +62,9 @@ export function parseAdminOverview(value: unknown): AdminOverview {
       retrying: number(articles.retrying, "retrying total"),
       failed: number(articles.failed, "failed total"),
     },
-    stories: { total: number(stories.total, "Story total") },
+    stories: { total: number(stories.total, "total"), createdRecently: number(stories.createdRecently, "createdRecently"), recentActive: number(stories.recentActive, "recentActive") },
+    ingestion: { totalRuns: number(ingestion.totalRuns, "totalRuns"), completedRuns: number(ingestion.completedRuns, "completedRuns"), failedRuns: number(ingestion.failedRuns, "failedRuns"), currentlyRunning: number(ingestion.currentlyRunning, "currentlyRunning"), failingSources: number(ingestion.failingSources, "failingSources") },
+    users: { totalProfiles: number(users.totalProfiles, "totalProfiles"), totalBookmarks: number(users.totalBookmarks, "totalBookmarks"), totalFollows: number(users.totalFollows, "totalFollows") },
     recentFailures: parseAdminArticles(overview.recentFailures),
   };
 }
@@ -139,5 +143,31 @@ export function triggerManualIngestionRun(sourceSlug: string, accessToken: strin
 export function getAdminIngestionRuns(accessToken: string, page = 0, size = 50) {
   return requestJson(`/api/v1/admin/ingestion/runs?page=${page}&size=${size}`, (value) => {
     return value as import("@/types/api").PagedResponse<import("@/types/api").AdminRunHistoryResponse>;
+  }, { accessToken });
+}
+
+export function getAdminProcessingArticles(accessToken: string, page = 0, size = 20) {
+  return requestJson(`/api/v1/admin/processing?page=${page}&size=${size}`, (value) => {
+    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminArticle>;
+  }, { accessToken });
+}
+
+export function getAdminStories(accessToken: string, page = 0, size = 20) {
+  return requestJson(`/api/v1/admin/stories?page=${page}&size=${size}`, (value) => {
+    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminStory>;
+  }, { accessToken });
+}
+
+export function getAdminAiOverview(accessToken: string) {
+  return requestJson(`/api/v1/admin/ai`, (value) => value as any, { accessToken });
+}
+
+export function getAdminUsersSummary(accessToken: string) {
+  return requestJson(`/api/v1/admin/users/summary`, (value) => value as any, { accessToken });
+}
+
+export function getAdminAuditEvents(accessToken: string, page = 0, size = 50) {
+  return requestJson(`/api/v1/admin/audit?page=${page}&size=${size}`, (value) => {
+    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminAuditEvent>;
   }, { accessToken });
 }

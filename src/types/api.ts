@@ -318,10 +318,33 @@ export interface AdminSource {
 }
 
 export interface AdminOverview {
-  sources: { total: number };
+  sources: { total: number; enabled: number; paused: number; failing: number };
   articles: Record<"total" | "pending" | "processing" | "completed" | "retrying" | "failed", number>;
-  stories: { total: number };
+  stories: { total: number; createdRecently: number; recentActive: number };
+  ingestion: { totalRuns: number; completedRuns: number; failedRuns: number; currentlyRunning: number; failingSources: number };
+  users: { totalProfiles: number; totalBookmarks: number; totalFollows: number };
   recentFailures: AdminArticle[];
+}
+
+export interface AdminStory {
+  id: string;
+  displayTitle: string;
+  category: string | null;
+  articleCount: number;
+  sourceCount: number;
+  firstPublishedAt: string;
+  lastPublishedAt: string;
+  representativeMediaPresent: boolean;
+  matchingVersion: string;
+}
+
+export interface AdminAuditEvent {
+  id: string;
+  adminUserId: string;
+  eventType: string;
+  targetSourceId: string | null;
+  metadata: Record<string, unknown> | null;
+  createdAt: string;
 }
 
 export type IngestionHealthStatus = "HEALTHY" | "WARNING" | "STALE" | "FAILING" | "PAUSED" | "NEVER_RUN";
