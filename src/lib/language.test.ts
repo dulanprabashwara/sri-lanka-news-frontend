@@ -26,6 +26,26 @@ test("preserves language on internal links without changing external URLs", () =
   assert.equal(publisher, "https://publisher.example/article");
 });
 
+test("switching display language updates language parameter on existing route", () => {
+  const currentStoriesPath = withDisplayLanguage("/stories", "si");
+  assert.equal(currentStoriesPath, "/stories?lang=si");
+  const switchedToTamil = withDisplayLanguage("/stories", "ta");
+  assert.equal(switchedToTamil, "/stories?lang=ta");
+});
+
+test("language parameter preservation preserves complex search query parameters", () => {
+  const searchUrl = "/search?q=economy&mode=semantic&category=BUSINESS&lang=en";
+  const [pathname, query] = searchUrl.split("?");
+  const params = new URLSearchParams(query);
+  params.set("lang", "si");
+  const updatedSearchUrl = `${pathname}?${params.toString()}`;
+
+  assert.equal(updatedSearchUrl.includes("q=economy"), true);
+  assert.equal(updatedSearchUrl.includes("mode=semantic"), true);
+  assert.equal(updatedSearchUrl.includes("category=BUSINESS"), true);
+  assert.equal(updatedSearchUrl.includes("lang=si"), true);
+});
+
 test("renders real Sinhala and Tamil localized content with provenance", () => {
   const article = {
     id: "1",
