@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { getValidatedAuth } from "@/lib/auth";
 import { getAdminMe } from "@/lib/api/admin";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { MainContentWrapper } from "@/components/ui/main-content-wrapper";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -30,8 +31,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en" className="h-full">
       <body className="flex min-h-full flex-col">
         <Suspense><SiteHeader authenticated={authenticated} admin={admin} /></Suspense>
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-          {children}
+        <main className="w-full flex-1">
+          <MainContentWrapper>{children}</MainContentWrapper>
         </main>
         <SiteFooter />
         <Suspense fallback={null}><AnalyticsTracker /></Suspense>
