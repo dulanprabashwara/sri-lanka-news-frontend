@@ -28,6 +28,7 @@ export function SiteHeader({
 
   // Close menus on route change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileMenuOpen(false);
     setUserMenuOpen(false);
     setMyNewsMenuOpen(false);

@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/error-state";
 import { BookmarkButton } from "@/components/bookmark-button";
 import { TopicFollowList } from "@/components/topic-follow-list";
+import { Surface } from "@/components/ui/surface";
+import { ContainerReading } from "@/components/ui/container";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticle, getArticleStory } from "@/lib/api/news";
@@ -14,10 +17,11 @@ import {
   formatLanguage,
   formatPublishedAt,
 } from "@/lib/format";
-import { articleContent, readDisplayLanguage, translationLabel, withDisplayLanguage } from "@/lib/language";
+import { articleContent, readDisplayLanguage, storyTitle, translationLabel, withDisplayLanguage } from "@/lib/language";
+import { ExternalLink, Layers, ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Article" };
+export const metadata: Metadata = { title: "Article Report" };
 
 export default async function ArticlePage({
   params,
@@ -60,78 +64,164 @@ export default async function ArticlePage({
 
   const content = articleContent(article);
   const provenance = translationLabel(content.localization, article.originalLanguage);
+
   return (
-    <article className="mx-auto max-w-3xl">
-      <Link
-        href={withDisplayLanguage(`/source/${encodeURIComponent(article.source.slug)}`, displayLanguage)}
-        className="eyebrow rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
-      >
-        {article.source.name}
-      </Link>
-      <h1 className="page-title mt-4">{content.title}</h1>
-      <div className="mt-5"><BookmarkButton type="ARTICLE" targetId={id} initialBookmarked={bookmarked} authenticated={Boolean(accessToken)} path={currentPath} /></div>
-      {content.summary ? <p className="page-intro">{content.summary}</p> : null}
-      {provenance ? <p className="mt-3 text-sm font-semibold text-violet-700">{provenance} · Platform translation</p> : null}
-      <dl className="mt-8 grid gap-4 border-y border-slate-200 py-6 text-sm sm:grid-cols-2">
-        <div>
-          <dt className="font-semibold text-slate-500">Published</dt>
-          <dd className="mt-1 font-medium text-slate-900">
-            <time dateTime={article.publishedAt}>
-              {formatPublishedAt(article.publishedAt)}
-            </time>
-          </dd>
-        </div>
-        <div>
-          <dt className="font-semibold text-slate-500">Language</dt>
-          <dd className="mt-1 font-medium text-slate-900">
-            {formatLanguage(article.originalLanguage)}
-          </dd>
-        </div>
-        {article.category ? (
-          <div>
-            <dt className="font-semibold text-slate-500">Category</dt>
-            <dd className="mt-1 font-medium text-slate-900">
-              {formatCategory(article.category)}
-            </dd>
-          </div>
-        ) : null}
-        {article.authors.length > 0 ? (
-          <div>
-            <dt className="font-semibold text-slate-500">By</dt>
-            <dd className="mt-1 font-medium text-slate-900">
-              {article.authors.join(", ")}
-            </dd>
-          </div>
-        ) : null}
-      </dl>
-      <TopicFollowList topics={article.topics} followedTopics={followedTopics} authenticated={Boolean(accessToken)} path={currentPath} />
-      {story ? (
+    <ContainerReading className="py-6 sm:py-10 space-y-8">
+      {/* 1. Context Navigation */}
+      <div className="flex items-center justify-between">
         <Link
-          href={withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage)}
-          className="mt-8 inline-flex rounded-lg border border-teal-700 px-4 py-2 text-sm font-bold text-teal-800 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          href={withDisplayLanguage("/", displayLanguage)}
+          className="inline-flex items-center gap-2 text-xs font-semibold text-foreground-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-brand"
         >
-          View full story coverage
+          <ArrowLeft className="size-4" />
+          <span>Back to Latest News</span>
         </Link>
-      ) : null}
-      <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6">
-        <h2 className="text-lg font-bold text-amber-950">
-          Continue with the publisher
-        </h2>
-        <p className="mt-2 text-sm leading-6 text-amber-900">
+        <BookmarkButton
+          type="ARTICLE"
+          targetId={id}
+          initialBookmarked={bookmarked}
+          authenticated={Boolean(accessToken)}
+          path={currentPath}
+        />
+      </div>
+
+      {/* 2. Publisher Identity & Metadata */}
+      <header className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+          <StatusBadge status="neutral" label="Single Report" />
+          <Link
+            href={withDisplayLanguage(`/source/${encodeURIComponent(article.source.slug)}`, displayLanguage)}
+            className="font-bold text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-brand"
+          >
+            {article.source.name}
+          </Link>
+          <span className="text-foreground-secondary">•</span>
+          <time dateTime={article.publishedAt} className="text-foreground-secondary font-mono">
+            {formatPublishedAt(article.publishedAt)}
+          </time>
+          {article.originalLanguage && (
+            <span className="rounded bg-surface-muted px-2 py-0.5 text-xs font-semibold text-foreground-secondary">
+              {formatLanguage(article.originalLanguage)}
+            </span>
+          )}
+          {article.category && (
+            <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-primary">
+              {formatCategory(article.category)}
+            </span>
+          )}
+        </div>
+
+        {/* 3. Headline */}
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">
+          {content.title}
+        </h1>
+
+        {article.authors.length > 0 && (
+          <p className="text-xs font-medium text-foreground-secondary">
+            By <span className="text-foreground">{article.authors.join(", ")}</span>
+          </p>
+        )}
+      </header>
+
+      {/* 4. Lead Media */}
+      {article.leadMedia?.type === "IMAGE" && article.leadMedia.url && (
+        <div className="overflow-hidden rounded-2xl bg-surface-muted border border-border">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={article.leadMedia.url}
+            alt={article.leadMedia.altText || content.title}
+            className="w-full max-h-[480px] object-cover"
+            loading="lazy"
+          />
+          {article.leadMedia.caption && (
+            <p className="p-3 text-xs text-foreground-secondary bg-surface-card border-t border-border">
+              {article.leadMedia.caption}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* 5. Safe Summary */}
+      {content.summary && (
+        <Surface variant="bordered" className="p-6 sm:p-8 space-y-3">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-foreground-secondary">
+            Report Summary
+          </h2>
+          <p className="text-base sm:text-lg leading-relaxed text-foreground font-serif">
+            {content.summary}
+          </p>
+          {provenance && (
+            <p className="text-xs font-semibold text-brand-primary pt-2 border-t border-border">
+              {provenance} • Platform translation
+            </p>
+          )}
+        </Surface>
+      )}
+
+      {/* 6. Connected Story Context (If present) */}
+      {story && (
+        <Surface variant="highlight" className="p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <Layers className="size-4 text-brand-primary" />
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-primary">
+              Part of a Multi-Source Story
+            </span>
+          </div>
+          <h3 className="text-lg font-bold text-foreground">
+            {storyTitle(story)}
+          </h3>
+          <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-foreground-secondary">
+            <span>{story.articleCount} reports</span>
+            <span>•</span>
+            <span>{story.sourceCount} publishers</span>
+          </div>
+          <div>
+            <Link
+              href={withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage)}
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
+            >
+              <span>View Full Story Coverage</span>
+              <span>→</span>
+            </Link>
+          </div>
+        </Surface>
+      )}
+
+      {/* 7. Topics / Source Context */}
+      {article.topics.length > 0 && (
+        <div className="space-y-3 pt-4 border-t border-border">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-foreground-secondary">
+            Topics Mentioned
+          </h3>
+          <TopicFollowList
+            topics={article.topics}
+            followedTopics={followedTopics}
+            authenticated={Boolean(accessToken)}
+            path={currentPath}
+          />
+        </div>
+      )}
+
+      {/* 8. Original Publisher Boundary & Outbound CTA (Copyright Critical) */}
+      <Surface variant="bordered" className="p-6 sm:p-8 space-y-4 border-l-4 border-l-brand-primary">
+        <h3 className="text-base font-bold text-foreground">
+          Read full article on {article.source.name}
+        </h3>
+        <p className="text-xs leading-relaxed text-foreground-secondary">
           Full article content remains on the original publisher&apos;s website.
         </p>
-        <a
-          href={article.originalUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 inline-flex rounded-lg bg-teal-800 px-5 py-3 text-sm font-bold text-white hover:bg-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800"
-        >
-          Read original article
-          <span aria-hidden="true" className="ml-2">
-            ↗
-          </span>
-        </a>
-      </div>
-    </article>
+        <div>
+          <a
+            href={article.originalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-3 text-sm font-bold text-white hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
+          >
+            <span>Read Original Article</span>
+            <ExternalLink className="size-4" />
+          </a>
+        </div>
+      </Surface>
+    </ContainerReading>
   );
 }

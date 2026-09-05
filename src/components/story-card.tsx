@@ -145,6 +145,16 @@ export function StoryCard({
               {title}
             </Link>
           </h3>
+
+          {reasons && reasons.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {reasons.map((reason) => (
+                <span key={reason} className="rounded-full bg-surface-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground-secondary">
+                  {reasonLabels[reason]}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {/* Footer Metrics */}

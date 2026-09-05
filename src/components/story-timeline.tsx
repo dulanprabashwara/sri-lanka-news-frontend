@@ -1,56 +1,100 @@
 import Link from "next/link";
 import { formatLanguage, formatPublishedAt } from "@/lib/format";
 import { translationLabel, withDisplayLanguage } from "@/lib/language";
+import { Surface } from "@/components/ui/surface";
 import type { DisplayLanguage, StoryTimeline as Timeline } from "@/types/api";
+import { ExternalLink } from "lucide-react";
 
-export function StoryTimeline({ timeline, displayLanguage }: { timeline: Timeline | null; displayLanguage?: DisplayLanguage }) {
+export function StoryTimeline({
+  timeline,
+  displayLanguage,
+}: {
+  timeline: Timeline | null;
+  displayLanguage?: DisplayLanguage;
+}) {
   return (
-    <section aria-labelledby="story-timeline-title" className="border-t border-slate-200 pt-8">
-      <div className="max-w-3xl">
-        <p className="eyebrow">Reports over time</p>
-        <h2 id="story-timeline-title" className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">
-          Story Timeline
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold text-foreground">
+          Chronological Story Timeline
         </h2>
-        <p className="mt-3 text-sm leading-6 text-slate-600">
-          This timeline shows when currently available publisher reports were published. It does not establish when the event occurred or infer publisher behavior.
+        <p className="text-xs leading-relaxed text-foreground-secondary">
+          Timeline orders constituent publisher reports chronologically by publication timestamp.
         </p>
       </div>
 
       {timeline === null ? (
-        <p className="mt-6 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600" role="status">
-          The Story timeline is temporarily unavailable. Other Story information remains available.
-        </p>
+        <Surface variant="bordered" className="p-4 text-sm text-foreground-secondary" role="status">
+          Story timeline is temporarily unavailable. Other Story information remains available.
+        </Surface>
+      ) : timeline.events.length === 0 ? (
+        <Surface variant="bordered" className="p-4 text-sm text-foreground-secondary" role="status">
+          No timeline events recorded.
+        </Surface>
       ) : (
-        <ol className="relative mt-8 space-y-6 border-l-2 border-teal-200 pl-6 sm:pl-8" aria-label="Publisher reports in publication order">
+        <ol className="relative space-y-6 border-l-2 border-brand-soft pl-4 sm:pl-6" aria-label="Publisher reports in publication order">
           {timeline.events.map((event) => (
             <li key={event.articleId} className="relative">
-              <span aria-hidden="true" className="absolute -left-[1.95rem] top-1.5 size-3 rounded-full border-2 border-white bg-teal-700 ring-2 ring-teal-100 sm:-left-[2.45rem]" />
-              <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  <time dateTime={event.publishedAt}>{formatPublishedAt(event.publishedAt)}</time>
-                  <span aria-hidden="true">•</span>
-                  <span className="text-teal-700">{formatTimelineOffset(event.minutesFromFirstReport)}</span>
+              <span
+                aria-hidden="true"
+                className="absolute -left-[1.35rem] sm:-left-[1.85rem] top-1.5 size-3 rounded-full border-2 border-surface-card bg-brand-primary ring-4 ring-brand-soft"
+              />
+              <Surface variant="bordered" className="p-5 space-y-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-foreground-secondary">
+                  <time dateTime={event.publishedAt} className="font-mono text-foreground">
+                    {formatPublishedAt(event.publishedAt)}
+                  </time>
+                  <span>•</span>
+                  <span className="text-brand-primary font-medium">
+                    {formatTimelineOffset(event.minutesFromFirstReport)}
+                  </span>
                 </div>
-                <p className="mt-3 text-sm font-bold text-slate-700">{event.source.name}</p>
-                <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-950">
-                  <Link href={withDisplayLanguage(`/article/${encodeURIComponent(event.articleId)}`, displayLanguage)} className="hover:text-teal-800 hover:underline">
+
+                <div className="text-xs font-bold text-brand-primary">
+                  {event.source.name}
+                </div>
+
+                <h3 className="text-base font-bold text-foreground hover:text-brand-primary">
+                  <Link
+                    href={withDisplayLanguage(`/article/${encodeURIComponent(event.articleId)}`, displayLanguage)}
+                    className="hover:underline transition-colors"
+                  >
                     {event.localizedContent?.title ?? event.title}
                   </Link>
                 </h3>
-                {(event.localizedContent?.summary ?? event.summary) ? <p className="mt-3 text-sm leading-6 text-slate-600">{event.localizedContent?.summary ?? event.summary}</p> : null}
-                {translationLabel(event.localizedContent, event.originalLanguage) ? <p className="mt-2 text-xs font-semibold text-violet-700">{translationLabel(event.localizedContent, event.originalLanguage)} · Platform translation</p> : null}
-                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600">
-                  <span className="rounded-full bg-slate-100 px-3 py-1">{formatLanguage(event.originalLanguage)}</span>
-                  <a href={event.originalUrl} target="_blank" rel="noopener noreferrer" className="text-teal-700 hover:underline">
-                    Original publisher ↗
+
+                {(event.localizedContent?.summary ?? event.summary) && (
+                  <p className="text-xs leading-relaxed text-foreground-secondary">
+                    {event.localizedContent?.summary ?? event.summary}
+                  </p>
+                )}
+
+                {translationLabel(event.localizedContent, event.originalLanguage) && (
+                  <p className="text-xs font-semibold text-brand-primary">
+                    {translationLabel(event.localizedContent, event.originalLanguage)} • Platform translation
+                  </p>
+                )}
+
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border text-xs font-medium">
+                  <span className="rounded bg-surface-muted px-2 py-0.5 text-foreground-secondary">
+                    {formatLanguage(event.originalLanguage)}
+                  </span>
+                  <a
+                    href={event.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 font-semibold text-brand-primary hover:underline"
+                  >
+                    <span>Original Publisher</span>
+                    <ExternalLink className="size-3" />
                   </a>
                 </div>
-              </article>
+              </Surface>
             </li>
           ))}
         </ol>
       )}
-    </section>
+    </div>
   );
 }
 

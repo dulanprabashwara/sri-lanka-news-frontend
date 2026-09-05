@@ -1,5 +1,5 @@
 import { formatPublishedAt } from "@/lib/format";
-import type { AdminArticle, AdminOverview, AdminSource } from "@/types/api";
+import type { AdminArticle, AdminOverview } from "@/types/api";
 
 export function AdminDashboard({ overview, retryAction }: {
   overview: AdminOverview;

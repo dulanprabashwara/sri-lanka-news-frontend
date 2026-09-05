@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { askStoryAction } from "@/app/story-actions";
 import { formatPublishedAt } from "@/lib/format";
-import type {
-  AskStoryResponse,
-  DisplayLanguage,
-} from "@/types/api";
+import { Surface } from "@/components/ui/surface";
+import type { AskStoryResponse, DisplayLanguage } from "@/types/api";
+import { ExternalLink, Sparkles } from "lucide-react";
 
 export function AskThisStory({
   storyId,
@@ -42,101 +41,123 @@ export function AskThisStory({
   }
 
   return (
-    <section
-      aria-labelledby="ask-this-story-title"
-      className="rounded-2xl border border-teal-200 bg-white p-5 shadow-sm sm:p-7"
-    >
-      <p className="eyebrow">Grounded answers</p>
-      <h2
-        id="ask-this-story-title"
-        className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl"
-      >
-        Ask This Story
-      </h2>
-      <p className="mt-3 text-sm leading-6 text-slate-600">
-        Answers are generated only from reports linked to this story.
-      </p>
-      <form onSubmit={submit} className="mt-5 space-y-3">
-        <label htmlFor="story-question" className="block text-sm font-bold text-slate-800">
-          Your question
-        </label>
-        <textarea
-          id="story-question"
-          value={question}
-          onChange={(event) => setQuestion(event.target.value)}
-          rows={3}
-          aria-describedby="story-question-help"
-          className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-950 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
-          placeholder="What changed between the reports?"
-        />
+    <Surface variant="bordered" className="p-5 sm:p-7 space-y-5">
+      <div className="flex items-center gap-2 text-brand-primary">
+        <Sparkles className="size-4" />
+        <span className="text-xs font-bold uppercase tracking-wider">
+          Grounded Story Q&amp;A
+        </span>
+      </div>
+
+      <div className="space-y-1">
+        <h2 className="text-xl font-extrabold tracking-tight text-foreground">
+          Ask This Story
+        </h2>
+        <p className="text-xs leading-relaxed text-foreground-secondary">
+          Answers are generated only from reports linked to this story.
+        </p>
+      </div>
+
+      <form onSubmit={submit} className="space-y-4">
+        <div>
+          <label htmlFor="story-question" className="block text-xs font-bold text-foreground mb-1.5">
+            Your question
+          </label>
+          <textarea
+            id="story-question"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            rows={3}
+            aria-describedby="story-question-help"
+            className="w-full rounded-xl border border-border bg-surface-card px-4 py-3 text-sm text-foreground placeholder:text-foreground-secondary outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-soft transition-colors"
+            placeholder="What key developments were reported across sources?"
+          />
+        </div>
+
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p id="story-question-help" className="text-xs text-slate-500">
-            3–500 characters. No question or answer history is saved.
+          <p id="story-question-help" className="text-xs text-foreground-secondary">
+            No question or answer history is saved.
           </p>
           <button
             type="submit"
             disabled={pending}
-            className="rounded-lg bg-teal-800 px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-brand-primary px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 transition-colors focus-visible:outline-2 focus-visible:outline-brand"
           >
-            {pending ? "Asking…" : "Ask"}
+            {pending ? "Analyzing Story Reports…" : "Ask Question"}
           </button>
         </div>
       </form>
-      {error ? (
-        <p className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
+
+      {error && (
+        <Surface variant="warning" className="p-4 text-xs text-amber-950" role="alert">
           {error}
-        </p>
-      ) : null}
-      {response ? <AskStoryAnswer response={response} /> : null}
-    </section>
+        </Surface>
+      )}
+
+      {response && <AskStoryAnswer response={response} />}
+    </Surface>
   );
 }
 
 export function AskStoryAnswer({ response }: { response: AskStoryResponse }) {
   if (!response.answerable) {
     return (
-      <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5" role="status">
-        <h3 className="font-bold text-amber-950">Not enough evidence</h3>
-        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-amber-900">
+      <Surface variant="warning" className="p-5 space-y-2" role="status">
+        <h3 className="text-sm font-bold text-amber-950">Not enough evidence</h3>
+        <p className="whitespace-pre-wrap text-xs leading-relaxed text-amber-900">
           {response.answer}
         </p>
-      </div>
+      </Surface>
     );
   }
+
   return (
-    <div className="mt-6 border-t border-slate-200 pt-6" aria-live="polite">
-      <h3 className="text-lg font-bold text-slate-950">Answer</h3>
-      <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-700">
-        {renderAnswerWithCitations(response.answer, response.citations.map((item) => item.number))}
-      </p>
-      <h4 className="mt-6 text-sm font-bold uppercase tracking-wide text-slate-500">
-        Sources used
-      </h4>
-      <ol className="mt-3 grid gap-3">
-        {response.citations.map((citation) => (
-          <li
-            key={citation.number}
-            id={`ask-citation-${citation.number}`}
-            className="rounded-xl border border-slate-200 p-4 text-sm"
-          >
-            <p className="font-bold text-slate-950">
-              [{citation.number}] {citation.source.name}
-            </p>
-            <p className="mt-1 text-slate-600 break-words">{citation.title}</p>
-            <time className="mt-1 block text-xs text-slate-500" dateTime={citation.publishedAt}>
-              {formatPublishedAt(citation.publishedAt)}
-            </time>
-            <a
-              href={citation.originalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-block font-semibold text-teal-700 hover:underline"
+    <div className="border-t border-border pt-5 space-y-5" aria-live="polite">
+      <div className="space-y-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-foreground-secondary">
+          Grounded Answer
+        </h3>
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground font-serif bg-surface-muted p-4 rounded-xl border border-border">
+          {renderAnswerWithCitations(response.answer, response.citations.map((item) => item.number))}
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground-secondary">
+          Sources used ({response.citations.length})
+        </h4>
+        <ol className="grid gap-3 sm:grid-cols-2">
+          {response.citations.map((citation) => (
+            <li
+              key={citation.number}
+              id={`ask-citation-${citation.number}`}
+              className="rounded-xl border border-border bg-surface-card p-4 text-xs space-y-1.5"
             >
-              Read original report ↗
-            </a>
-          </li>
-        ))}
-      </ol>
+              <div className="font-bold text-foreground flex items-center gap-1.5">
+                <span className="rounded bg-brand-soft px-1.5 py-0.5 text-brand-primary">
+                  [{citation.number}]
+                </span>
+                <span>{citation.source.name}</span>
+              </div>
+              <p className="text-foreground-secondary font-medium line-clamp-2">{citation.title}</p>
+              <time className="block text-[11px] font-mono text-foreground-secondary" dateTime={citation.publishedAt}>
+                {formatPublishedAt(citation.publishedAt)}
+              </time>
+              <div>
+                <a
+                  href={citation.originalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-semibold text-brand-primary hover:underline"
+                >
+                  <span>Read Original Report</span>
+                  <ExternalLink className="size-3" />
+                </a>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }
@@ -156,7 +177,11 @@ export function renderAnswerWithCitations(answer: string, validNumbers: number[]
     if (!match || !valid.has(Number(match[1]))) return part;
     const number = Number(match[1]);
     return (
-      <a key={`${number}-${index}`} href={`#ask-citation-${number}`} className="font-bold text-teal-700 hover:underline">
+      <a
+        key={`${number}-${index}`}
+        href={`#ask-citation-${number}`}
+        className="font-bold text-brand-primary hover:underline ml-0.5"
+      >
         [{number}]
       </a>
     );

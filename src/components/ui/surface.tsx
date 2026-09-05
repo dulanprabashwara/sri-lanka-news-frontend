@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 
 export type SurfaceVariant = "flat" | "elevated" | "muted" | "bordered" | "highlight" | "danger" | "warning" | "success" | "info";
 
-export interface SurfaceProps {
+export interface SurfaceProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   variant?: SurfaceVariant;
   className?: string;
@@ -14,6 +14,7 @@ export function Surface({
   variant = "bordered",
   className = "",
   as: Component = "div",
+  ...props
 }: SurfaceProps) {
   const baseClasses = "rounded-xl p-5 transition-all duration-150";
 
@@ -30,7 +31,7 @@ export function Surface({
   };
 
   return (
-    <Component className={`${baseClasses} ${variantClasses[variant]} ${className}`.trim()}>
+    <Component className={`${baseClasses} ${variantClasses[variant]} ${className}`.trim()} {...props}>
       {children}
     </Component>
   );
