@@ -159,11 +159,11 @@ export function getAdminStories(accessToken: string, page = 0, size = 20) {
 }
 
 export function getAdminAiOverview(accessToken: string) {
-  return requestJson(`/api/v1/admin/ai`, (value) => value as any, { accessToken });
+  return requestJson(`/api/v1/admin/ai`, (value) => value as Record<string, unknown>, { accessToken });
 }
 
 export function getAdminUsersSummary(accessToken: string) {
-  return requestJson(`/api/v1/admin/users/summary`, (value) => value as any, { accessToken });
+  return requestJson(`/api/v1/admin/users/summary`, (value) => value as Record<string, unknown>, { accessToken });
 }
 
 export function getAdminAuditEvents(accessToken: string, page = 0, size = 50) {
@@ -171,3 +171,26 @@ export function getAdminAuditEvents(accessToken: string, page = 0, size = 50) {
     return value as import("@/types/api").PagedResponse<import("@/types/api").AdminAuditEvent>;
   }, { accessToken });
 }
+
+export function getAdminAnalyticsOverview(accessToken: string, days: number) {
+  return requestJson(`/api/v1/admin/analytics/overview?days=${days}`, (value) => value as Record<string, unknown>, { accessToken });
+}
+
+export function getAdminAnalyticsTimeseries(accessToken: string, days: number, metrics: string[]) {
+  const metricsParam = metrics.map(m => `metrics=${encodeURIComponent(m)}`).join('&');
+  return requestJson(`/api/v1/admin/analytics/timeseries?days=${days}&${metricsParam}`, (value) => value as Record<string, unknown>[], { accessToken });
+}
+
+export function getAdminAnalyticsContent(accessToken: string, days: number, type: 'ARTICLE' | 'STORY' | 'SOURCE' | 'CATEGORY') {
+  return requestJson(`/api/v1/admin/analytics/content?days=${days}&type=${encodeURIComponent(type)}`, (value) => value as Record<string, unknown>[], { accessToken });
+}
+
+export function getAdminAnalyticsSections(accessToken: string, days: number, types: string[]) {
+  const typesParam = types.map(t => `types=${encodeURIComponent(t)}`).join('&');
+  return requestJson(`/api/v1/admin/analytics/sections?days=${days}&${typesParam}`, (value) => value as Record<string, unknown>, { accessToken });
+}
+
+export function getAdminAnalyticsDimensions(accessToken: string, days: number, metric: string, dimensionType: string) {
+  return requestJson(`/api/v1/admin/analytics/dimensions?days=${days}&metric=${encodeURIComponent(metric)}&dimensionType=${encodeURIComponent(dimensionType)}`, (value) => value as Record<string, unknown>, { accessToken });
+}
+

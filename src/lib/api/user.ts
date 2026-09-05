@@ -45,6 +45,7 @@ export function parsePreferences(value: unknown): UserPreferences {
   return {
     preferredDisplayLanguage: language,
     preferredCategories: data.preferredCategories.map((category) => string(category) as ArticleCategory),
+    analyticsEnabled: typeof data.analyticsEnabled === "boolean" ? data.analyticsEnabled : true,
     createdAt: nullableDate(data.createdAt),
     updatedAt: nullableDate(data.updatedAt),
   };
@@ -81,7 +82,7 @@ export function getPreferences(accessToken: string) {
   return requestJson("/api/v1/me/preferences", parsePreferences, { accessToken });
 }
 
-export function updatePreferences(accessToken: string, preferences: Pick<UserPreferences, "preferredDisplayLanguage" | "preferredCategories">) {
+export function updatePreferences(accessToken: string, preferences: Pick<UserPreferences, "preferredDisplayLanguage" | "preferredCategories" | "analyticsEnabled">) {
   return requestJson("/api/v1/me/preferences", parsePreferences, { accessToken, method: "PUT", body: preferences });
 }
 

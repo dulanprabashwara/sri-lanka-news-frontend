@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getValidatedAuth } from "@/lib/auth";
 import { getAdminMe } from "@/lib/api/admin";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           {children}
         </main>
         <SiteFooter />
+        <Suspense fallback={null}><AnalyticsTracker /></Suspense>
       </body>
     </html>
   );

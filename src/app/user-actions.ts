@@ -11,7 +11,7 @@ async function token() {
   return value;
 }
 
-export async function savePreferencesAction(input: { preferredDisplayLanguage: PreferredDisplayLanguage; preferredCategories: ArticleCategory[] }) {
+export async function savePreferencesAction(input: { preferredDisplayLanguage: PreferredDisplayLanguage; preferredCategories: ArticleCategory[]; analyticsEnabled: boolean }) {
   try {
     const preferences = await updatePreferences(await token(), input);
     revalidatePath("/account");

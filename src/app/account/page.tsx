@@ -36,7 +36,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <dt className="text-sm font-semibold text-slate-500">Email</dt>
         <dd className="text-slate-900">{user.email ?? "Not available"}</dd>
       </dl>
-      <Link href={withDisplayLanguage("/bookmarks", language)} className="mt-6 inline-flex rounded-lg border border-teal-700 px-4 py-2 font-semibold text-teal-800">View bookmarks</Link>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link href={withDisplayLanguage("/bookmarks", language)} className="inline-flex rounded-lg border border-teal-700 px-4 py-2 font-semibold text-teal-800 hover:bg-teal-50">View bookmarks</Link>
+        <Link href={withDisplayLanguage("/account/notifications", language)} className="inline-flex rounded-lg border border-teal-700 px-4 py-2 font-semibold text-teal-800 hover:bg-teal-50">Notifications</Link>
+        <Link href={withDisplayLanguage("/account/privacy", language)} className="inline-flex rounded-lg border border-teal-700 px-4 py-2 font-semibold text-teal-800 hover:bg-teal-50">Privacy Options</Link>
+      </div>
       <PreferencesForm initial={preferences} />
       <form action={`/auth/logout?next=${encodeURIComponent(withDisplayLanguage("/", language))}`} method="post" className="mt-8">
         <button className="rounded-lg border border-slate-300 px-4 py-2 font-semibold text-slate-700">Sign out</button>

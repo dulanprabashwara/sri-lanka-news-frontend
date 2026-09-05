@@ -20,7 +20,7 @@ export function PreferencesForm({ initial }: { initial: UserPreferences }) {
       event.preventDefault();
       setMessage(null);
       startTransition(async () => {
-        const result = await savePreferencesAction({ preferredDisplayLanguage: language, preferredCategories: categories });
+        const result = await savePreferencesAction({ preferredDisplayLanguage: language, preferredCategories: categories, analyticsEnabled: initial.analyticsEnabled });
         setMessage(result.ok ? "Preferences saved." : result.message);
       });
     }} className="mt-8 border-t border-slate-200 pt-8">

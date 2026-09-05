@@ -193,6 +193,7 @@ export type PreferredDisplayLanguage = "ORIGINAL" | "EN" | "SI" | "TA";
 export interface UserPreferences {
   preferredDisplayLanguage: PreferredDisplayLanguage;
   preferredCategories: ArticleCategory[];
+  analyticsEnabled: boolean;
   createdAt: string | null;
   updatedAt: string | null;
 }

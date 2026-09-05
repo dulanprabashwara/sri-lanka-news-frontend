@@ -12,13 +12,7 @@ export default function UnsubscribePage() {
   const token = searchParams.get("token");
   const displayLanguage = readDisplayLanguage(searchParams.get("lang"));
   
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-
-  useEffect(() => {
-    if (!token) {
-      setStatus("error");
-    }
-  }, [token]);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(token ? "idle" : "error");
 
   const handleUnsubscribe = () => {
     if (!token) return;

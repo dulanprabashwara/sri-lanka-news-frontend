@@ -142,7 +142,7 @@ function parseArticleLeadMedia(value: unknown): ArticleLeadMedia | undefined {
   if (!isRecord(value)) throw new ApiResponseError("Invalid lead media.");
   return {
     url: requireHttpUrl(value.url, "lead media URL"),
-    type: requireString(value.type, "lead media type") as any,
+    type: requireString(value.type, "lead media type") as ArticleLeadMedia["type"],
     altText: optionalString(value.altText, "lead media alt text"),
     caption: optionalString(value.caption, "lead media caption"),
     credit: optionalString(value.credit, "lead media credit"),
@@ -156,7 +156,7 @@ function parseStoryRepresentativeMedia(value: unknown): StoryRepresentativeMedia
   if (!isRecord(value)) throw new ApiResponseError("Invalid representative media.");
   return {
     url: requireHttpUrl(value.url, "representative media URL"),
-    type: requireString(value.type, "representative media type") as any,
+    type: requireString(value.type, "representative media type") as StoryRepresentativeMedia["type"],
     altText: optionalString(value.altText, "representative media alt text"),
     caption: optionalString(value.caption, "representative media caption"),
     credit: optionalString(value.credit, "representative media credit"),

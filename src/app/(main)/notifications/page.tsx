@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+
 import useSWR from "swr";
 import Link from "next/link";
 import { Check, CheckCircle2, Settings } from "lucide-react";
 import { getNotifications, markAsRead, markAllAsRead, Notification } from "@/lib/api/notifications";
 import { withDisplayLanguage, readDisplayLanguage } from "@/lib/language";
+import { Language } from "@/types/api";
 import { useSearchParams } from "next/navigation";
 
 export default function NotificationsPage() {
@@ -63,7 +64,7 @@ export default function NotificationsPage() {
         ) : notifications.length === 0 ? (
           <div className="p-12 text-center">
             <CheckCircle2 className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-slate-900">You're all caught up!</h3>
+            <h3 className="text-lg font-medium text-slate-900">You&apos;re all caught up!</h3>
             <p className="text-slate-500 mt-1">No new notifications right now.</p>
           </div>
         ) : (
@@ -88,7 +89,7 @@ function NotificationItem({
 }: { 
   notification: Notification; 
   onRead: () => void;
-  displayLanguage: any;
+  displayLanguage: Language | undefined;
 }) {
   const isUnread = !notification.readAt;
 

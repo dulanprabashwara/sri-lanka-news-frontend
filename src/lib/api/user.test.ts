@@ -57,7 +57,7 @@ test("uses protected preference and bookmark requests without owner data", async
     return Response.json({ bookmarked: true, createdAt: "2026-09-02T00:00:00Z" });
   }) as typeof fetch;
 
-  await updatePreferences("jwt", { preferredDisplayLanguage: "EN", preferredCategories: ["LOCAL"] });
+  await updatePreferences("jwt", { preferredDisplayLanguage: "EN", preferredCategories: ["LOCAL"], analyticsEnabled: true });
   await createBookmark("jwt", "ARTICLE", "article-1");
   await deleteBookmark("jwt", "STORY", "story-1");
   await listBookmarks("jwt", { type: "ARTICLE", displayLanguage: "si" });
@@ -69,7 +69,7 @@ test("uses protected preference and bookmark requests without owner data", async
     ["/api/v1/me/bookmarks?page=0&size=20&type=ARTICLE&displayLanguage=si", "GET"],
   ]);
   assert.ok(requests.every((request) => request.authorization === "Bearer jwt"));
-  assert.deepEqual(requests[0]?.body, { preferredDisplayLanguage: "EN", preferredCategories: ["LOCAL"] });
+  assert.deepEqual(requests[0]?.body, { preferredDisplayLanguage: "EN", preferredCategories: ["LOCAL"], analyticsEnabled: true });
 });
 
 test("parses source/topic follows and batched status without private keys", () => {

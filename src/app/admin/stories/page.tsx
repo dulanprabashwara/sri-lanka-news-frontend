@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAdminStories, getAdminMe } from "@/lib/api/admin";

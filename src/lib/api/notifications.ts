@@ -85,8 +85,8 @@ export async function getPreferences(): Promise<NotificationPreference> {
   }, { accessToken });
 }
 
-function formatTime(time: any, fallback: string): string {
-  if (Array.isArray(time)) {
+function formatTime(time: unknown, fallback: string): string {
+  if (Array.isArray(time) && time.length >= 2) {
     const hh = String(time[0]).padStart(2, '0');
     const mm = String(time[1]).padStart(2, '0');
     return `${hh}:${mm}`;
