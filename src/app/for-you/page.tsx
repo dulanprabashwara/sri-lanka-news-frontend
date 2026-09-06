@@ -2,14 +2,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ErrorState } from "@/components/error-state";
 import { ForYouFeed } from "@/components/for-you-feed";
-import { PageHeader } from "@/components/ui/page-header";
-import { Surface } from "@/components/ui/surface";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getForYouFeed, getPreferences, resolveDisplayLanguage } from "@/lib/api/user";
 import { getAuthenticatedAccessToken } from "@/lib/auth";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
-import { Sparkles } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 

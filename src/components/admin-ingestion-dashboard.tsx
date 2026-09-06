@@ -37,7 +37,7 @@ export function AdminIngestionDashboard({
       case "FAILING":
         return <StatusBadge status="danger" label="Failing" />;
       case "PAUSED":
-        return <StatusBadge status="muted" label="Paused" />;
+        return <StatusBadge status="neutral" label="Paused" />;
       case "NEVER_RUN":
         return <StatusBadge status="neutral" label="Never Run" />;
       default:

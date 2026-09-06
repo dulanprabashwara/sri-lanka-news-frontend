@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAdminUserMetrics, getAdminMe } from "@/lib/api/admin";
+import { getAdminUsersSummary, getAdminMe } from "@/lib/api/admin";
 import { getValidatedAuth } from "@/lib/auth";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -23,7 +22,7 @@ export default async function AdminUsersPage() {
 
   try {
     await getAdminMe(token);
-    metrics = await getAdminUserMetrics(token);
+    metrics = await getAdminUsersSummary(token);
   } catch (error: any) {
     if (error?.status === 401) redirect("/auth/login?next=/admin/users");
     if (error?.status === 403) denied = true;

@@ -163,7 +163,7 @@ export function getAdminAiOverview(accessToken: string) {
 }
 
 export function getAdminUsersSummary(accessToken: string) {
-  return requestJson(`/api/v1/admin/users/summary`, (value) => value as Record<string, unknown>, { accessToken });
+  return requestJson(`/api/v1/admin/users/summary`, (value) => value as { totalProfiles: number; totalBookmarks: number; totalFollows: number }, { accessToken });
 }
 
 export function getAdminAuditEvents(accessToken: string, page = 0, size = 50) {

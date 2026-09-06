@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAdminAuditLogs, getAdminMe } from "@/lib/api/admin";
+import { getAdminAuditEvents, getAdminMe } from "@/lib/api/admin";
 import { getValidatedAuth } from "@/lib/auth";
 import { formatPublishedAt } from "@/lib/format";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionHeader } from "@/components/ui/section-header";
 import { Surface } from "@/components/ui/surface";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { AdminAuditEvent } from "@/types/api";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Audit Logs | Admin" };
@@ -29,7 +29,7 @@ export default async function AdminAuditPage({
 
   try {
     await getAdminMe(token);
-    logsPage = await getAdminAuditLogs(token, page, 50);
+    logsPage = await getAdminAuditEvents(token, page, 50);
   } catch (error: any) {
     if (error?.status === 401) redirect("/auth/login?next=/admin/audit");
     if (error?.status === 403) denied = true;
@@ -74,20 +74,20 @@ export default async function AdminAuditPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {logsPage!.content.map((log) => (
+                {logsPage!.content.map((log: AdminAuditEvent) => (
                   <tr key={log.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="p-4 font-mono font-semibold text-slate-900">{log.action}</td>
-                    <td className="p-4 font-mono text-xs text-slate-600">{log.actorId}</td>
+                    <td className="p-4 font-mono font-semibold text-slate-900">{log.eventType}</td>
+                    <td className="p-4 font-mono text-xs text-slate-600">{log.adminUserId}</td>
                     <td className="p-4 font-mono text-xs text-slate-700">
-                      {log.targetResource ? `${log.targetResource}` : "—"}
+                      {log.targetSourceId ? `${log.targetSourceId}` : "—"}
                     </td>
                     <td className="p-4 text-xs text-slate-500">
-                      {formatPublishedAt(log.timestamp)}
+                      {formatPublishedAt(log.createdAt)}
                     </td>
                     <td className="p-4 text-xs">
-                      {log.details ? (
+                      {log.metadata ? (
                         <pre className="max-w-xs overflow-x-auto rounded-md bg-slate-100 p-2 font-mono text-[11px] text-slate-800">
-                          {JSON.stringify(log.details, null, 2)}
+                          {JSON.stringify(log.metadata, null, 2)}
                         </pre>
                       ) : (
                         <span className="text-slate-400">—</span>

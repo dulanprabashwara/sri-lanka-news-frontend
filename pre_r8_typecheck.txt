@@ -1,0 +1,10 @@
+
+> sri-lanka-news-frontend@0.1.0 typecheck
+> tsc --noEmit
+
+src/app/admin/ai/page.tsx(105,15): error TS2322: Type '"muted" | "success"' is not assignable to type 'StatusVariant'.
+  Type '"muted"' is not assignable to type 'StatusVariant'.
+src/app/admin/audit/page.tsx(4,10): error TS2305: Module '"@/lib/api/admin"' has no exported member 'getAdminAuditLogs'.
+src/app/admin/audit/page.tsx(77,41): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/app/admin/users/page.tsx(4,10): error TS2305: Module '"@/lib/api/admin"' has no exported member 'getAdminUserMetrics'.
+src/components/admin-ingestion-dashboard.tsx(40,29): error TS2322: Type '"muted"' is not assignable to type 'StatusVariant'.

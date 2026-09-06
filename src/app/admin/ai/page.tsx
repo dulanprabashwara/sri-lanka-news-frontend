@@ -102,7 +102,7 @@ export default async function AdminAiPage() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
             <h3 className="text-base font-bold text-slate-900">Configured AI Model Provider</h3>
             <StatusBadge
-              status={aiOverview.provider.configured ? "success" : "muted"}
+              status={aiOverview.provider.configured ? "success" : "neutral"}
               label={aiOverview.provider.configured ? "Configured" : "Not Configured"}
             />
           </div>
