@@ -12,8 +12,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-8 md:flex-row">
-        <aside className="w-full md:w-64 shrink-0">
+      <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+        <aside className="w-full lg:w-64 shrink-0">
           <AdminNav />
         </aside>
         <main className="flex-1 min-w-0">

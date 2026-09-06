@@ -3,9 +3,13 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAdminAiOverview, getAdminMe } from "@/lib/api/admin";
 import { getValidatedAuth } from "@/lib/auth";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionHeader } from "@/components/ui/section-header";
+import { Surface } from "@/components/ui/surface";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "AI Metrics | Admin" };
+export const metadata: Metadata = { title: "AI Operations | Admin" };
 
 export default async function AdminAiPage() {
   const auth = await getValidatedAuth();
@@ -16,7 +20,7 @@ export default async function AdminAiPage() {
 
   let aiOverview: any;
   let denied = false;
-  
+
   try {
     await getAdminMe(token);
     aiOverview = await getAdminAiOverview(token);
@@ -26,57 +30,104 @@ export default async function AdminAiPage() {
     else throw error;
   }
 
-  if (denied) return <div className="state-panel" role="alert"><h1 className="text-2xl font-bold text-slate-950">Admin access required.</h1></div>;
+  if (denied)
+    return (
+      <Surface variant="elevated" className="p-8 text-center" role="alert">
+        <h1 className="text-xl font-bold text-slate-900">Admin access required.</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Your authenticated account is not authorized to access AI metrics.
+        </p>
+      </Surface>
+    );
 
   return (
-    <div className="space-y-10">
-      <header>
-        <h1 className="page-title">AI Processing Metrics</h1>
-        <p className="page-intro">Overview of generative AI usage and current status.</p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Content Intelligence"
+        title="AI Processing Operations"
+        description="Monitor generative AI enrichment processing pipelines, error rates, and model configurations."
+      />
 
-      <section aria-labelledby="enrichment-heading">
-        <h2 id="enrichment-heading" className="text-xl font-bold text-slate-950">Enrichment Status</h2>
-        <dl className="mt-4 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <dt className="text-sm font-semibold text-slate-500">Completed Enrichments</dt>
-            <dd className="mt-2 text-3xl font-black text-slate-950">{aiOverview.enrichment.completed.toLocaleString()}</dd>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <dt className="text-sm font-semibold text-slate-500">Retrying</dt>
-            <dd className="mt-2 text-3xl font-black text-amber-600">{aiOverview.enrichment.retrying.toLocaleString()}</dd>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm border-l-4 border-l-red-500">
-            <dt className="text-sm font-semibold text-slate-500">Failed Processing</dt>
-            <dd className="mt-2 text-3xl font-black text-red-600">{aiOverview.enrichment.failed.toLocaleString()}</dd>
-          </div>
-        </dl>
+      <section aria-labelledby="enrichment-heading" className="space-y-4">
+        <SectionHeader
+          id="enrichment-heading"
+          title="Enrichment Pipeline Status"
+          description="Operational metrics for article summary, entity extraction, and translation pipelines."
+        />
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Surface variant="elevated" className="p-5">
+            <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Completed Enrichments
+            </dt>
+            <dd className="mt-2 text-3xl font-black text-slate-900">
+              {aiOverview.enrichment.completed.toLocaleString()}
+            </dd>
+          </Surface>
+
+          <Surface variant="elevated" className="p-5">
+            <div className="flex items-center justify-between">
+              <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Retrying Jobs
+              </dt>
+              <StatusBadge status="warning" label="Retrying" />
+            </div>
+            <dd className="mt-2 text-3xl font-black text-amber-700">
+              {aiOverview.enrichment.retrying.toLocaleString()}
+            </dd>
+          </Surface>
+
+          <Surface variant="elevated" className="p-5 border-l-4 border-l-red-500">
+            <div className="flex items-center justify-between">
+              <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Failed Processing
+              </dt>
+              <StatusBadge status="danger" label="Failed" />
+            </div>
+            <dd className="mt-2 text-3xl font-black text-red-700">
+              {aiOverview.enrichment.failed.toLocaleString()}
+            </dd>
+          </Surface>
+        </div>
       </section>
 
-      <section aria-labelledby="provider-heading">
-        <h2 id="provider-heading" className="text-xl font-bold text-slate-950">Provider Configuration</h2>
-        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="font-semibold text-slate-900">Current AI Provider</h3>
-            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${aiOverview.provider.configured ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-800'}`}>
-              {aiOverview.provider.configured ? 'Configured' : 'Not Configured'}
-            </span>
+      <section aria-labelledby="provider-heading" className="space-y-4">
+        <SectionHeader
+          id="provider-heading"
+          title="Provider Configuration"
+          description="Model and inference deployment metadata."
+        />
+
+        <Surface variant="elevated" className="p-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <h3 className="text-base font-bold text-slate-900">Configured AI Model Provider</h3>
+            <StatusBadge
+              status={aiOverview.provider.configured ? "success" : "muted"}
+              label={aiOverview.provider.configured ? "Configured" : "Not Configured"}
+            />
           </div>
-          <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div>
-              <p className="text-sm text-slate-500 font-medium mb-1">Provider Name</p>
-              <p className="text-base text-slate-900">{aiOverview.provider.providerName}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                Provider Name
+              </p>
+              <p className="text-sm font-semibold text-slate-900">{aiOverview.provider.providerName}</p>
             </div>
             <div>
-              <p className="text-sm text-slate-500 font-medium mb-1">Inference Model</p>
-              <p className="text-slate-900 font-mono text-sm">{aiOverview.provider.modelName}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                Inference Model
+              </p>
+              <p className="text-sm font-mono font-semibold text-slate-900">{aiOverview.provider.modelName}</p>
             </div>
             <div>
-              <p className="text-sm text-slate-500 font-medium mb-1">Embedding Model</p>
-              <p className="text-slate-900 font-mono text-sm">{aiOverview.provider.embeddingModelName}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                Embedding Model
+              </p>
+              <p className="text-sm font-mono font-semibold text-slate-900">{aiOverview.provider.embeddingModelName}</p>
             </div>
           </div>
-        </div>
+        </Surface>
       </section>
     </div>
   );
