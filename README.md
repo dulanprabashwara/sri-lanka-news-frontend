@@ -1,195 +1,326 @@
-# Sri Lanka News Frontend
+# Sri Lankan Multilingual News Intelligence Platform
 
-Next.js frontend for browsing the public Source, Article, and Story APIs provided by the
-Sri Lanka News Spring Boot backend.
+A full-stack multilingual news intelligence platform for Sri Lankan news that collects reports from multiple publishers, processes and enriches them, groups related publisher reports into real-world Story clusters, supports English/Sinhala/Tamil experiences, and provides search, reporting-activity trending, coverage comparison, timelines, grounded Story Q&A, personalization, notifications, privacy-conscious analytics, and operational administration.
 
-## Requirements
+The system is composed of three independently maintained services:
 
-- Node.js 20.9 or newer
-- npm
-- The backend API running and configured with its own MongoDB Atlas connection
+- **Next.js Frontend** — reader, account, personalization, and admin experiences
+- **Spring Boot Backend** — APIs, persistence, processing, Story intelligence, search, AI orchestration, authentication, notifications, and analytics
+- **Python Ingestion Service** — publisher discovery, extraction, and scheduled ingestion
 
-## Local development
+---
 
-1. Install dependencies:
+## Frontend Repository
 
-   ```bash
-   npm install
-   ```
+This repository contains the presentation and application layer built with **Next.js 16 (App Router)**, **React 19**, **TypeScript**, and **Tailwind CSS v4**. It communicates strictly with the Spring Boot backend REST APIs and utilizes Supabase for client-side authentication session management.
 
-2. Copy `.env.example` to `.env.local`.
+---
 
-3. Set the backend origin in `.env.local`:
+## Table of Contents
 
-   ```dotenv
-   API_BASE_URL=http://localhost:8080
-   NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
-   ```
+- [What the Frontend Provides](#what-the-frontend-provides)
+- [UI Architecture](#ui-architecture)
+- [Technology Stack](#technology-stack)
+- [Frontend Architecture Diagram](#frontend-architecture-diagram)
+- [Authentication](#authentication)
+- [API Communication](#api-communication)
+- [Search & Discovery](#search--discovery)
+- [Story Intelligence UI](#story-intelligence-ui)
+- [Personalization](#personalization)
+- [Analytics & Privacy](#analytics--privacy)
+- [Accessibility & Responsive Design](#accessibility--responsive-design)
+- [Multilingual UI](#multilingual-ui)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Available Scripts](#available-scripts)
+- [Testing & Verification](#testing--verification)
+- [Security Notes](#security-notes)
+- [Related Repositories](#related-repositories)
 
-4. Start the Spring Boot backend.
+---
 
-5. Start the frontend:
+## What the Frontend Provides
 
-   ```bash
-   npm run dev
-   ```
+The frontend application provides 28 authoritative routes structured across 6 core functional areas:
 
-6. Open `http://localhost:3000`.
+### Public Discovery (7 Routes)
+- `/` — Flagship home discovery feed featuring top grouped stories, trending topics, and latest publisher reports
+- `/stories` — Full index of grouped multi-publisher Story clusters
+- `/trending` — Reporting-activity trending stories ranked by publisher reporting intensity
+- `/search` — Dual-mode search interface supporting Keyword (lexical) and Semantic (meaning-based) query modes
+- `/article/[id]` — Article detail view with source attribution and direct outbound link to original publisher
+- `/story/[id]` — Flagship Story Intelligence workspace featuring summary, multi-publisher coverage, timeline, and grounded Q&A
+- `/source/[slug]` — Publisher profile view displaying publisher metadata, reliability status, and recent reports
 
-Environment-specific API URLs belong in local or deployment environment
-configuration. Do not commit real deployment configuration or secrets.
+### My News / Personalization (4 Routes)
+- `/for-you` — Privacy-safe personalized feed based on user's followed sources and topics
+- `/bookmarks` — Saved articles library for offline reading and reference
+- `/following` — Management hub for followed news sources and topic tags
+- `/notifications` — User notification center displaying system and story updates
 
-## Supabase authentication
+### Account Management (3 Routes)
+- `/account` — User profile settings, display language, and category preferences
+- `/account/notifications` — Notification delivery preferences, quiet hours, and timezone settings
+- `/account/privacy` — Analytics opt-in/opt-out preferences and data privacy controls
 
-Authentication is optional for browsing. Public news, Stories, comparison, timeline, and
-multilingual routes remain available to guests. Supabase owns email/password sessions; the
-frontend stores them through `@supabase/ssr` cookies and validates server identity with
-`getClaims()` before forwarding an access token only to Spring's protected `/api/v1/me` routes.
-The account page lets authenticated users explicitly save a preferred display language and
-categories. Article and Story pages offer owner-scoped bookmarks, and `/bookmarks` provides a
-protected, filterable saved-content list. These operations use Server Actions so access tokens and
-the server-only backend URL are not exposed to client components. An explicit `?lang=en|si|ta`
-always overrides a saved language preference; guests and `ORIGINAL` preferences retain original
-publisher-language behavior. Preferred categories do not reorder the public Latest News feed.
+### Authentication (4 Routes)
+- `/auth/login` — Email/password authentication sign-in screen
+- `/auth/sign-up` — Account registration interface
+- `/auth/forgot-password` — Password reset request form
+- `/auth/reset-password` — Password update token verification form
+- `/auth/logout` — Safe session sign-out route handler (supporting GET and POST navigation)
 
-In the Supabase Dashboard, enable the Email provider, set the local Site URL to
-`http://localhost:3000`, and allow `http://localhost:3000/auth/confirm` plus
-`http://localhost:3000/auth/reset-password` as redirect destinations. Choose whether email
-confirmation is required and configure SMTP for reliable production confirmation/recovery mail.
-Verify the project uses asymmetric JWT signing keys and exposes Auth JWKS. Never add a service-role
-key, secret key, database password, signing private key, or legacy JWT secret to this frontend.
+### Utility (1 Route)
+- `/notifications/unsubscribe` — One-click email notification unsubscription page with signed token confirmation
 
-Authenticated users can follow publishers from Source pages and AI-generated topics from Article
-detail pages. `/following` lists and filters those Source and Topic interests and supports
-unfollowing. Calls continue through server-only authenticated data access and Server Actions;
-follow data and access tokens are not placed in public DTOs or shared caches. Topic labels retain
-their stored language and are not translated or semantically merged. Following records interests
-only and never reorders the public Latest News feed. Existing `?lang=en|si|ta`
-state is preserved through login and internal Source links.
+### Admin Operations Shell (9 Routes)
+- `/admin` — Operational overview dashboard with system metrics
+- `/admin/ingestion` — Ingestion health monitoring, scheduler controls, and source run history
+- `/admin/processing` — Async background processing queues and dead-letter queue (DLQ) operations
+- `/admin/sources` — Publisher source registry management and health tracking
+- `/admin/stories` — Story cluster inspection, manual merge/split management, and status overrides
+- `/admin/ai` — Gemini AI provider status, model latency, and token consumption tracking
+- `/admin/analytics` — Aggregate, privacy-preserving reader engagement metrics
+- `/admin/users` — Aggregate user preference statistics and subscription metrics
+- `/admin/audit` — Append-only security audit log tracking administrative operations
 
-## For You
+---
 
-Authenticated users can open `/for-you` from the header. The page uses only followed Sources,
-followed Topics, and preferred Categories explicitly saved by that user. Matching Articles show
-compact, deterministic reasons; recent unmatched Articles follow as unlabeled fallback content.
-Users without signals see a short onboarding notice and the latest fallback feed rather than an
-empty page. Topic identity remains exact and language-specific.
+## UI Architecture
 
-The page preserves `?lang=en|si|ta`, or uses the saved display preference when no explicit language
-is present. Translation availability changes presentation only, never ranking. Access tokens stay
-server-side, and no click history, impressions, reading time, behavioral profiling, Gemini,
-embeddings, or shared Redis personalization cache is used. `/` remains the unchanged public Latest
-News experience.
+The frontend follows a modern Next.js 16 App Router pattern:
 
-## Search
+- **Server Components (RSC)**: Used for data fetching, SEO rendering, and initial layout generation to minimize client JavaScript payload size.
+- **Client Components (`"use client"`)**: Employed for interactive controls, stateful forms, SWR data polling, and dynamic UI transitions.
+- **R1 Design Tokens & Surface Primitives**: Styled with Vanilla Tailwind CSS v4 using a cohesive dark/light surface hierarchy, dynamic focus states, and glassmorphism accents.
+- **Card Separation**: Strict visual distinction between single-report `ArticleCard` and clustered `StoryCard` components.
+- **Responsive Layout Shells**: Mobile drawer navigation active at `<1024px`; horizontal desktop navigation header active at `>=1024px`.
 
-`/search` is a public Server Component page with independent Keyword and Semantic modes. Keyword
-mode remains the default and continues to use `GET /api/v1/search/articles`; Semantic mode uses
-`GET /api/v1/search/semantic` to find conceptually similar reports. Mode switches preserve the
-query, Source state, category, original-language filter, and current `?lang=en|si|ta` display
-choice. Both modes reuse public-safe localized Article cards and provide initial, empty, loading,
-pagination, and error states without displaying raw similarity scores.
+---
 
-Search requires no login and sends no access token. Semantic mode creates one temporary query
-embedding but stores neither the query nor vector and never re-embeds Articles, translates queries,
-invokes generative AI, personalizes ranking, or uses Redis. If semantic search is unavailable, the
-page retains the user's state and offers Keyword search. Semantic quality across English, Sinhala,
-and Tamil depends on the configured embedding model.
+## Technology Stack
 
-## Ask This Story
+- **Framework**: Next.js 16.3.3 (App Router with Turbopack)
+- **Library**: React 19.2.8
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS v4 (`@tailwindcss/postcss`)
+- **Icons**: Lucide React (`lucide-react` v1.40.0)
+- **Data Fetching**: SWR (`swr` v2.5.1)
+- **Authentication**: Supabase SSR (`@supabase/ssr` v0.12.5, `@supabase/supabase-js` v2.112.4)
+- **Test Runner**: Node Test Runner via TSX (`tsx` v4.20.6)
 
-Story detail pages include a guest-accessible, one-question/one-answer Ask This Story panel. It
-submits through a Server Action so `API_BASE_URL` remains server-only and passes the current
-`?lang=en|si|ta` selection for an English, Sinhala, or Tamil answer. The backend grounds every
-answer only in reports assigned to that Story, reuses existing Article embeddings, and returns
-backend-validated citations linking to original publishers. Inline citation markers connect to an
-accessible Sources used list; similarity, model, token, prompt, vector, and extracted-content data
-are not displayed.
+---
 
-The panel has idle, submitting, answered, insufficient-evidence, and unavailable states. A failed
-request retains the question. Changing language does not regenerate an old answer, and reloading
-clears both question and answer because there is no conversation, browser storage, account history,
-tracking, or Redis answer cache. Normal requests use one temporary embedding call and one grounded
-generation call; provider quota and production rate limiting remain later hardening work.
+## Frontend Architecture Diagram
 
-## Trending Stories
+```mermaid
+flowchart TD
+    subgraph Browser["User Web Browser"]
+        UI["Next.js App Router (RSC + Client Components)"]
+        SWR["SWR Polling & Cache"]
+    end
 
-`/trending` is a guest-accessible Server Component experience for Stories receiving recent and
-broad publisher coverage. Trending is not a popularity claim: the platform collects no clicks,
-views, social signals, searches, or other behavior for this ranking. The backend deterministically
-combines report recency, report count, and distinct publisher count inside a configured recent
-window, then returns understandable reason labels without raw scores.
+    subgraph AuthProvider["Authentication"]
+        Supa["Supabase Auth (JWT)"]
+    end
 
-Category filters and `?lang=en|si|ta` are shareable and preserved in Story links. Display language
-changes only localized presentation, never ranking. The page uses no client state, AI request,
-Redis dependency, personalization, or authentication and includes independent loading, empty, and
-safe failure states.
+    subgraph Backend["Central API"]
+        Spring["Spring Boot REST API (:8080)"]
+    end
 
-## Admin
+    UI -->|Session Token| Supa
+    UI -->|REST Requests + Bearer Token| Spring
+    SWR -->|Background Poll| Spring
+```
 
-`/admin` is a protected, server-rendered operational dashboard. The backend authorizes access from
-the verified Supabase JWT `sub`; email does not grant access. Guests are redirected through the
-existing sign-in flow, authenticated non-admins receive an “Admin access required” state, and the
-header shows Admin only after the backend confirms authorization.
+---
 
-The dashboard shows bounded processing metadata, status totals, Story and Source counts, and a
-read-only Source table. A Retry action appears only for failed Articles and reuses the backend's
-existing asynchronous processing event. Access tokens remain server-side, and the UI never expects
-or renders extracted content, hashes, embeddings, prompts, raw provider errors, Redis payloads, or
-configured admin IDs. There is no CMS, content mutation, Source toggle, user management, analytics,
-Gemini call, or Redis read in the Admin view.
+## Authentication
 
-## Scripts
+User authentication is managed via Supabase Auth:
+1. Users authenticate through `/auth/login` or `/auth/sign-up`.
+2. Supabase issues a JWT session token stored in secure HTTP-only cookies via `@supabase/ssr`.
+3. The frontend passes this JWT as a `Bearer` token in the `Authorization` header to the Spring Boot backend.
+4. The Spring Boot backend independently validates the JWT via Supabase JWKS without trusting raw user IDs from client payloads.
 
-- `npm run dev` starts the development server.
-- `npm run lint` checks the source with ESLint.
-- `npm run typecheck` runs strict TypeScript checking.
-- `npm test` runs the data-access and response-contract tests.
-- `npm run build` creates the production build.
-- `npm start` serves a completed production build.
+---
 
-## Structure
+## API Communication
 
-- `src/app` contains App Router pages, layouts, and route states.
-- `src/components` contains shared presentation components.
-- `src/config` validates environment configuration.
-- `src/lib/api` owns backend requests, errors, and runtime response parsing.
-- `src/types` contains types for the backend's public API DTOs.
+- The frontend communicates **exclusively** with the Spring Boot backend REST API.
+- The frontend **never** connects directly to MongoDB Atlas, Redis, or internal ingestion endpoints.
+- API requests use a centralized HTTP client (`src/lib/api/client.ts`) that standardizes error handling (`ApiError`), query string serialization, and header injection.
 
-## Backend integration
+---
 
-Pages fetch data in Server Components. Requests therefore run from the Next.js
-server to the Spring Boot API instead of directly from the browser, so Phase 4
-does not require a browser CORS policy or a proxy/BFF. The backend must still be
-reachable from the machine or deployment running Next.js.
+## Search & Discovery
 
-Story detail pages request deterministic publisher coverage metadata on the server.
-The comparison uses existing topics and entities and does not call an AI provider.
-Source-specific metadata means only that it is absent from other currently available
-reports; it does not imply intentional omission. Cross-language equality is limited to
-literal normalized strings, so translated equivalents are not merged. Single-source
-Stories display a neutral waiting state, and comparison failures never prevent the
-main Story page from rendering. Full publisher content and private processing,
-embedding, model, prompt, and clustering metadata are never expected by frontend types.
+- **Keyword Mode**: Performs fast lexical search matching query terms across titles, snippets, and keywords.
+- **Semantic Mode**: Leverages backend vector search (Atlas Vector Search + Gemini embeddings) to retrieve stories and articles based on conceptual meaning.
+- **Trending**: Ranks stories strictly by publisher reporting activity and reporting volume within a recency decay window.
 
-Story timelines use assigned Article publication timestamps and stable Article IDs to
-display currently available publisher reports chronologically. Relative labels are measured
-from the earliest available report and do not represent event occurrence, discovery,
-causation, copying, or publisher intent. The timeline makes no AI/provider call, remains
-visible for single-report Stories, and fails independently from the main Story page.
-Timeline types include only public summaries and attribution; private content, hashes,
-embeddings, processing, model/prompt, clustering, and MongoDB metadata are excluded.
+---
 
-## Multilingual display
+## Story Intelligence UI
 
-The header offers Original, English, Sinhala, and Tamil display modes. The selection uses the
-shareable `lang=en|si|ta` query parameter so Server Components can request the matching backend
-`displayLanguage`; no `lang` parameter means Original. Internal Article, Source, Story, coverage,
-and timeline links preserve the selection. External publisher URLs are never modified.
+The Story detail view (`/story/[id]`) presents comprehensive event intelligence:
+- **Story Summary**: AI-generated neutral executive summary.
+- **Publisher Reports**: Multi-publisher coverage broken down by publisher provenance and original language.
+- **Coverage Comparison**: Grid view comparing publisher perspectives, framing, and reporting focus.
+- **Timeline**: Chronological event progression tracking key developments.
+- **Ask This Story**: Grounded Q&A interface allowing readers to ask questions specific to the Story's underlying articles.
 
-Localized pages display only translated titles and existing AI-generated summaries and label them
-as platform translations. Original publisher language attribution remains visible, missing
-translations fall back safely, and full scraped publisher content is never translated or publicly
-republished. Coverage topic/entity chips can remain in their source language because Phase 17 does
-not perform semantic multilingual metadata merging.
+---
+
+## Personalization
+
+- **For You**: Recommends relevant stories using the reader's explicitly followed sources and topic tags.
+- **Bookmarks**: Allows users to save articles for quick reference.
+- **Following**: Manages source and topic subscriptions.
+- **Notifications**: Delivers in-app alerts for breaking developments in followed topics.
+
+---
+
+## Analytics & Privacy
+
+- Collects minimal, privacy-conscious reader engagement telemetry (e.g., page views, story interactions).
+- **Zero Raw PII**: Never transmits raw search queries, user email addresses, notification contents, or Ask Q&A text.
+- Respects browser `Do Not Track` (DNT) and `Global Privacy Control` (GPC) signals by completely disabling analytics tracking when active.
+
+---
+
+## Accessibility & Responsive Design
+
+- Tested and verified across 8 standard breakpoints: `320px`, `375px`, `390px`, `768px`, `820px`, `1024px`, `1280px`, and `1440px`.
+- Mobile/Tablet Drawer Shell: Active at `<1024px`.
+- Desktop Shell Navigation: Active at `>=1024px` (`lg` breakpoint).
+- High-contrast visual hierarchy, explicit focus rings, semantic HTML structure, and keyboard-accessible modal overlays.
+
+---
+
+## Multilingual UI
+
+- First-class support for **English (EN)**, **Sinhala (SI)**, and **Tamil (TA)**.
+- Features dynamic display language switching (`?lang=en|si|ta`) while preserving active search queries, filters, and pagination state.
+- Clearly demarcates original publisher language versus translated summary content to preserve source attribution integrity.
+
+---
+
+## Project Structure
+
+```
+sri-lanka-news-frontend/
+├── public/                     # Static assets, favicon, brand icons
+├── src/
+│   ├── app/                    # Next.js App Router (28 routes)
+│   │   ├── (discovery)/        # Public reader routes (/, stories, trending, search, etc.)
+│   │   ├── account/            # User profile & preference settings
+│   │   ├── admin/              # Admin operational management shell
+│   │   ├── auth/               # Auth routes & sign-out API handler
+│   │   └── notifications/      # Unsubscribe utility
+│   ├── components/             # Reusable UI components & design system primitives
+│   ├── lib/                    # API clients, SWR hooks, types, & utility functions
+│   └── middleware.ts           # Route protection & session refresh middleware
+├── eslint.config.mjs           # ESLint configuration
+├── next.config.ts              # Next.js build configuration
+├── postcss.config.mjs          # PostCSS configuration for Tailwind v4
+└── tsconfig.json               # TypeScript configuration
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js `20.x` or higher
+- npm `10.x` or higher
+- Running Spring Boot backend (`http://localhost:8080`)
+
+### Installation
+```bash
+# Clone repository
+git clone https://github.com/dulanprabashwara/sri-lanka-news-frontend.git
+cd sri-lanka-news-frontend
+
+# Install dependencies
+npm install
+```
+
+### Development Server
+```bash
+# Copy example environment configuration
+cp .env.example .env.local
+
+# Run Next.js development server
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+---
+
+## Environment Variables
+
+Configure `.env.local` using variable names from `.env.example`:
+
+| Variable Name | Purpose | Scope |
+|---|---|---|
+| `API_BASE_URL` | Base URL of Spring Boot backend (e.g., `http://localhost:8080`) | Server-Only |
+| `NEXT_PUBLIC_SUPABASE_URL` | Public Supabase project URL | Public / Client |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public Supabase API key | Public / Client |
+
+> **Note**: Never commit secret keys or real Supabase tokens to source control.
+
+---
+
+## Available Scripts
+
+- `npm run dev` — Starts local development server with Turbopack.
+- `npm run build` — Creates optimized production build.
+- `npm run start` — Runs compiled production build.
+- `npm run lint` — Runs ESLint code quality checks.
+- `npm run typecheck` — Runs TypeScript type compiler without emitting files.
+- `npm run test` — Executes test suite using Node.js Test Runner and TSX.
+
+---
+
+## Testing & Verification
+
+The frontend repository includes automated behavioral and component tests.
+
+```bash
+# Run full test suite
+npm run test
+
+# Run type check
+npm run typecheck
+
+# Run linting
+npm run lint
+
+# Validate production build
+npm run build
+```
+
+**Verified R8 Baseline**:
+- 111 tests PASS
+- 0 TypeScript errors
+- 0 ESLint errors / 0 warnings
+- Production build PASS
+
+---
+
+## Security Notes
+
+- JWT authentication tokens are strictly handled using secure Supabase cookies.
+- Admin endpoints are protected by role checks verified against backend authority.
+- All outbound publisher links use `rel="noopener noreferrer"` and enforce secure HTTP/HTTPS protocols.
+
+---
+
+## Related Repositories
+
+| Repository | Description |
+|---|---|
+| [sri-lanka-news-backend](https://github.com/dulanprabashwara/sri-lanka-news-backend) | Spring Boot 3.5 REST API, persistence, AI orchestration & security |
+| [sri-lanka-news-ingestion](https://github.com/dulanprabashwara/sri-lanka-news-ingestion) | Python 3.12 scheduled publisher extraction & ingestion service |
