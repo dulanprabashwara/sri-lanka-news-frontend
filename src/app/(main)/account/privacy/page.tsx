@@ -1,27 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { AccountLayout } from "@/components/account/account-layout";
+import { Surface } from "@/components/ui/surface";
+import { SectionHeader } from "@/components/ui/section-header";
+import { Button } from "@/components/ui/button";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getPreferences, updatePreferences } from "@/lib/api/user";
+import { readDisplayLanguage } from "@/lib/language";
 import { UserPreferences } from "@/types/api";
-import { Shield, Save } from "lucide-react";
+import { Shield, Save, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function PrivacySettingsPage() {
+  const searchParams = useSearchParams();
+  const displayLanguage = readDisplayLanguage(searchParams.get("lang"));
+
   const [prefs, setPrefs] = useState<UserPreferences | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [dntActive, setDntActive] = useState(() => {
-    if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
-      return navigator.doNotTrack === '1' || (window as unknown as { doNotTrack?: string }).doNotTrack === '1' || !!(navigator as unknown as { globalPrivacyControl?: boolean }).globalPrivacyControl;
-    }
-    return false;
-  });
+  const [error, setError] = useState<string | null>(null);
+
+  const dntActive = typeof window !== "undefined" && typeof navigator !== "undefined"
+    ? navigator.doNotTrack === "1" ||
+      (window as unknown as { doNotTrack?: string }).doNotTrack === "1" ||
+      !!(navigator as unknown as { globalPrivacyControl?: boolean }).globalPrivacyControl
+    : false;
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.access_token) {
-        getPreferences(session.access_token).then(setPrefs).catch(console.error);
+        getPreferences(session.access_token)
+          .then(setPrefs)
+          .catch((e) => {
+            console.error(e);
+            setError("Failed to load privacy preferences.");
+          });
       }
     });
   }, []);
@@ -29,96 +46,140 @@ export default function PrivacySettingsPage() {
   const handleSave = async () => {
     if (!prefs) return;
     setSaving(true);
+    setError(null);
     try {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error("No token");
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("No session");
+
       const updated = await updatePreferences(session.access_token, {
         preferredDisplayLanguage: prefs.preferredDisplayLanguage,
         preferredCategories: prefs.preferredCategories,
-        analyticsEnabled: prefs.analyticsEnabled
+        analyticsEnabled: prefs.analyticsEnabled,
       });
       setPrefs(updated);
-      
-      // Update local storage so client doesn't wait for API on next load
-      localStorage.setItem('analytics_enabled', String(prefs.analyticsEnabled));
-      
+
+      localStorage.setItem("analytics_enabled", String(prefs.analyticsEnabled));
+
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (e) {
       console.error(e);
-      alert("Failed to save preferences.");
+      setError("Failed to save privacy options. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
+  if (error && !prefs) {
+    return (
+      <AccountLayout
+        title="Privacy & Data"
+        description="Manage usage analytics preferences and browser privacy controls."
+        activeSection="privacy"
+        displayLanguage={displayLanguage}
+      >
+        <Surface variant="elevated" className="p-6 text-center text-foreground-secondary">
+          <p>{error}</p>
+        </Surface>
+      </AccountLayout>
+    );
+  }
+
   if (!prefs) {
-    return <div className="p-8 text-center text-slate-500">Loading preferences...</div>;
+    return (
+      <AccountLayout
+        title="Privacy & Data"
+        description="Manage usage analytics preferences and browser privacy controls."
+        activeSection="privacy"
+        displayLanguage={displayLanguage}
+      >
+        <Surface variant="elevated" className="p-6 space-y-4">
+          <Skeleton className="h-6 w-48" />
+          <Skeleton className="h-20 w-full" />
+        </Surface>
+      </AccountLayout>
+    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Privacy & Data</h1>
-        <p className="text-slate-500 mt-1">Manage how your data is used to improve the platform.</p>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden divide-y divide-slate-100">
-        
+    <AccountLayout
+      title="Privacy & Data"
+      description="Manage usage analytics preferences and browser privacy controls."
+      activeSection="privacy"
+      displayLanguage={displayLanguage}
+    >
+      <div className="space-y-6">
         {/* Analytics & Telemetry */}
-        <div className="p-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-teal-600" />
-            Analytics & Telemetry
-          </h2>
-          
+        <Surface variant="elevated" className="p-6 space-y-4">
+          <SectionHeader
+            title="Usage Analytics & Privacy"
+            description="Control how optional, privacy-preserving usage data is handled."
+          />
+
           {dntActive && (
-            <div className="mb-4 p-4 rounded-md bg-amber-50 border border-amber-200 text-sm text-amber-800">
-              <strong>Note:</strong> We detected a &quot;Do Not Track&quot; or &quot;Global Privacy Control&quot; signal from your browser. Our platform automatically respects this, and telemetry is disabled on your device regardless of this setting.
+            <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
+              <div className="flex items-center gap-2 font-bold text-amber-800">
+                <EyeOff className="w-4 h-4 text-amber-800" />
+                Browser Privacy Signal Detected
+              </div>
+              <p>
+                Your browser sent a &quot;Do Not Track&quot; (DNT) or &quot;Global Privacy Control&quot; (GPC) signal.
+                Our platform automatically honors your browser settings and suppresses optional analytics telemetry on this device.
+              </p>
             </div>
           )}
 
-          <div className="space-y-4">
-            <label className="flex items-start gap-3">
-              <input 
-                type="checkbox" 
-                className="mt-1 w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-600"
+          <div className="space-y-4 pt-2">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                className="mt-1 h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
                 checked={prefs.analyticsEnabled}
-                onChange={e => setPrefs({...prefs, analyticsEnabled: e.target.checked})}
-                disabled={dntActive}
+                onChange={(e) => setPrefs({ ...prefs, analyticsEnabled: e.target.checked })}
               />
-              <div>
-                <div className="font-medium text-slate-900">Help improve the platform</div>
-                <div className="text-sm text-slate-500 mt-1">
-                  Allow the platform to collect basic, privacy-preserving usage data (like which articles are read). 
-                  We never store your search queries or IP address, and all analytics data is entirely anonymous.
+              <div className="space-y-0.5">
+                <div className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-brand-primary" />
+                  Help improve news intelligence quality
                 </div>
+                <div className="text-xs text-foreground-secondary leading-relaxed">
+                  Allow the platform to collect basic, privacy-preserving usage metrics (such as aggregate article reading counts).
+                  Search terms and IP addresses are never recorded, and all analytics remain completely anonymous.
+                </div>
+                {dntActive && (
+                  <div className="pt-1">
+                    <StatusBadge status="warning" label="Telemetry suppressed on this device by browser DNT/GPC signal" size="sm" />
+                  </div>
+                )}
               </div>
             </label>
           </div>
-        </div>
+        </Surface>
 
-        {/* Footer */}
-        <div className="p-6 bg-slate-50 flex items-center justify-between">
-          <div className="text-sm text-slate-500">
+        {/* Footer Actions & Status Feedback */}
+        <Surface variant="muted" className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-xs font-medium text-foreground-secondary">
             {saved ? (
-              <span className="text-teal-600 font-medium">Preferences saved successfully!</span>
+              <span className="text-emerald-700 font-bold">✓ Privacy settings saved successfully.</span>
+            ) : error ? (
+              <span className="text-rose-700 font-bold">{error}</span>
             ) : (
-              <span>Changes take effect immediately.</span>
+              <span>Changes take effect immediately upon saving.</span>
             )}
           </div>
-          <button
+          <Button
             onClick={handleSave}
-            disabled={saving || dntActive}
-            className="flex items-center gap-2 rounded-md bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 disabled:opacity-50"
+            disabled={saving}
+            className="gap-2 w-full sm:w-auto shrink-0"
           >
             <Save className="w-4 h-4" />
-            {saving ? "Saving..." : "Save Preferences"}
-          </button>
-        </div>
+            {saving ? "Saving..." : "Save Privacy Options"}
+          </Button>
+        </Surface>
       </div>
-    </div>
+    </AccountLayout>
   );
 }
