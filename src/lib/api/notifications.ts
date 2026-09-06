@@ -51,11 +51,17 @@ export interface NotificationPreference {
 
 export async function getNotifications(page = 0, size = 20): Promise<NotificationPage> {
   const accessToken = await getAccessToken();
+  if (!accessToken) {
+    return { content: [], totalPages: 0, totalElements: 0, size, number: page };
+  }
   return requestJson(`/api/v1/me/notifications?page=${page}&size=${size}`, (payload: unknown) => payload as NotificationPage, { accessToken });
 }
 
 export async function getUnreadCount(): Promise<UnreadCountResponse> {
   const accessToken = await getAccessToken();
+  if (!accessToken) {
+    return { count: 0 };
+  }
   return requestJson(`/api/v1/me/notifications/unread-count`, (payload: unknown) => payload as UnreadCountResponse, { accessToken });
 }
 

@@ -80,9 +80,9 @@ test("Phase R6 — Admin Navigation & Security Boundaries: proves Audit Log is a
     const content = fs.readFileSync(auditFilePath, "utf8");
 
     // Proves append-only table fields
-    assert.ok(content.includes("log.action"));
-    assert.ok(content.includes("log.actorId"));
-    assert.ok(content.includes("log.timestamp"));
+    assert.ok(content.includes("log.eventType"));
+    assert.ok(content.includes("log.adminUserId"));
+    assert.ok(content.includes("log.createdAt"));
 
     // Proves no delete/edit operations
     assert.ok(!content.includes("deleteLog"));

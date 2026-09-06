@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAdminAuditEvents, getAdminMe } from "@/lib/api/admin";
+import { ApiError } from "@/lib/api/client";
 import { getValidatedAuth } from "@/lib/auth";
 import { formatPublishedAt } from "@/lib/format";
 import { PageHeader } from "@/components/ui/page-header";
@@ -30,9 +31,9 @@ export default async function AdminAuditPage({
   try {
     await getAdminMe(token);
     logsPage = await getAdminAuditEvents(token, page, 50);
-  } catch (error: any) {
-    if (error?.status === 401) redirect("/auth/login?next=/admin/audit");
-    if (error?.status === 403) denied = true;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) redirect("/auth/login?next=/admin/audit");
+    if (error instanceof ApiError && error.status === 403) denied = true;
     else throw error;
   }
 
