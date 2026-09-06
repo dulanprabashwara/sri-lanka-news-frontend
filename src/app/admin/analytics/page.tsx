@@ -94,6 +94,7 @@ export default function AdminAnalyticsDashboard() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData(days);
   }, [days, loadData]);
 

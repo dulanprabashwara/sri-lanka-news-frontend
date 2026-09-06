@@ -8,8 +8,6 @@ test("renders operational counts, processing, sources, and retry only for failur
   const failed = { articleId: "article-1", title: "Failed report",
     source: { name: "NewsFirst", slug: "newsfirst" }, processingStatus: "FAILED" as const,
     discoveredAt: "2026-09-02T00:00:00Z", publishedAt: "2026-09-01T23:00:00Z" };
-  const completed = { ...failed, articleId: "article-2", title: "Completed report",
-    processingStatus: "COMPLETED" as const };
   const html = renderToStaticMarkup(createElement(AdminDashboard, {
     overview: { 
       sources: { total: 3, enabled: 3, paused: 0, failing: 0 }, 

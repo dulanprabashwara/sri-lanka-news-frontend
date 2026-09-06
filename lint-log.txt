@@ -1,0 +1,36 @@
+
+> sri-lanka-news-frontend@0.1.0 lint
+> eslint
+
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\admin\analytics\page.tsx
+  97:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\admin\analytics\page.tsx:97:5
+   95 |
+   96 |   useEffect(() => {
+>  97 |     loadData(days);
+      |     ^^^^^^^^ Avoid calling setState() directly within an effect
+   98 |   }, [days, loadData]);
+   99 |
+  100 |   const handleRange = (d: number) => {  react-hooks/set-state-in-effect
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\for-you\page.tsx
+   5:10  warning  'PageHeader' is defined but never used  @typescript-eslint/no-unused-vars
+   6:10  warning  'Surface' is defined but never used     @typescript-eslint/no-unused-vars
+  12:10  warning  'Sparkles' is defined but never used    @typescript-eslint/no-unused-vars
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\trending\page.tsx
+  8:10  warning  'Button' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\components\search-results.tsx
+  4:10  warning  'Button' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 6 problems (1 error, 5 warnings)
+

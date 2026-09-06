@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPreferences, updatePreferences, NotificationPreference } from "@/lib/api/notifications";
 import { readDisplayLanguage } from "@/lib/language";
-import { Save, Bell, Clock, Sliders } from "lucide-react";
+import { Save, Bell, Clock } from "lucide-react";
 
 export default function NotificationPreferencesPage() {
   const searchParams = useSearchParams();

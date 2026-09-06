@@ -6,6 +6,7 @@ export interface SectionHeaderProps {
   actionSlot?: ReactNode;
   headingLevel?: "h2" | "h3" | "h4";
   className?: string;
+  id?: string;
 }
 
 export function SectionHeader({
@@ -14,11 +15,12 @@ export function SectionHeader({
   actionSlot,
   headingLevel = "h2",
   className = "",
+  id,
 }: SectionHeaderProps) {
   const HeadingTag = headingLevel;
 
   return (
-    <div className={`flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between border-b border-border pb-3 ${className}`.trim()}>
+    <div id={id} className={`flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between border-b border-border pb-3 ${className}`.trim()}>
       <div>
         <HeadingTag className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
           {title}

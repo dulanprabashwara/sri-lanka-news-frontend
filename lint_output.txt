@@ -1,0 +1,38 @@
+
+> sri-lanka-news-frontend@0.1.0 lint
+> eslint
+
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\(main)\account\notifications\page.tsx
+  13:29  warning  'Sliders' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\admin\analytics\page.tsx
+  97:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\admin\analytics\page.tsx:97:5
+   95 |
+   96 |   useEffect(() => {
+>  97 |     loadData(days);
+      |     ^^^^^^^^ Avoid calling setState() directly within an effect
+   98 |   }, [days, loadData]);
+   99 |
+  100 |   const handleRange = (d: number) => {  react-hooks/set-state-in-effect
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\app\admin\page.tsx
+  5:10  warning  'getAdminArticles' is defined but never used  @typescript-eslint/no-unused-vars
+  5:58  warning  'getAdminSources' is defined but never used   @typescript-eslint/no-unused-vars
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\components\account-r5-behavioral.test.ts
+  3:10  warning  'analyticsClient' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\sri-lanka-news\sri-lanka-news-frontend\src\components\admin-dashboard.test.ts
+  11:9  warning  'completed' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 6 problems (1 error, 5 warnings)
+

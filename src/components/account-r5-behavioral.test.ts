@@ -1,6 +1,5 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { analyticsClient } from "@/lib/analytics/analytics-client";
 import { Notification } from "@/lib/api/notifications";
 
 test("DNT/GPC runtime suppression is independent of account preference", () => {

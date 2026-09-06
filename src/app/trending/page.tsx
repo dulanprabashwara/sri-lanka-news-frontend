@@ -3,10 +3,13 @@ import Link from "next/link";
 import { CategoryNavigation } from "@/components/category-navigation";
 import { ErrorState } from "@/components/error-state";
 import { StoryCard } from "@/components/story-card";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getTrendingStories } from "@/lib/api/news";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 import { ARTICLE_CATEGORIES, type ArticleCategory } from "@/types/api";
+import { TrendingUp } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Trending Stories" };
@@ -27,35 +30,44 @@ export default async function TrendingPage({
   const category = readCategory(params.category);
   const displayLanguage = readDisplayLanguage(params.lang);
   let stories;
+  const filterNav = (
+    <CategoryNavigation activeCategory={category} basePath="/trending"
+      label="Trending Story categories" displayLanguage={displayLanguage} />
+  );
+
   try {
     stories = await getTrendingStories({ limit: 10, category, displayLanguage });
   } catch (error) {
     return (
-      <div className="space-y-8">
-        <TrendingHeader />
-        <CategoryNavigation activeCategory={category} basePath="/trending"
-          label="Trending Story categories" displayLanguage={displayLanguage} />
+      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <PageHeader          eyebrow="Reporting activity"          title="Trending"          description="Stories receiving recent and broad reporting coverage. Rankings are based on reporting recency, number of reports, and publisher coverage."
+          filterSlot={filterNav}
+        />
         <ErrorState title="Unable to load Trending Stories" message={getApiErrorMessage(error)} />
-      </div>
+      </section>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <TrendingHeader />
-      <CategoryNavigation activeCategory={category} basePath="/trending"
-        label="Trending Story categories" displayLanguage={displayLanguage} />
+    <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <PageHeader        eyebrow="Reporting activity"        title="Trending"        description="Stories receiving recent and broad reporting coverage. Rankings are based on reporting recency, number of reports, and publisher coverage."
+        filterSlot={filterNav}
+      />
       {stories.length === 0 ? (
-        <div className="state-panel" role="status">
-          <h2 className="text-lg font-bold text-slate-900">No trending stories right now.</h2>
-          <p className="mt-2 text-sm text-slate-600">Recent grouped coverage will appear here.</p>
-          <div className="mt-5 flex flex-wrap gap-4 text-sm font-semibold">
-            <Link className="text-teal-800 hover:text-teal-700"
-              href={withDisplayLanguage("/", displayLanguage)}>Browse latest news</Link>
-            <Link className="text-teal-800 hover:text-teal-700"
-              href={withDisplayLanguage("/stories", displayLanguage)}>Browse all stories</Link>
-          </div>
-        </div>
+        <EmptyState          icon={<TrendingUp className="size-6 text-foreground-secondary" />}
+          title="No trending stories right now"
+          description="Recent grouped coverage will appear here. No stories have crossed the multi-publisher reporting threshold for this category yet."
+          primaryAction={
+            <Link href={withDisplayLanguage("/", displayLanguage)} className="inline-flex items-center justify-center font-semibold rounded-lg bg-brand text-brand-foreground hover:bg-brand-hover shadow-sm px-4 py-2 text-sm gap-2 cursor-pointer transition-all duration-150">
+              Browse latest news
+            </Link>
+          }
+          secondaryAction={
+            <Link href={withDisplayLanguage("/stories", displayLanguage)} className="inline-flex items-center justify-center font-semibold rounded-lg bg-surface-muted text-foreground-secondary hover:bg-border hover:text-foreground border border-border px-4 py-2 text-sm gap-2 cursor-pointer transition-all duration-150">
+              Browse all stories
+            </Link>
+          }
+        />
       ) : (
         <div className="grid gap-4 sm:gap-5">
           {stories.map((story) => (
@@ -64,19 +76,6 @@ export default async function TrendingPage({
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function TrendingHeader() {
-  return (
-    <header className="max-w-3xl">
-      <p className="eyebrow">Reporting activity</p>
-      <h1 className="page-title">Trending</h1>
-      <p className="page-intro">Stories receiving recent and broad reporting coverage.</p>
-      <p className="mt-3 text-sm leading-6 text-slate-600">
-        Rankings are based on reporting recency, number of reports, and publisher coverage.
-      </p>
-    </header>
+    </section>
   );
 }

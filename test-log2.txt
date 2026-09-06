@@ -1,0 +1,689 @@
+
+> sri-lanka-news-frontend@0.1.0 test
+> tsx --test src/**/*.test.ts
+
+TAP version 13
+# Subtest: missing mode keeps Keyword search as the guest-accessible default
+ok 1 - missing mode keeps Keyword search as the guest-accessible default
+  ---
+  duration_ms: 111.5602
+  type: 'test'
+  ...
+# Subtest: semantic provider failure keeps state and offers Keyword fallback
+ok 2 - semantic provider failure keeps state and offers Keyword fallback
+  ---
+  duration_ms: 75.6023
+  type: 'test'
+  ...
+# Subtest: renders guest Trending explanation, localized cards, reasons, and preserved state
+ok 3 - renders guest Trending explanation, localized cards, reasons, and preserved state
+  ---
+  duration_ms: 107.2688
+  type: 'test'
+  ...
+# Subtest: renders an empty state with language-preserving browsing links
+ok 4 - renders an empty state with language-preserving browsing links
+  ---
+  duration_ms: 20.4925
+  type: 'test'
+  ...
+# Subtest: renders an isolated safe error state
+ok 5 - renders an isolated safe error state
+  ---
+  duration_ms: 6.2858
+  type: 'test'
+  ...
+# Subtest: AccountLayout renders desktop sidebar and mobile navigation tabs
+ok 6 - AccountLayout renders desktop sidebar and mobile navigation tabs
+  ---
+  duration_ms: 44.1378
+  type: 'test'
+  ...
+# Subtest: AccountLayout preserves display language parameter on navigation links
+ok 7 - AccountLayout preserves display language parameter on navigation links
+  ---
+  duration_ms: 6.8978
+  type: 'test'
+  ...
+# Subtest: AccountLayout does NOT render unsupported security or billing links
+ok 8 - AccountLayout does NOT render unsupported security or billing links
+  ---
+  duration_ms: 5.822
+  type: 'test'
+  ...
+# Subtest: DNT/GPC runtime suppression is independent of account preference
+ok 9 - DNT/GPC runtime suppression is independent of account preference
+  ---
+  duration_ms: 2.1087
+  type: 'test'
+  ...
+# Subtest: Notification target URL dynamically resolves storyId, triggeringArticleId, or linkPath
+ok 10 - Notification target URL dynamically resolves storyId, triggeringArticleId, or linkPath
+  ---
+  duration_ms: 0.3938
+  type: 'test'
+  ...
+# Subtest: Notification CTA label correctly distinguishes Story vs Article target
+ok 11 - Notification CTA label correctly distinguishes Story vs Article target
+  ---
+  duration_ms: 0.2095
+  type: 'test'
+  ...
+# Subtest: Unsubscribe requires explicit user confirmation and preserves token
+ok 12 - Unsubscribe requires explicit user confirmation and preserves token
+  ---
+  duration_ms: 0.1994
+  type: 'test'
+  ...
+# Subtest: Notification preference payload transforms quietHours correctly
+ok 13 - Notification preference payload transforms quietHours correctly
+  ---
+  duration_ms: 0.3615
+  type: 'test'
+  ...
+# Subtest: renders operational counts, processing, sources, and retry only for failures
+ok 14 - renders operational counts, processing, sources, and retry only for failures
+  ---
+  duration_ms: 84.6081
+  type: 'test'
+  ...
+# Subtest: Phase R6 ΓÇö Admin Navigation & Security Boundaries: defines exactly 3 conceptual navigation pillars with all 9 authoritative routes
+ok 15 - Phase R6 ΓÇö Admin Navigation & Security Boundaries: defines exactly 3 conceptual navigation pillars with all 9 authoritative routes
+  ---
+  duration_ms: 6.3335
+  type: 'test'
+  ...
+# Subtest: Phase R6 ΓÇö Admin Navigation & Security Boundaries: enforces strict route matching where /admin only activates Overview
+ok 16 - Phase R6 ΓÇö Admin Navigation & Security Boundaries: enforces strict route matching where /admin only activates Overview
+  ---
+  duration_ms: 0.4606
+  type: 'test'
+  ...
+# Subtest: Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves Admin Analytics renders aggregate metrics only without raw PII or individual logs
+ok 17 - Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves Admin Analytics renders aggregate metrics only without raw PII or individual logs
+  ---
+  duration_ms: 3.5222
+  type: 'test'
+  ...
+# Subtest: Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves User Metrics renders aggregate metrics only without account management or email lookup
+ok 18 - Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves User Metrics renders aggregate metrics only without account management or email lookup
+  ---
+  duration_ms: 1.868
+  type: 'test'
+  ...
+# Subtest: Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves Audit Log is append-only without delete/edit actions or raw JWT/secret rendering
+ok 19 - Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves Audit Log is append-only without delete/edit actions or raw JWT/secret rendering
+  ---
+  duration_ms: 1.4792
+  type: 'test'
+  ...
+# Subtest: Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves AI admin page renders provider status without exposing API keys or secrets
+ok 20 - Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves AI admin page renders provider status without exposing API keys or secrets
+  ---
+  duration_ms: 1.0316
+  type: 'test'
+  ...
+# Subtest: Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves Sources and Ingestion admin pages do not render infrastructure secrets or credentials
+ok 21 - Phase R6 ΓÇö Admin Navigation & Security Boundaries: proves Sources and Ingestion admin pages do not render infrastructure secrets or credentials
+  ---
+  duration_ms: 1.9119
+  type: 'test'
+  ...
+# Subtest: ArticleCard standard variant renders publisher identity, headline, metadata, and media
+ok 22 - ArticleCard standard variant renders publisher identity, headline, metadata, and media
+  ---
+  duration_ms: 158.4555
+  type: 'test'
+  ...
+# Subtest: ArticleCard renders cleanly without lead media
+ok 23 - ArticleCard renders cleanly without lead media
+  ---
+  duration_ms: 2.9914
+  type: 'test'
+  ...
+# Subtest: ArticleCard preserves displayLanguage parameter across source and detail links
+ok 24 - ArticleCard preserves displayLanguage parameter across source and detail links
+  ---
+  duration_ms: 3.2485
+  type: 'test'
+  ...
+# Subtest: ArticleCard compact variant renders lightweight headline list item
+ok 25 - ArticleCard compact variant renders lightweight headline list item
+  ---
+  duration_ms: 2.2594
+  type: 'test'
+  ...
+# Subtest: Article detail contracts: safe public fields only without extractedContent
+ok 26 - Article detail contracts: safe public fields only without extractedContent
+  ---
+  duration_ms: 61.1423
+  type: 'test'
+  ...
+# Subtest: Language link preservation preserves display language on internal routes
+ok 27 - Language link preservation preserves display language on internal routes
+  ---
+  duration_ms: 0.3564
+  type: 'test'
+  ...
+# Subtest: Translation provenance clearly credits platform translation for localized fields
+ok 28 - Translation provenance clearly credits platform translation for localized fields
+  ---
+  duration_ms: 0.4251
+  type: 'test'
+  ...
+# Subtest: renders the guest-accessible Ask form without chat history
+ok 29 - renders the guest-accessible Ask form without chat history
+  ---
+  duration_ms: 26.1844
+  type: 'test'
+  ...
+# Subtest: validates normalized Unicode questions by code point
+ok 30 - validates normalized Unicode questions by code point
+  ---
+  duration_ms: 4.7387
+  type: 'test'
+  ...
+# Subtest: renders grounded answer markers and trusted publisher citations
+ok 31 - renders grounded answer markers and trusted publisher citations
+  ---
+  duration_ms: 46.5561
+  type: 'test'
+  ...
+# Subtest: renders insufficient evidence as a successful non-chat state
+ok 32 - renders insufficient evidence as a successful non-chat state
+  ---
+  duration_ms: 1.0746
+  type: 'test'
+  ...
+# Subtest: renders neutral multi-source shared and source-specific coverage
+ok 33 - renders neutral multi-source shared and source-specific coverage
+  ---
+  duration_ms: 95.1786
+  type: 'test'
+  ...
+# Subtest: renders single-source comparison as a non-error waiting state
+ok 34 - renders single-source comparison as a non-error waiting state
+  ---
+  duration_ms: 6.9776
+  type: 'test'
+  ...
+# Subtest: renders supplementary failure without hiding Story content
+ok 35 - renders supplementary failure without hiding Story content
+  ---
+  duration_ms: 1.227
+  type: 'test'
+  ...
+# Subtest: renders explicit recommendation reasons and language-preserving article/source links
+ok 36 - renders explicit recommendation reasons and language-preserving article/source links
+  ---
+  duration_ms: 85.4079
+  type: 'test'
+  ...
+# Subtest: does not falsely label fallback content and renders a normal empty state
+ok 37 - does not falsely label fallback content and renders a normal empty state
+  ---
+  duration_ms: 7.7288
+  type: 'test'
+  ...
+# Subtest: NotificationPreference DTO defines only supported backend fields
+ok 38 - NotificationPreference DTO defines only supported backend fields
+  ---
+  duration_ms: 1.3778
+  type: 'test'
+  ...
+# D:\\sri-lanka-news\\sri-lanka-news-frontend\\src\\components\\r7-behavioral.test.ts:7
+# mock.module("server-only", { namedExports: {} });
+#      ^
+# TypeError: import_node_test.mock.module is not a function
+#     at assert (D:\\sri-lanka-news\\sri-lanka-news-frontend\\src\\components\\r7-behavioral.test.ts:7:6)
+#     at Object.<anonymous> (D:\\sri-lanka-news\\sri-lanka-news-frontend\\src\\components\\r7-behavioral.test.ts:76:2)
+#     at Module._compile (node:internal/modules/cjs/loader:1688:14)
+#     at Object.transformer (D:\\sri-lanka-news\\sri-lanka-news-frontend\\node_modules\\tsx\\dist\\register-OY9cqBEN.cjs:9:3619)
+#     at Module.load (node:internal/modules/cjs/loader:1423:32)
+#     at Function._load (node:internal/modules/cjs/loader:1246:12)
+#     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+#     at cjsLoader (node:internal/modules/esm/translators:268:5)
+#     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:202:7)
+# Node.js v22.18.0
+# Subtest: src\\components\\r7-behavioral.test.ts
+not ok 13 - src\\components\\r7-behavioral.test.ts
+  ---
+  duration_ms: 1036.2933
+  type: 'test'
+  location: 'D:\\sri-lanka-news\\sri-lanka-news-frontend\\src\\components\\r7-behavioral.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: renders multilingual localized results and preserves display language on internal links
+ok 40 - renders multilingual localized results and preserves display language on internal links
+  ---
+  duration_ms: 91.904
+  type: 'test'
+  ...
+# Subtest: renders useful Unicode empty-search guidance
+ok 41 - renders useful Unicode empty-search guidance
+  ---
+  duration_ms: 4.9086
+  type: 'test'
+  ...
+# Subtest: renders semantic empty guidance and keyword fallback without a score
+ok 42 - renders semantic empty guidance and keyword fallback without a score
+  ---
+  duration_ms: 4.4553
+  type: 'test'
+  ...
+# Subtest: semantic results reuse localized Article cards without exposing similarity
+ok 43 - semantic results reuse localized Article cards without exposing similarity
+  ---
+  duration_ms: 4.7445
+  type: 'test'
+  ...
+# Subtest: guest header navigation state: shows Discovery links and Sign in CTA, conceals My News, Bell, and Admin
+ok 44 - guest header navigation state: shows Discovery links and Sign in CTA, conceals My News, Bell, and Admin
+  ---
+  duration_ms: 2.0223
+  type: 'test'
+  ...
+# Subtest: authenticated header navigation state: Groups For You, Bookmarks, and Following under My News dropdown
+ok 45 - authenticated header navigation state: Groups For You, Bookmarks, and Following under My News dropdown
+  ---
+  duration_ms: 1.2598
+  type: 'test'
+  ...
+# Subtest: admin header navigation state: Admin Portal appears only when admin flag is true
+ok 46 - admin header navigation state: Admin Portal appears only when admin flag is true
+  ---
+  duration_ms: 0.321
+  type: 'test'
+  ...
+# Subtest: renders a Story card with public counts and detail link
+ok 47 - renders a Story card with public counts and detail link
+  ---
+  duration_ms: 75.2183
+  type: 'test'
+  ...
+# Subtest: renders Lead variant of StoryCard
+ok 48 - renders Lead variant of StoryCard
+  ---
+  duration_ms: 6.4074
+  type: 'test'
+  ...
+# Subtest: renders only backend-provided Trending reason labels and preserves language
+ok 49 - renders only backend-provided Trending reason labels and preserves language
+  ---
+  duration_ms: 3.7705
+  type: 'test'
+  ...
+# Subtest: renders ArticleCard with publisher source identity and language parameter preservation
+ok 50 - renders ArticleCard with publisher source identity and language parameter preservation
+  ---
+  duration_ms: 4.4152
+  type: 'test'
+  ...
+# Subtest: renders compact variant of ArticleCard
+ok 51 - renders compact variant of ArticleCard
+  ---
+  duration_ms: 2.539
+  type: 'test'
+  ...
+# Subtest: renders CategoryNavigation with active category and display language preservation
+ok 52 - renders CategoryNavigation with active category and display language preservation
+  ---
+  duration_ms: 4.3112
+  type: 'test'
+  ...
+# Subtest: renders Unicode member report, summary, internal link, and publisher link
+ok 53 - renders Unicode member report, summary, internal link, and publisher link
+  ---
+  duration_ms: 4.3666
+  type: 'test'
+  ...
+# Subtest: formats deterministic human-friendly relative publication times
+ok 54 - formats deterministic human-friendly relative publication times
+  ---
+  duration_ms: 1.991
+  type: 'test'
+  ...
+# Subtest: renders one report as an accessible valid timeline
+ok 55 - renders one report as an accessible valid timeline
+  ---
+  duration_ms: 74.2545
+  type: 'test'
+  ...
+# Subtest: renders chronological multilingual reports across a date boundary
+ok 56 - renders chronological multilingual reports across a date boundary
+  ---
+  duration_ms: 11.7226
+  type: 'test'
+  ...
+# Subtest: renders supplementary timeline failure without hiding Story information
+ok 57 - renders supplementary timeline failure without hiding Story information
+  ---
+  duration_ms: 1.1471
+  type: 'test'
+  ...
+# Subtest: StoryTools renders ARIA tablist with constituent reports as initial tab
+ok 58 - StoryTools renders ARIA tablist with constituent reports as initial tab
+  ---
+  duration_ms: 102.6439
+  type: 'test'
+  ...
+# Subtest: analyticsClient respects DNT and GPC
+ok 59 - analyticsClient respects DNT and GPC
+  ---
+  duration_ms: 2.4083
+  type: 'test'
+  ...
+# Subtest: analyticsClient batching mechanism
+ok 60 - analyticsClient batching mechanism
+  ---
+  duration_ms: 3.4587
+  type: 'test'
+  ...
+# Subtest: uses bearer authentication for bounded admin endpoints and parses safe DTOs
+ok 61 - uses bearer authentication for bounded admin endpoints and parses safe DTOs
+  ---
+  duration_ms: 56.9931
+  type: 'test'
+  ...
+# Subtest: returns parsed data for a successful response
+ok 62 - returns parsed data for a successful response
+  ---
+  duration_ms: 72.1729
+  type: 'test'
+  ...
+# Subtest: forwards a bearer token only when explicitly requested
+ok 63 - forwards a bearer token only when explicitly requested
+  ---
+  duration_ms: 3.2666
+  type: 'test'
+  ...
+# Subtest: public requests do not receive an authorization header
+ok 64 - public requests do not receive an authorization header
+  ---
+  duration_ms: 1.4743
+  type: 'test'
+  ...
+# Subtest: surfaces centralized backend errors for non-2xx responses
+ok 65 - surfaces centralized backend errors for non-2xx responses
+  ---
+  duration_ms: 12.8687
+  type: 'test'
+  ...
+# Subtest: maps network failures to an unavailable error
+ok 66 - maps network failures to an unavailable error
+  ---
+  duration_ms: 1.4887
+  type: 'test'
+  ...
+# Subtest: keeps missing environment configuration distinct from network failures
+ok 67 - keeps missing environment configuration distinct from network failures
+  ---
+  duration_ms: 0.8153
+  type: 'test'
+  ...
+# Subtest: rejects invalid JSON from a successful response
+ok 68 - rejects invalid JSON from a successful response
+  ---
+  duration_ms: 2.3169
+  type: 'test'
+  ...
+# Subtest: suppresses supplementary coverage failures so Story detail remains usable
+ok 69 - suppresses supplementary coverage failures so Story detail remains usable
+  ---
+  duration_ms: 2.3401
+  type: 'test'
+  ...
+# Subtest: parses the minimal Spring current-user response
+ok 70 - parses the minimal Spring current-user response
+  ---
+  duration_ms: 4.3703
+  type: 'test'
+  ...
+# Subtest: allows an absent email but rejects an absent subject
+ok 71 - allows an absent email but rejects an absent subject
+  ---
+  duration_ms: 0.7144
+  type: 'test'
+  ...
+# Subtest: submits a guest Story question with the selected display language
+ok 72 - submits a guest Story question with the selected display language
+  ---
+  duration_ms: 60.8261
+  type: 'test'
+  ...
+# Subtest: sends displayLanguage independently from the original language filter
+ok 73 - sends displayLanguage independently from the original language filter
+  ---
+  duration_ms: 6.6514
+  type: 'test'
+  ...
+# Subtest: uses dedicated Story list, detail, and Article lookup endpoints
+ok 74 - uses dedicated Story list, detail, and Article lookup endpoints
+  ---
+  duration_ms: 12.2606
+  type: 'test'
+  ...
+# Subtest: uses the guest Trending endpoint with category and presentation language
+ok 75 - uses the guest Trending endpoint with category and presentation language
+  ---
+  duration_ms: 7.4403
+  type: 'test'
+  ...
+# Subtest: parses the Phase 3 source DTO
+ok 76 - parses the Phase 3 source DTO
+  ---
+  duration_ms: 3.9289
+  type: 'test'
+  ...
+# Subtest: parses an article and its embedded source attribution
+ok 77 - parses an article and its embedded source attribution
+  ---
+  duration_ms: 1.8547
+  type: 'test'
+  ...
+# Subtest: parses a paged article response
+ok 78 - parses a paged article response
+  ---
+  duration_ms: 0.6815
+  type: 'test'
+  ...
+# Subtest: parses public Story summary, page, and mixed-language detail contracts
+ok 79 - parses public Story summary, page, and mixed-language detail contracts
+  ---
+  duration_ms: 1.2708
+  type: 'test'
+  ...
+# Subtest: rejects malformed Story dates and member Articles
+ok 80 - rejects malformed Story dates and member Articles
+  ---
+  duration_ms: 1.3372
+  type: 'test'
+  ...
+# Subtest: parses safe single-source and multi-source coverage contracts
+ok 81 - parses safe single-source and multi-source coverage contracts
+  ---
+  duration_ms: 1.3921
+  type: 'test'
+  ...
+# Subtest: rejects malformed coverage metadata
+ok 82 - rejects malformed coverage metadata
+  ---
+  duration_ms: 0.3355
+  type: 'test'
+  ...
+# Subtest: parses a safe multilingual Story timeline and ignores private fields
+ok 83 - parses a safe multilingual Story timeline and ignores private fields
+  ---
+  duration_ms: 4.8156
+  type: 'test'
+  ...
+# Subtest: rejects malformed Story timeline events
+ok 84 - rejects malformed Story timeline events
+  ---
+  duration_ms: 0.7248
+  type: 'test'
+  ...
+# Subtest: rejects unsafe publisher URLs
+ok 85 - rejects unsafe publisher URLs
+  ---
+  duration_ms: 2.1371
+  type: 'test'
+  ...
+# Subtest: rejects responses that do not match the public DTO
+ok 86 - rejects responses that do not match the public DTO
+  ---
+  duration_ms: 0.4717
+  type: 'test'
+  ...
+# Subtest: parses only the public Article search contract
+ok 87 - parses only the public Article search contract
+  ---
+  duration_ms: 4.0761
+  type: 'test'
+  ...
+# Subtest: builds an encoded guest search request with distinct filters and display language
+ok 88 - builds an encoded guest search request with distinct filters and display language
+  ---
+  duration_ms: 47.8379
+  type: 'test'
+  ...
+# Subtest: parses a private-field-free semantic response without similarity scores
+ok 89 - parses a private-field-free semantic response without similarity scores
+  ---
+  duration_ms: 0.8941
+  type: 'test'
+  ...
+# Subtest: builds a guest semantic request with all filters and no authorization
+ok 90 - builds a guest semantic request with all filters and no authorization
+  ---
+  duration_ms: 1.6721
+  type: 'test'
+  ...
+# Subtest: suppresses supplementary timeline failures so Story detail remains usable
+ok 91 - suppresses supplementary timeline failures so Story detail remains usable
+  ---
+  duration_ms: 2.0428
+  type: 'test'
+  ...
+# Subtest: parses defaults and maps a saved display preference
+ok 92 - parses defaults and maps a saved display preference
+  ---
+  duration_ms: 5.1141
+  type: 'test'
+  ...
+# Subtest: rejects malformed preference and bookmark status payloads
+ok 93 - rejects malformed preference and bookmark status payloads
+  ---
+  duration_ms: 0.846
+  type: 'test'
+  ...
+# Subtest: uses protected preference and bookmark requests without owner data
+ok 94 - uses protected preference and bookmark requests without owner data
+  ---
+  duration_ms: 55.3804
+  type: 'test'
+  ...
+# Subtest: parses source/topic follows and batched status without private keys
+ok 95 - parses source/topic follows and batched status without private keys
+  ---
+  duration_ms: 1.1777
+  type: 'test'
+  ...
+# Subtest: uses one protected batch request and owner-free follow mutations
+ok 96 - uses one protected batch request and owner-free follow mutations
+  ---
+  duration_ms: 6.9697
+  type: 'test'
+  ...
+# Subtest: parses a privacy-safe personalized feed with reasons and fallback
+ok 97 - parses a privacy-safe personalized feed with reasons and fallback
+  ---
+  duration_ms: 3.1701
+  type: 'test'
+  ...
+# Subtest: uses the protected For You endpoint with bounded pagination and language
+ok 98 - uses the protected For You endpoint with bounded pagination and language
+  ---
+  duration_ms: 4.962
+  type: 'test'
+  ...
+# Subtest: safeNextPath permits internal paths and preserves language queries
+ok 99 - safeNextPath permits internal paths and preserves language queries
+  ---
+  duration_ms: 2.0546
+  type: 'test'
+  ...
+# Subtest: safeNextPath rejects external and protocol-relative redirects
+ok 100 - safeNextPath rejects external and protocol-relative redirects
+  ---
+  duration_ms: 0.3998
+  type: 'test'
+  ...
+# Subtest: parses Original, English, Sinhala, Tamil, and invalid selections
+ok 101 - parses Original, English, Sinhala, Tamil, and invalid selections
+  ---
+  duration_ms: 5.1604
+  type: 'test'
+  ...
+# Subtest: preserves language on internal links without changing external URLs
+ok 102 - preserves language on internal links without changing external URLs
+  ---
+  duration_ms: 0.9809
+  type: 'test'
+  ...
+# Subtest: switching display language updates language parameter on existing route
+ok 103 - switching display language updates language parameter on existing route
+  ---
+  duration_ms: 0.3436
+  type: 'test'
+  ...
+# Subtest: language parameter preservation preserves complex search query parameters
+ok 104 - language parameter preservation preserves complex search query parameters
+  ---
+  duration_ms: 0.6574
+  type: 'test'
+  ...
+# Subtest: renders real Sinhala and Tamil localized content with provenance
+ok 105 - renders real Sinhala and Tamil localized content with provenance
+  ---
+  duration_ms: 0.8225
+  type: 'test'
+  ...
+# Subtest: does not claim translation for original-language or fallback content
+ok 106 - does not claim translation for original-language or fallback content
+  ---
+  duration_ms: 0.2958
+  type: 'test'
+  ...
+# Subtest: Keyword mode is the default and explicit semantic mode is supported
+ok 107 - Keyword mode is the default and explicit semantic mode is supported
+  ---
+  duration_ms: 2.1698
+  type: 'test'
+  ...
+# Subtest: mode switching preserves query, filters, source, and display language
+ok 108 - mode switching preserves query, filters, source, and display language
+  ---
+  duration_ms: 1.383
+  type: 'test'
+  ...
+# Subtest: semantic pagination preserves mode and bounded page state
+ok 109 - semantic pagination preserves mode and bounded page state
+  ---
+  duration_ms: 0.4921
+  type: 'test'
+  ...
+1..109
+# tests 109
+# suites 0
+# pass 108
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5636.9272

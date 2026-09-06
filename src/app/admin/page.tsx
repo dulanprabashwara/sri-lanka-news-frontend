@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AdminDashboard } from "@/components/admin-dashboard";
 import { ApiError } from "@/lib/api/client";
-import { getAdminArticles, getAdminMe, getAdminOverview, getAdminSources } from "@/lib/api/admin";
+import { getAdminMe, getAdminOverview } from "@/lib/api/admin";
 import { getValidatedAuth } from "@/lib/auth";
 import { retryFailedArticle } from "@/app/admin-actions";
 

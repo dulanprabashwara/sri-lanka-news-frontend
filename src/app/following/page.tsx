@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FollowingList } from "@/components/following-list";
+import { PageHeader } from "@/components/ui/page-header";
 import { getAuthenticatedAccessToken } from "@/lib/auth";
 import { listFollows } from "@/lib/api/user";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
@@ -23,6 +24,31 @@ export default async function FollowingPage({ searchParams }: { searchParams: Pr
     if (selectedPage > 0) query.set("page", String(selectedPage));
     return withDisplayLanguage(`/following${query.size ? `?${query}` : ""}`, displayLanguage);
   };
-  const filter = (label: string, value?: FollowTargetType) => <Link href={href(value)} className={`rounded-full border px-4 py-2 text-sm font-semibold ${type === value ? "border-teal-800 bg-teal-800 text-white" : "border-slate-300 bg-white text-slate-700"}`}>{label}</Link>;
-  return <section><p className="eyebrow">Your interests</p><h1 className="page-title">Following</h1><div className="my-7 flex gap-2">{filter("All")}{filter("Sources", "SOURCE")}{filter("Topics", "TOPIC")}</div><FollowingList initial={follows.content} displayLanguage={displayLanguage} />{follows.content.length === 0 ? <Link href={withDisplayLanguage("/", displayLanguage)} className="mt-5 inline-flex font-semibold text-teal-800">Browse latest news</Link> : null}<nav aria-label="Following pages" className="mt-8 flex justify-between">{follows.first ? <span /> : <Link href={href(type, page - 1)} className="font-semibold text-teal-800">Previous</Link>}{follows.last ? null : <Link href={href(type, page + 1)} className="font-semibold text-teal-800">Next</Link>}</nav></section>;
+  const filter = (label: string, value?: FollowTargetType) => (
+    <Link      href={href(value)}      className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${type === value ? "border-brand bg-brand text-brand-foreground shadow-sm" : "border-border bg-surface text-foreground-secondary hover:border-border-strong hover:text-foreground"}`}
+    >
+      {label}
+    </Link>
+  );
+  return (
+    <section className="space-y-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <PageHeader        eyebrow="Your interests"        title="Following"        filterSlot={<div className="flex flex-wrap gap-2 pt-2">{filter("All")}{filter("Sources", "SOURCE")}{filter("Topics", "TOPIC")}</div>}
+      />
+      <FollowingList initial={follows.content} displayLanguage={displayLanguage} />
+      {(page > 0 || !follows.last) && (
+        <nav aria-label="Following pages" className="flex items-center justify-between border-t border-border pt-6 mt-8">
+          {follows.first ? <span /> : (
+            <Link href={href(type, page - 1)} className="inline-flex items-center justify-center font-bold text-sm text-foreground hover:text-brand transition-colors">
+              &larr; Previous Page
+            </Link>
+          )}
+          {follows.last ? null : (
+            <Link href={href(type, page + 1)} className="inline-flex items-center justify-center font-bold text-sm text-foreground hover:text-brand transition-colors">
+              Next Page &rarr;
+            </Link>
+          )}
+        </nav>
+      )}
+    </section>
+  );
 }

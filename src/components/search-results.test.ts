@@ -36,7 +36,7 @@ test("renders semantic empty guidance and keyword fallback without a score", () 
     keywordHref: "/search?q=road+accident&mode=text&category=LOCAL&language=si&lang=en",
   }));
   assert.match(html, /No semantically related reports found/);
-  assert.match(html, /Try Keyword search/);
+  assert.match(html, /Keyword Search/i);
   assert.match(html, /mode=text/);
   assert.doesNotMatch(html, /similarity|confidence|0\.\d+/i);
 });

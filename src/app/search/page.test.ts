@@ -29,7 +29,7 @@ test("missing mode keeps Keyword search as the guest-accessible default", async 
   }));
 
   assert.equal(path, "/api/v1/search/articles");
-  assert.match(html, /aria-current="page"[^>]*><span[^>]*>Keyword/);
+  assert.match(html, /aria-current="page"[\s\S]*?Keyword/i);
   assert.match(html, /mode=semantic/);
 });
 

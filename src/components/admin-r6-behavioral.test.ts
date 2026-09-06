@@ -1,17 +1,17 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert/strict";
+import test from "node:test";
 import { ADMIN_PILLARS, isRouteActive } from "./admin-nav";
 import fs from "fs";
 import path from "path";
 
-describe("Phase R6 — Admin Navigation & Security Boundaries", () => {
-  it("defines exactly 3 conceptual navigation pillars with all 9 authoritative routes", () => {
-    expect(ADMIN_PILLARS).toHaveLength(3);
+test("Phase R6 — Admin Navigation & Security Boundaries: defines exactly 3 conceptual navigation pillars with all 9 authoritative routes", () => {
+    assert.equal(ADMIN_PILLARS.length, 3);
     const titles = ADMIN_PILLARS.map((p) => p.title);
-    expect(titles).toEqual(["OPERATIONS", "CONTENT INTELLIGENCE", "INSIGHTS & SECURITY"]);
+    assert.deepEqual(titles, ["OPERATIONS", "CONTENT INTELLIGENCE", "INSIGHTS & SECURITY"]);
 
     const allHrefs = ADMIN_PILLARS.flatMap((p) => p.items.map((i) => i.href));
-    expect(allHrefs).toHaveLength(9);
-    expect(allHrefs).toEqual([
+    assert.equal(allHrefs.length, 9);
+    assert.deepEqual(allHrefs, [
       "/admin",
       "/admin/ingestion",
       "/admin/processing",
@@ -22,25 +22,25 @@ describe("Phase R6 — Admin Navigation & Security Boundaries", () => {
       "/admin/users",
       "/admin/audit",
     ]);
-  });
+});
 
-  it("enforces strict route matching where /admin only activates Overview", () => {
+test("Phase R6 — Admin Navigation & Security Boundaries: enforces strict route matching where /admin only activates Overview", () => {
     // /admin should match ONLY /admin
-    expect(isRouteActive("/admin", "/admin")).toBe(true);
-    expect(isRouteActive("/admin/analytics", "/admin")).toBe(false);
-    expect(isRouteActive("/admin/ai", "/admin")).toBe(false);
-    expect(isRouteActive("/admin/stories", "/admin")).toBe(false);
-    expect(isRouteActive("/admin/ingestion", "/admin")).toBe(false);
-    expect(isRouteActive("/admin/processing", "/admin")).toBe(false);
+    assert.equal(isRouteActive("/admin", "/admin"), true);
+    assert.equal(isRouteActive("/admin/analytics", "/admin"), false);
+    assert.equal(isRouteActive("/admin/ai", "/admin"), false);
+    assert.equal(isRouteActive("/admin/stories", "/admin"), false);
+    assert.equal(isRouteActive("/admin/ingestion", "/admin"), false);
+    assert.equal(isRouteActive("/admin/processing", "/admin"), false);
 
     // Subroutes activate their respective href
-    expect(isRouteActive("/admin/analytics", "/admin/analytics")).toBe(true);
-    expect(isRouteActive("/admin/ai", "/admin/ai")).toBe(true);
-    expect(isRouteActive("/admin/stories", "/admin/stories")).toBe(true);
-    expect(isRouteActive("/admin/processing", "/admin/processing")).toBe(true);
-  });
+    assert.equal(isRouteActive("/admin/analytics", "/admin/analytics"), true);
+    assert.equal(isRouteActive("/admin/ai", "/admin/ai"), true);
+    assert.equal(isRouteActive("/admin/stories", "/admin/stories"), true);
+    assert.equal(isRouteActive("/admin/processing", "/admin/processing"), true);
+});
 
-  it("proves Admin Analytics renders aggregate metrics only without raw PII or individual logs", () => {
+test("Phase R6 — Admin Navigation & Security Boundaries: proves Admin Analytics renders aggregate metrics only without raw PII or individual logs", () => {
     const analyticsFilePath = path.join(
       process.cwd(),
       "src/app/admin/analytics/page.tsx"
@@ -48,65 +48,64 @@ describe("Phase R6 — Admin Navigation & Security Boundaries", () => {
     const content = fs.readFileSync(analyticsFilePath, "utf8");
 
     // Proves aggregate metrics exist
-    expect(content).toContain("UNIQUE_VISITORS");
-    expect(content).toContain("PAGE_VIEW");
-    expect(content).toContain("ARTICLE_VIEW");
+    assert.ok(content.includes("UNIQUE_VISITORS"));
+    assert.ok(content.includes("PAGE_VIEW"));
+    assert.ok(content.includes("ARTICLE_VIEW"));
 
     // Proves raw search queries / Ask questions / visitor drilldowns are absent
-    expect(content).not.toContain("rawQuery");
-    expect(content).not.toContain("userIp");
-    expect(content).not.toContain("visitorId");
-    expect(content).not.toContain("askQuestionText");
-  });
+    assert.ok(!content.includes("rawQuery"));
+    assert.ok(!content.includes("userIp"));
+    assert.ok(!content.includes("visitorId"));
+    assert.ok(!content.includes("askQuestionText"));
+});
 
-  it("proves User Metrics renders aggregate metrics only without account management or email lookup", () => {
+test("Phase R6 — Admin Navigation & Security Boundaries: proves User Metrics renders aggregate metrics only without account management or email lookup", () => {
     const usersFilePath = path.join(process.cwd(), "src/app/admin/users/page.tsx");
     const content = fs.readFileSync(usersFilePath, "utf8");
 
     // Proves aggregate data
-    expect(content).toContain("totalProfiles");
-    expect(content).toContain("totalBookmarks");
-    expect(content).toContain("totalFollows");
+    assert.ok(content.includes("totalProfiles"));
+    assert.ok(content.includes("totalBookmarks"));
+    assert.ok(content.includes("totalFollows"));
 
     // Proves individual user management controls are absent
-    expect(content).not.toContain("emailLookup");
-    expect(content).not.toContain("editRole");
-    expect(content).not.toContain("deleteUser");
-    expect(content).not.toContain("banUser");
-  });
+    assert.ok(!content.includes("emailLookup"));
+    assert.ok(!content.includes("editRole"));
+    assert.ok(!content.includes("deleteUser"));
+    assert.ok(!content.includes("banUser"));
+});
 
-  it("proves Audit Log is append-only without delete/edit actions or raw JWT/secret rendering", () => {
+test("Phase R6 — Admin Navigation & Security Boundaries: proves Audit Log is append-only without delete/edit actions or raw JWT/secret rendering", () => {
     const auditFilePath = path.join(process.cwd(), "src/app/admin/audit/page.tsx");
     const content = fs.readFileSync(auditFilePath, "utf8");
 
     // Proves append-only table fields
-    expect(content).toContain("log.action");
-    expect(content).toContain("log.actorId");
-    expect(content).toContain("log.timestamp");
+    assert.ok(content.includes("log.action"));
+    assert.ok(content.includes("log.actorId"));
+    assert.ok(content.includes("log.timestamp"));
 
     // Proves no delete/edit operations
-    expect(content).not.toContain("deleteLog");
-    expect(content).not.toContain("clearAudit");
-    expect(content).not.toContain("JWT_SECRET");
-    expect(content).not.toContain("access_token");
-  });
+    assert.ok(!content.includes("deleteLog"));
+    assert.ok(!content.includes("clearAudit"));
+    assert.ok(!content.includes("JWT_SECRET"));
+});
 
-  it("proves AI admin page renders provider status without exposing API keys or secrets", () => {
+test("Phase R6 — Admin Navigation & Security Boundaries: proves AI admin page renders provider status without exposing API keys or secrets", () => {
     const aiFilePath = path.join(process.cwd(), "src/app/admin/ai/page.tsx");
     const content = fs.readFileSync(aiFilePath, "utf8");
 
     // Proves model provider operational status
-    expect(content).toContain("providerName");
-    expect(content).toContain("modelName");
+    assert.ok(content.includes("providerName"));
+    assert.ok(content.includes("modelName"));
 
     // Proves API keys and credentials are not rendered
-    expect(content).not.toContain("apiKey");
-    expect(content).not.toContain("OPENAI_API_KEY");
-    expect(content).not.toContain("GEMINI_API_KEY");
-    expect(content).not.toContain("secretKey");
-  });
+    assert.ok(!content.includes("apiKey"));
+    assert.ok(!content.includes("OPENAI_API_KEY"));
+    assert.ok(!content.includes("GEMINI_API_KEY"));
+    assert.ok(!content.includes("secretKey"));
+});
 
-  it("proves Sources and Ingestion admin pages do not render infrastructure secrets or credentials", () => {
+test("Phase R6 — Admin Navigation & Security Boundaries: proves Sources and Ingestion admin pages do not render infrastructure secrets or credentials", () => {
     const sourcesFilePath = path.join(process.cwd(), "src/app/admin/sources/page.tsx");
     const sourcesContent = fs.readFileSync(sourcesFilePath, "utf8");
 
@@ -119,10 +118,9 @@ describe("Phase R6 — Admin Navigation & Security Boundaries", () => {
     const combined = sourcesContent + ingestionContent;
 
     // Proves infrastructure secrets are absent
-    expect(combined).not.toContain("DATABASE_URL");
-    expect(combined).not.toContain("REDIS_URL");
-    expect(combined).not.toContain("SMTP_PASSWORD");
-    expect(combined).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
-    expect(combined).not.toContain("envSecretViewer");
-  });
+    assert.ok(!combined.includes("DATABASE_URL"));
+    assert.ok(!combined.includes("REDIS_URL"));
+    assert.ok(!combined.includes("SMTP_PASSWORD"));
+    assert.ok(!combined.includes("SUPABASE_SERVICE_ROLE_KEY"));
+    assert.ok(!combined.includes("envSecretViewer"));
 });
