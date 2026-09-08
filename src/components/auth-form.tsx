@@ -32,9 +32,9 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
       if (mode === "login") {
         const result = await supabase.auth.signInWithPassword({ email, password });
         if (result.error) throw result.error;
-        window.location.assign(safeNextPath(next));
+        window.location.assign(safeNextPath(next, "/"));
       } else if (mode === "sign-up") {
-        const returnPath = safeNextPath(next);
+        const returnPath = safeNextPath(next, "/");
         const callback = new URL("/auth/confirm", window.location.origin);
         callback.searchParams.set("next", returnPath);
         const result = await supabase.auth.signUp({
@@ -71,7 +71,7 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
   return (
     <section className="mx-auto max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-6 w-36" aria-label="Ceylon News">
-        <BrandLogo />
+        <BrandLogo priority />
       </div>
       <h1 className="text-2xl font-bold text-slate-950">{title}</h1>
       <form onSubmit={submit} className="mt-6 space-y-4">
