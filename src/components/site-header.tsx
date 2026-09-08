@@ -11,9 +11,11 @@ import { BrandLogo } from "./brand-logo";
 export function SiteHeader({
   authenticated = false,
   admin = false,
+  userDisplayName,
 }: {
   authenticated?: boolean;
   admin?: boolean;
+  userDisplayName?: string;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -255,7 +257,7 @@ export function SiteHeader({
                 aria-label="User account menu"
               >
                 <User className="size-4 text-brand" />
-                <span>Account</span>
+                <span>{userDisplayName || "Account"}</span>
                 <ChevronDown className={`size-3.5 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
               </button>
 
