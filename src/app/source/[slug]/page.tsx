@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { SourceIcon } from "@/components/source-icon";
+import { archiveHref } from "@/lib/archive";
 import { notFound } from "next/navigation";
 import { ArticleFeed } from "@/components/article-feed";
 import { ErrorState } from "@/components/error-state";
@@ -56,10 +59,11 @@ export default async function SourcePage({
 
   return (
     <div className="space-y-8">
-      <header className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <header className="rounded-xl border border-border border-t-4 border-t-brand bg-surface p-6 shadow-xs sm:p-8">
         <p className="eyebrow">News source</p>
-        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
-          {source.name}
+        <h1 className="mt-3 flex items-center gap-5 font-serif text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <SourceIcon name={source.name} baseUrl={source.baseUrl} slug={source.slug} size="xl" rounded="full" />
+          <span>{source.name}</span>
         </h1>
         <p className="mt-3 text-sm text-slate-600">
           Default language: {formatLanguage(source.defaultLanguage)}
@@ -95,6 +99,7 @@ export default async function SourcePage({
           />
         )}
       </section>
+      <Link href={archiveHref(0, { source: source.slug, lang: displayLanguage })} className="inline-flex rounded-lg bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-hover">View all articles from {source.name} →</Link>
     </div>
   );
 }

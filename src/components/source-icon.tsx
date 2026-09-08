@@ -13,7 +13,23 @@ const LOCAL_ICONS: Record<string, string> = {
   "newsfirst": "/icons/newsfirst.png",
 };
 
-export function SourceIcon({ name, baseUrl, slug }: { name: string; baseUrl: string; slug?: string }) {
+export type SourceIconSize = "sm" | "md" | "lg" | "xl" | "2xl";
+
+export function SourceIcon({
+  name,
+  baseUrl,
+  slug,
+  size = "md",
+  rounded = "full",
+  className = "",
+}: {
+  name: string;
+  baseUrl: string;
+  slug?: string;
+  size?: SourceIconSize;
+  rounded?: "full" | "lg" | "md";
+  className?: string;
+}) {
   const [failed, setFailed] = useState(false);
 
   let resolvedSlug = slug?.toLowerCase();
@@ -42,11 +58,46 @@ export function SourceIcon({ name, baseUrl, slug }: { name: string; baseUrl: str
     } catch { /* Invalid publisher URLs use the initials fallback. */ }
   }
 
-  return <span className="inline-grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-white text-xs font-bold text-brand" aria-hidden="true">
-    {icon && !failed ? (
-      // Publisher-owned favicons have variable formats; native images support ICO too.
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={icon} alt="" width={24} height={24} loading="lazy" referrerPolicy="no-referrer" onError={() => setFailed(true)} className="size-6 object-contain" />
-    ) : name.split(/\s+/).slice(0, 2).map(word => word[0]).join("")}
-  </span>;
+  const containerSizes: Record<SourceIconSize, string> = {
+    sm: "size-8",
+    md: "size-10",
+    lg: "size-12 sm:size-14",
+    xl: "size-16 sm:size-20",
+    "2xl": "size-20 sm:size-24",
+  };
+
+  const imageSizes: Record<SourceIconSize, string> = {
+    sm: "size-5",
+    md: "size-7",
+    lg: "size-9 sm:size-10",
+    xl: "size-12 sm:size-14",
+    "2xl": "size-16 sm:size-18",
+  };
+
+  const roundedClasses = {
+    full: "rounded-full",
+    lg: "rounded-xl",
+    md: "rounded-lg",
+  };
+
+  return (
+    <span
+      className={`inline-grid shrink-0 place-items-center overflow-hidden border border-border bg-white text-xs font-bold text-brand shadow-2xs ${containerSizes[size]} ${roundedClasses[rounded]} ${className}`}
+      aria-hidden="true"
+    >
+      {icon && !failed ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={icon}
+          alt=""
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(true)}
+          className={`${imageSizes[size]} object-contain`}
+        />
+      ) : (
+        name.split(/\s+/).slice(0, 2).map(word => word[0]).join("")
+      )}
+    </span>
+  );
 }
