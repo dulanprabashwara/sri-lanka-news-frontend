@@ -25,8 +25,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   if (auth) {
     const { data } = await auth.supabase.auth.getSession();
     const token = data.session?.access_token;
+    const userMeta = data.session?.user?.user_metadata;
     const userEmail = data.session?.user?.email;
-    if (userEmail) {
+    if (userMeta?.full_name || userMeta?.name) {
+      userDisplayName = userMeta.full_name || userMeta.name;
+    } else if (userEmail) {
       userDisplayName = userEmail.split('@')[0];
     }
     if (token) {

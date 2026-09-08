@@ -37,10 +37,14 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
         const returnPath = safeNextPath(next, "/");
         const callback = new URL("/auth/confirm", window.location.origin);
         callback.searchParams.set("next", returnPath);
+        const fullName = String(data.get("name") ?? "").trim();
         const result = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: callback.toString() },
+          options: {
+            emailRedirectTo: callback.toString(),
+            data: fullName ? { full_name: fullName } : undefined,
+          },
         });
         if (result.error) throw result.error;
         if (result.data.session) window.location.assign(returnPath);
@@ -75,6 +79,7 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
       </div>
       <h1 className="text-2xl font-bold text-slate-950">{title}</h1>
       <form onSubmit={submit} className="mt-6 space-y-4">
+        {mode === "sign-up" && <Field label="Display Name (Optional)" name="name" type="text" autoComplete="name" required={false} />}
         {needsEmail && <Field label="Email" name="email" type="email" autoComplete="email" />}
         {needsPassword && <Field label="Password" name="password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} />}
         {needsConfirmation && <Field label="Confirm password" name="confirmPassword" type="password" autoComplete="new-password" />}
@@ -93,6 +98,6 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
   );
 }
 
-function Field({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
-  return <label className="block text-sm font-semibold text-slate-700">{label}<input required minLength={props.type === "password" ? 8 : undefined} {...props} className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2" /></label>;
+function Field({ label, required = true, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
+  return <label className="block text-sm font-semibold text-slate-700">{label}<input required={required} minLength={props.type === "password" ? 8 : undefined} {...props} className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2" /></label>;
 }

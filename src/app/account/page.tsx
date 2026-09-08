@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AccountLayout } from "@/components/account/account-layout";
+import { ProfileForm } from "@/components/profile-form";
 import { PreferencesForm } from "@/components/preferences-form";
 import { Surface } from "@/components/ui/surface";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -60,6 +61,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               </p>
             </div>
           </div>
+          <ProfileForm initialName={sessionData.session?.user?.user_metadata?.full_name || sessionData.session?.user?.user_metadata?.name || ""} />
         </Surface>
 
         {/* Settings Shortcuts */}
