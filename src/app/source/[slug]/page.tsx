@@ -82,20 +82,73 @@ export default async function SourcePage({
     try { followed = (await getSourceFollowStatus(accessToken, source.slug)).followed; } catch { /* Follow status is non-critical. */ }
   }
 
+  const allCandidates = Array.from(new Set([
+    source.slug,
+    ...candidates,
+    slug,
+  ]));
+
   let articles;
   let articleError: unknown;
-  for (const cand of candidates) {
+
+  // 1. Try with displayLanguage and candidate slugs
+  for (const cand of allCandidates) {
     try {
-      articles = await getArticles({
+      const res = await getArticles({
         page: 0,
         size: 20,
         source: cand,
         sort: "publishedAt,desc",
         displayLanguage,
       });
-      if (articles && articles.content.length > 0) break;
+      if (res && res.content.length > 0) {
+        articles = res;
+        articleError = undefined;
+        break;
+      }
     } catch (error) {
       articleError = error;
+    }
+  }
+
+  // 2. Try without displayLanguage filter if no articles returned yet
+  if ((!articles || articles.content.length === 0) && displayLanguage) {
+    for (const cand of allCandidates) {
+      try {
+        const res = await getArticles({
+          page: 0,
+          size: 20,
+          source: cand,
+          sort: "publishedAt,desc",
+        });
+        if (res && res.content.length > 0) {
+          articles = res;
+          articleError = undefined;
+          break;
+        }
+      } catch {
+        /* Ignore error */
+      }
+    }
+  }
+
+  // 3. Fallback: query recent global articles and filter by source matching
+  if (!articles || articles.content.length === 0) {
+    try {
+      const globalArticles = await getArticles({ page: 0, size: 50, sort: "publishedAt,desc" });
+      if (globalArticles && globalArticles.content.length > 0) {
+        const matching = globalArticles.content.filter(a =>
+          allCandidates.includes(a.source.slug) ||
+          a.source.name.toLowerCase().includes(source.name.toLowerCase()) ||
+          source.name.toLowerCase().includes(a.source.name.toLowerCase())
+        );
+        if (matching.length > 0) {
+          articles = { ...globalArticles, content: matching };
+          articleError = undefined;
+        }
+      }
+    } catch {
+      /* Keep previous state */
     }
   }
 
