@@ -66,7 +66,7 @@ export default async function Home({ searchParams }: HomePageProps) {
   const featuredArticleIds = new Set(featured.filter((item) => item.kind === "article").map((item) => item.data.id));
   const reports = articles.content.filter((article) => !featuredArticleIds.has(article.id));
   const pulse = sourcePulse(articles.content);
-  const ACTIVE_SLUGS = ["lankadeepa", "hiru-news", "ada-derana", "dailymirror", "dailyft", "newsfirst"];
+  const ACTIVE_SLUGS = ["lankadeepa", "hiru-news", "ada-derana", "dailymirror", "dailyft", "newsfirst", "divaina", "the-island"];
   const rawPublishers = sourcesResult.status === "fulfilled" ? sourcesResult.value : [...new Map(articles.content.map(article => [article.source.slug, article.source])).values()];
   const publishers = rawPublishers.filter(p => ACTIVE_SLUGS.includes(p.slug));
 
