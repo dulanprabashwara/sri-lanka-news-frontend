@@ -11,7 +11,7 @@ import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticles, getTrendingStories, getSources } from "@/lib/api/news";
 import { formatCategory, formatLanguage, formatPublishedAt } from "@/lib/format";
 import { articleContent, articleContentLanguage, readDisplayLanguage, storyContentLanguage, storyTitle, translationLabel, withDisplayLanguage } from "@/lib/language";
-import { ARTICLE_CATEGORIES, type Article, type ArticleCategory, type DisplayLanguage, type PagedResponse, type TrendingStory } from "@/types/api";
+import { ARTICLE_CATEGORIES, type Article, type ArticleCategory, type DisplayLanguage, type PagedResponse, type SourceSummary, type TrendingStory } from "@/types/api";
 
 export const dynamic = "force-dynamic";
 
@@ -66,9 +66,19 @@ export default async function Home({ searchParams }: HomePageProps) {
   const featuredArticleIds = new Set(featured.filter((item) => item.kind === "article").map((item) => item.data.id));
   const reports = articles.content.filter((article) => !featuredArticleIds.has(article.id));
   const pulse = sourcePulse(articles.content);
-  const ACTIVE_SLUGS = ["lankadeepa", "hiru-news", "ada-derana", "dailymirror", "dailyft", "newsfirst", "divaina", "the-island"];
-  const rawPublishers = sourcesResult.status === "fulfilled" ? sourcesResult.value : [...new Map(articles.content.map(article => [article.source.slug, article.source])).values()];
-  const publishers = rawPublishers.filter(p => ACTIVE_SLUGS.includes(p.slug));
+  const ALL_ACTIVE_SOURCES: SourceSummary[] = [
+    { name: "Lankadeepa", slug: "lankadeepa", baseUrl: "https://www.lankadeepa.lk" },
+    { name: "Divaina", slug: "divaina", baseUrl: "https://divaina.lk" },
+    { name: "The Island", slug: "the-island", baseUrl: "https://island.lk" },
+    { name: "Ada Derana", slug: "ada-derana", baseUrl: "https://adaderana.lk" },
+    { name: "Hiru News", slug: "hiru-news", baseUrl: "https://www.hirunews.lk" },
+    { name: "Daily Mirror", slug: "dailymirror", baseUrl: "https://www.dailymirror.lk" },
+    { name: "Daily FT", slug: "dailyft", baseUrl: "https://www.ft.lk" },
+    { name: "News First", slug: "newsfirst", baseUrl: "https://www.newsfirst.lk" },
+  ];
+  const fetchedSources = sourcesResult.status === "fulfilled" && sourcesResult.value.length > 0 ? sourcesResult.value : articles.content.map(a => a.source);
+  const fetchedMap = new Map(fetchedSources.map(p => [p.slug, p]));
+  const publishers = ALL_ACTIVE_SOURCES.map(def => fetchedMap.get(def.slug) || def);
 
   return (
     <div className="home-newsroom space-y-7 sm:space-y-9">
