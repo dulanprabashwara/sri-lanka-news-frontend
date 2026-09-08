@@ -40,8 +40,16 @@ export function articleContent(article: Article): {
     : { title: article.title, summary: article.summary };
 }
 
+export function articleContentLanguage(article: Article): Language {
+  return article.localizedContent?.resolvedLanguage ?? article.originalLanguage;
+}
+
 export function storyTitle(story: StorySummary): string {
   return story.localizedContent?.title ?? story.canonicalTitle;
+}
+
+export function storyContentLanguage(story: StorySummary): Language | undefined {
+  return story.localizedContent?.resolvedLanguage;
 }
 
 export function translationLabel(

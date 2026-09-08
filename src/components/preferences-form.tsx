@@ -36,7 +36,7 @@ export function PreferencesForm({ initial }: { initial: UserPreferences }) {
           {ARTICLE_CATEGORIES.map((category) => <label key={category} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={categories.includes(category)} onChange={() => toggle(category)} />{formatCategory(category)}</label>)}
         </div>
       </fieldset>
-      <button disabled={pending} className="mt-6 rounded-lg bg-teal-800 px-4 py-2 font-semibold text-white disabled:opacity-60">{pending ? "Saving…" : "Save preferences"}</button>
+      <button disabled={pending} className="mt-6 rounded-lg bg-brand-hover px-4 py-2 font-semibold text-white disabled:opacity-60">{pending ? "Saving…" : "Save preferences"}</button>
       {message ? <p role="status" className="mt-3 text-sm text-slate-700">{message}</p> : null}
     </form>
   );

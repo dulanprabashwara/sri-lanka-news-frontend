@@ -61,7 +61,7 @@ export default async function Home({ searchParams }: HomePageProps) {
         : "Failed to load news articles.";
 
     return (
-      <div className="space-y-8">
+      <div className="space-y-6">
         <HomeHeader category={category} />
         <CategoryNavigation activeCategory={category} displayLanguage={displayLanguage} />
         <ErrorState title="Unable to load news feed" message={errorMsg} />
@@ -74,7 +74,7 @@ export default async function Home({ searchParams }: HomePageProps) {
   const compactLatestReports = articles.content.slice(0, 5);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 sm:space-y-8">
       {/* Home Editorial Header */}
       <HomeHeader category={category} />
 
@@ -82,9 +82,9 @@ export default async function Home({ searchParams }: HomePageProps) {
       <CategoryNavigation activeCategory={category} displayLanguage={displayLanguage} />
 
       {/* Main 2-Column Desktop Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
         {/* Left Column (2/3 width on desktop): Lead Story & Main Feed */}
-        <div className="lg:col-span-2 space-y-10">
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
           {/* Lead Multi-Publisher Story Position */}
           {leadTrending ? (
             <section aria-label="Most reported story">
@@ -99,7 +99,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
           {/* Active Multi-Publisher Stories Discovery Section */}
           {secondaryTrending.length > 0 ? (
-            <section aria-label="Active stories across newsrooms" className="space-y-4">
+            <section aria-label="Active stories across newsrooms" className="space-y-3.5">
               <div className="flex items-center justify-between">
                 <SectionHeader
                   title="Active Stories"
@@ -127,7 +127,7 @@ export default async function Home({ searchParams }: HomePageProps) {
           ) : null}
 
           {/* Main Article Feed: Latest Publisher Reports */}
-          <section aria-label="Latest publisher reports" className="space-y-4">
+          <section aria-label="Latest publisher reports" className="space-y-3.5">
             <SectionHeader
               title={category ? `${formatCategory(category)} Publisher Reports` : "Latest Publisher Reports"}
               description="Recent chronological reports direct from Sri Lankan news publishers."
@@ -147,18 +147,18 @@ export default async function Home({ searchParams }: HomePageProps) {
 
         {/* Right Column (1/3 width on desktop): Compact Latest Reports Side Panel */}
         <aside aria-label="Recent reports panel" className="space-y-4 lg:sticky lg:top-20">
-          <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs space-y-4">
+          <div className="rounded-2xl border border-border bg-surface p-4 sm:p-5 shadow-xs space-y-3.5">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2 text-foreground font-bold text-sm">
                 <Newspaper className="size-4 text-brand" />
                 <span>Recent Headlines</span>
               </div>
-              <span className="text-[11px] font-semibold text-foreground-muted uppercase tracking-wider">
+              <span className="text-xs font-semibold text-foreground-muted uppercase tracking-wider">
                 Real-time
               </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {compactLatestReports.map((article) => (
                 <ArticleCard
                   key={`compact-${article.id}`}
@@ -169,7 +169,7 @@ export default async function Home({ searchParams }: HomePageProps) {
               ))}
             </div>
 
-            <div className="pt-2 text-center">
+            <div className="pt-1.5 text-center">
               <Link
                 href={withDisplayLanguage("/search", displayLanguage)}
                 className="text-xs font-bold text-brand hover:underline"
@@ -186,19 +186,17 @@ export default async function Home({ searchParams }: HomePageProps) {
 
 function HomeHeader({ category }: { category?: ArticleCategory }) {
   return (
-    <header className="max-w-3xl space-y-2">
-      <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-soft/60 px-3 py-1 text-xs font-bold text-brand uppercase tracking-wider">
-        <Layers className="size-3.5" />
+    <header className="max-w-3xl space-y-1.5">
+      <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-soft/50 px-2.5 py-0.5 text-xs font-bold text-brand uppercase tracking-wider">
+        <Layers className="size-3" />
         Multilingual News Intelligence
       </div>
-      <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground break-words">
-        {category
-          ? `${formatCategory(category)} News`
-          : "News Intelligence Across Sri Lanka"}
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground wrap-break-word">
+        {category ? `${formatCategory(category)} News` : "News Intelligence Across Sri Lanka"}
       </h1>
-      <p className="text-sm sm:text-base text-foreground-secondary leading-relaxed">
-        Aggregating independent Sri Lankan newsrooms in English, Sinhala, and Tamil.
-        Grouped multi-publisher stories alongside recent single-publisher reports.
+      <p className="text-xs sm:text-sm text-foreground-secondary leading-relaxed">
+        Aggregating independent Sri Lankan newsrooms in English, Sinhala, and Tamil. Multi-publisher
+        stories alongside real-time publisher reports.
       </p>
     </header>
   );

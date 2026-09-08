@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   articleContent,
+  articleContentLanguage,
   readDisplayLanguage,
   translationLabel,
+  storyContentLanguage,
   withDisplayLanguage,
 } from "@/lib/language";
 import type { Article } from "@/types/api";
@@ -71,6 +73,26 @@ test("renders real Sinhala and Tamil localized content with provenance", () => {
   assert.equal(articleContent(article).title, "ශ්‍රී ලංකා පුවත් ශීර්ෂය");
   assert.equal(articleContent(article).summary, "இது தமிழ் எழுத்தையும் பாதுகாக்கும் சோதனை.");
   assert.equal(translationLabel(article.localizedContent, "en"), "Translated from English");
+  assert.equal(articleContentLanguage(article), "si");
+  assert.equal(
+    storyContentLanguage({
+      id: "story-1",
+      canonicalTitle: "Original story",
+      category: "LOCAL",
+      firstPublishedAt: "2026-09-01T00:00:00Z",
+      lastPublishedAt: "2026-09-01T00:01:00Z",
+      articleCount: 2,
+      sourceCount: 2,
+      localizedContent: {
+        requestedLanguage: "ta",
+        resolvedLanguage: "ta",
+        translated: true,
+        fallback: false,
+        title: "தமிழ் செய்தி",
+      },
+    }),
+    "ta",
+  );
 });
 
 test("does not claim translation for original-language or fallback content", () => {

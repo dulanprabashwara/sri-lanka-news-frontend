@@ -95,13 +95,13 @@ export default function NotificationPreferencesPage() {
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
+                className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 checked={prefs.inAppEnabled}
                 onChange={(e) => setPrefs({ ...prefs, inAppEnabled: e.target.checked })}
               />
               <div className="space-y-0.5">
                 <div className="text-sm font-semibold text-foreground flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-brand-primary" />
+                  <Bell className="w-4 h-4 text-brand" />
                   In-app notifications
                 </div>
                 <div className="text-xs text-foreground-secondary">
@@ -113,7 +113,7 @@ export default function NotificationPreferencesPage() {
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary disabled:opacity-50"
+                className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand disabled:opacity-50"
                 checked={prefs.emailEnabled}
                 disabled={!prefs.emailAvailable}
                 onChange={(e) => setPrefs({ ...prefs, emailEnabled: e.target.checked })}
@@ -148,7 +148,7 @@ export default function NotificationPreferencesPage() {
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
+                className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 checked={prefs.sourceFollowNotificationsEnabled}
                 onChange={(e) => setPrefs({ ...prefs, sourceFollowNotificationsEnabled: e.target.checked })}
               />
@@ -163,7 +163,7 @@ export default function NotificationPreferencesPage() {
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
+                className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 checked={prefs.topicFollowNotificationsEnabled}
                 onChange={(e) => setPrefs({ ...prefs, topicFollowNotificationsEnabled: e.target.checked })}
               />
@@ -178,7 +178,7 @@ export default function NotificationPreferencesPage() {
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
+                className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 checked={prefs.storyUpdateNotificationsEnabled}
                 onChange={(e) => setPrefs({ ...prefs, storyUpdateNotificationsEnabled: e.target.checked })}
               />
@@ -202,12 +202,12 @@ export default function NotificationPreferencesPage() {
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
+                className="h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 checked={prefs.quietHoursEnabled}
                 onChange={(e) => setPrefs({ ...prefs, quietHoursEnabled: e.target.checked })}
               />
               <span className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <Clock className="w-4 h-4 text-brand-primary" />
+                <Clock className="w-4 h-4 text-brand" />
                 Enable quiet hours
               </span>
             </label>

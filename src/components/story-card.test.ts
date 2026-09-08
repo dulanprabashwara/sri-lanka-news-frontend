@@ -39,7 +39,7 @@ test("renders Lead variant of StoryCard", () => {
   }));
 
   assert.match(html, /Lead developing Sri Lankan story/);
-  assert.match(html, /Most Reported Now/);
+  assert.match(html, /Most Reported Story/);
   assert.match(html, /5 reports/);
   assert.match(html, /3 publishers/);
 });

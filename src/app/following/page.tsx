@@ -31,7 +31,7 @@ export default async function FollowingPage({ searchParams }: { searchParams: Pr
     </Link>
   );
   return (
-    <section className="space-y-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <section className="space-y-8">
       <PageHeader        eyebrow="Your interests"        title="Following"        filterSlot={<div className="flex flex-wrap gap-2 pt-2">{filter("All")}{filter("Sources", "SOURCE")}{filter("Topics", "TOPIC")}</div>}
       />
       <FollowingList initial={follows.content} displayLanguage={displayLanguage} />

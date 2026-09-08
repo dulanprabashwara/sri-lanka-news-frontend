@@ -80,7 +80,7 @@ export function AdminDashboard({
             <Link key={card.label} href={card.href} className="group block">
               <Surface
                 variant="elevated"
-                className="h-full p-5 transition-shadow hover:shadow-md group-hover:border-teal-300"
+                className="h-full p-5 transition-shadow hover:shadow-md group-hover:border-brand-soft"
               >
                 <div className="flex items-center justify-between">
                   <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -89,10 +89,10 @@ export function AdminDashboard({
                   <StatusBadge status={card.status} label={card.statusLabel} />
                 </div>
                 <dd className="mt-3 flex items-baseline justify-between">
-                  <span className="text-3xl font-black text-slate-900 group-hover:text-teal-700">
+                  <span className="text-3xl font-black text-slate-900 group-hover:text-brand">
                     {card.value}
                   </span>
-                  <ArrowRight className="h-4 w-4 text-slate-400 opacity-0 transition-opacity group-hover:opacity-100 group-hover:text-teal-700" />
+                  <ArrowRight className="h-4 w-4 text-slate-400 opacity-0 transition-opacity group-hover:opacity-100 group-hover:text-brand" />
                 </dd>
               </Surface>
             </Link>
@@ -166,7 +166,7 @@ function AdminArticleTable({
                       <form action={retryAction.bind(null, article.articleId)}>
                         <button
                           type="submit"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-teal-700 px-3 py-1.5 text-xs font-semibold text-teal-800 hover:bg-teal-50 focus:outline-hidden focus:ring-2 focus:ring-teal-500"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-brand px-3 py-1.5 text-xs font-semibold text-brand hover:bg-brand-soft/30 focus:outline-hidden focus:ring-2 focus:ring-brand"
                         >
                           <RefreshCw className="h-3.5 w-3.5" />
                           Retry

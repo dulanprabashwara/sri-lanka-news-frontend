@@ -14,15 +14,16 @@ export const metadata: Metadata = { title: "Stories Administration | Admin" };
 export default async function AdminStoriesPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
+  const resolvedParams = await searchParams;
   const auth = await getValidatedAuth();
   if (!auth) redirect("/auth/login?next=/admin/stories");
   const { data } = await auth.supabase.auth.getSession();
   const token = data.session?.access_token;
   if (!token) redirect("/auth/login?next=/admin/stories");
 
-  const page = searchParams.page ? parseInt(searchParams.page, 10) : 0;
+  const page = resolvedParams.page ? parseInt(resolvedParams.page, 10) : 0;
   let storiesPage;
   let denied = false;
 

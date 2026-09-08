@@ -86,7 +86,7 @@ export function StoryTools({
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-brand ${
                   isSelected
-                    ? "border-brand-primary text-brand-primary font-bold"
+                    ? "border-brand text-brand font-bold"
                     : "border-transparent text-foreground-secondary hover:border-border hover:text-foreground"
                 }`.trim()}
               >
@@ -95,7 +95,7 @@ export function StoryTools({
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
                       isSelected
-                        ? "bg-brand-soft text-brand-primary"
+                        ? "bg-brand-soft text-brand"
                         : "bg-surface-muted text-foreground-secondary"
                     }`}
                   >
@@ -128,7 +128,7 @@ export function StoryTools({
             </div>
             {articles.length === 0 ? (
               <div
-                className="rounded-xl border border-border bg-surface-card p-6 text-center text-sm text-foreground-secondary"
+                className="rounded-xl border border-border bg-surface p-6 text-center text-sm text-foreground-secondary"
                 role="status"
               >
                 No public reports are currently available for this story.

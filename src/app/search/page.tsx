@@ -124,7 +124,7 @@ export default async function SearchPage({
 
   if (!query) {
     return (
-      <section className="space-y-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <section className="space-y-8">
         <PageHeader 
           eyebrow="Public news search" 
           title="Search" 
@@ -152,7 +152,7 @@ export default async function SearchPage({
       ? "Semantic search is temporarily unavailable. Try Keyword search."
       : getApiErrorMessage(loadError);
     return (
-      <section className="space-y-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <section className="space-y-8">
         <PageHeader eyebrow="Public news search" title="Search" filterSlot={searchControls} />
         <ErrorState message={message} />
         {mode === "semantic" ? (
@@ -167,7 +167,7 @@ export default async function SearchPage({
   const hasMore = "hasMore" in results ? results.hasMore : !results.last;
   
   return (
-    <section className="space-y-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <section className="space-y-8">
       <PageHeader 
         eyebrow="Public news search" 
         title={`Search results for "${results.query}"`} 

@@ -63,7 +63,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <ContainerContent className="py-8 space-y-6">
+    <ContainerContent className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader
           eyebrow="MY NEWS"
@@ -80,9 +80,9 @@ export default function NotificationsPage() {
               className="gap-2 text-xs"
             >
               {markingAll ? (
-                <Loader2 className="w-4 h-4 animate-spin text-brand-primary" />
+                <Loader2 className="w-4 h-4 animate-spin text-brand" />
               ) : (
-                <Check className="w-4 h-4 text-brand-primary" />
+                <Check className="w-4 h-4 text-brand" />
               )}
               {markingAll ? "Marking..." : "Mark all read"}
             </Button>
@@ -117,13 +117,13 @@ export default function NotificationsPage() {
         ) : notifications.length === 0 ? (
           <div className="p-8 sm:p-12">
             <EmptyState
-              icon={<CheckCircle2 className="w-6 h-6 text-brand-primary" />}
+              icon={<CheckCircle2 className="w-6 h-6 text-brand" />}
               title="You're all caught up!"
               description="There are no unread notifications for your followed sources or topics."
               primaryAction={
                 <Link
                   href={withDisplayLanguage("/account/notifications", displayLanguage)}
-                  className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-secondary transition-colors"
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-hover transition-colors"
                 >
                   Manage Preferences
                 </Link>
@@ -175,7 +175,7 @@ function NotificationItem({
       <div className="flex gap-4">
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-primary flex items-center gap-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand flex items-center gap-1">
               <Bell className="w-3 h-3" />
               {notification.sourceName || "News Intelligence"}
             </span>
@@ -198,7 +198,7 @@ function NotificationItem({
               <Link
                 href={withDisplayLanguage(targetPath, displayLanguage)}
                 onClick={isUnread ? onRead : undefined}
-                className="inline-flex items-center gap-1 text-xs font-bold text-brand-primary hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-bold text-brand hover:underline"
               >
                 <span>{ctaLabel}</span>
                 <ArrowRight className="w-3 h-3" />
@@ -225,7 +225,7 @@ function NotificationItem({
 
         {isUnread && (
           <div className="shrink-0 flex items-start pt-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-brand-primary ring-4 ring-brand-soft" aria-label="Unread notification" />
+            <span className="w-2.5 h-2.5 rounded-full bg-brand ring-4 ring-brand-soft" aria-label="Unread notification" />
           </div>
         )}
       </div>

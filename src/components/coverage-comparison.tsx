@@ -123,7 +123,7 @@ function SourceCoverageCard({
               </div>
               <Link
                 href={withDisplayLanguage(`/article/${encodeURIComponent(article.id)}`, displayLanguage)}
-                className="block font-bold text-foreground hover:text-brand-primary hover:underline transition-colors"
+                className="block font-bold text-foreground hover:text-brand hover:underline transition-colors"
               >
                 {article.localizedContent?.title ?? article.title}
               </Link>
@@ -133,7 +133,7 @@ function SourceCoverageCard({
                 </p>
               )}
               {translationLabel(article.localizedContent, article.originalLanguage) && (
-                <p className="text-xs font-semibold text-brand-primary">
+                <p className="text-xs font-semibold text-brand">
                   {translationLabel(article.localizedContent, article.originalLanguage)} • Platform translation
                 </p>
               )}
@@ -142,7 +142,7 @@ function SourceCoverageCard({
                   href={article.originalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-brand-primary hover:underline"
+                  className="inline-flex items-center gap-1 font-semibold text-brand hover:underline"
                 >
                   <span>Original Publisher</span>
                   <ExternalLink className="size-3" />
@@ -167,7 +167,7 @@ function MetadataPanel({ title, values }: { title: string; values: string[] }) {
           {values.map((value) => (
             <span
               key={value}
-              className="rounded-md bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand-primary"
+              className="rounded-md bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand"
             >
               {value}
             </span>

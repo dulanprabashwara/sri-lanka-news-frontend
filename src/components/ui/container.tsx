@@ -7,7 +7,7 @@ export interface ContainerProps {
 
 export function ContainerReading({ children, className = "" }: ContainerProps) {
   return (
-    <div className={`mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 ${className}`.trim()}>
+    <div className={`mx-auto w-full max-w-3xl ${className}`.trim()}>
       {children}
     </div>
   );
@@ -15,7 +15,7 @@ export function ContainerReading({ children, className = "" }: ContainerProps) {
 
 export function ContainerContent({ children, className = "" }: ContainerProps) {
   return (
-    <div className={`mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 ${className}`.trim()}>
+    <div className={`mx-auto w-full max-w-6xl ${className}`.trim()}>
       {children}
     </div>
   );
@@ -23,7 +23,7 @@ export function ContainerContent({ children, className = "" }: ContainerProps) {
 
 export function ContainerWide({ children, className = "" }: ContainerProps) {
   return (
-    <div className={`mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 ${className}`.trim()}>
+    <div className={`mx-auto w-full max-w-7xl ${className}`.trim()}>
       {children}
     </div>
   );
@@ -31,7 +31,7 @@ export function ContainerWide({ children, className = "" }: ContainerProps) {
 
 export function ContainerAdmin({ children, className = "" }: ContainerProps) {
   return (
-    <div className={`mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 ${className}`.trim()}>
+    <div className={`mx-auto w-full max-w-7xl ${className}`.trim()}>
       {children}
     </div>
   );
@@ -55,7 +55,7 @@ export function PageShell({ children, variant = "content", className = "" }: Pag
       return <ContainerAdmin className={className}>{children}</ContainerAdmin>;
     case "compact":
       return (
-        <div className={`mx-auto w-full max-w-xl px-4 py-6 sm:px-6 lg:px-8 ${className}`.trim()}>
+        <div className={`mx-auto w-full max-w-xl ${className}`.trim()}>
           {children}
         </div>
       );

@@ -81,7 +81,7 @@ export default async function AdminSourcesPage() {
                         href={source.baseUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 font-semibold text-teal-800 hover:text-teal-900 hover:underline"
+                        className="inline-flex items-center gap-1 font-semibold text-brand hover:text-brand-hover hover:underline"
                       >
                         {source.name}
                         <ExternalLink className="h-3 w-3 text-slate-400" />

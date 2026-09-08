@@ -16,15 +16,16 @@ export const metadata: Metadata = { title: "Audit Logs | Admin" };
 export default async function AdminAuditPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
+  const resolvedParams = await searchParams;
   const auth = await getValidatedAuth();
   if (!auth) redirect("/auth/login?next=/admin/audit");
   const { data } = await auth.supabase.auth.getSession();
   const token = data.session?.access_token;
   if (!token) redirect("/auth/login?next=/admin/audit");
 
-  const page = searchParams.page ? parseInt(searchParams.page, 10) : 0;
+  const page = resolvedParams.page ? parseInt(resolvedParams.page, 10) : 0;
   let logsPage;
   let denied = false;
 
@@ -87,7 +88,7 @@ export default async function AdminAuditPage({
                     </td>
                     <td className="p-4 text-xs">
                       {log.metadata ? (
-                        <pre className="max-w-xs overflow-x-auto rounded-md bg-slate-100 p-2 font-mono text-[11px] text-slate-800">
+                        <pre className="max-w-xs overflow-x-auto rounded-md bg-slate-100 p-2 font-mono text-xs text-slate-800">
                           {JSON.stringify(log.metadata, null, 2)}
                         </pre>
                       ) : (

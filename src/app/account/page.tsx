@@ -48,7 +48,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             description="Your active platform identity and authorization status."
           />
           <div className="flex items-center gap-3 pt-2">
-            <div className="p-2.5 rounded-full bg-brand-soft text-brand-primary">
+            <div className="p-2.5 rounded-full bg-brand-soft text-brand">
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
@@ -66,7 +66,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <div className="grid gap-4 sm:grid-cols-2">
           <Surface variant="elevated" className="p-5 flex flex-col justify-between space-y-3">
             <div>
-              <div className="flex items-center gap-2 text-brand-primary font-bold text-sm mb-1">
+              <div className="flex items-center gap-2 text-brand font-bold text-sm mb-1">
                 <Bell className="w-4 h-4" />
                 Notification Preferences
               </div>
@@ -76,7 +76,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </div>
             <Link
               href={withDisplayLanguage("/account/notifications", language)}
-              className="inline-flex items-center text-xs font-bold text-brand-primary hover:underline pt-2"
+              className="inline-flex items-center text-xs font-bold text-brand hover:underline pt-2"
             >
               Manage Notifications →
             </Link>
@@ -84,7 +84,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
           <Surface variant="elevated" className="p-5 flex flex-col justify-between space-y-3">
             <div>
-              <div className="flex items-center gap-2 text-brand-primary font-bold text-sm mb-1">
+              <div className="flex items-center gap-2 text-brand font-bold text-sm mb-1">
                 <Shield className="w-4 h-4" />
                 Privacy & Data
               </div>
@@ -94,7 +94,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </div>
             <Link
               href={withDisplayLanguage("/account/privacy", language)}
-              className="inline-flex items-center text-xs font-bold text-brand-primary hover:underline pt-2"
+              className="inline-flex items-center text-xs font-bold text-brand hover:underline pt-2"
             >
               Privacy Options →
             </Link>
@@ -112,14 +112,14 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               href={withDisplayLanguage("/bookmarks", language)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-surface text-sm font-semibold text-foreground hover:bg-surface-muted transition-colors"
             >
-              <Bookmark className="w-4 h-4 text-brand-primary" />
+              <Bookmark className="w-4 h-4 text-brand" />
               View Bookmarks
             </Link>
             <Link
               href={withDisplayLanguage("/following", language)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-surface text-sm font-semibold text-foreground hover:bg-surface-muted transition-colors"
             >
-              <UserCheck className="w-4 h-4 text-brand-primary" />
+              <UserCheck className="w-4 h-4 text-brand" />
               Followed Topics & Sources
             </Link>
           </div>

@@ -16,11 +16,11 @@ export function Surface({
   as: Component = "div",
   ...props
 }: SurfaceProps) {
-  const baseClasses = "rounded-xl p-5 transition-all duration-150";
+  const baseClasses = "rounded-xl p-5 transition-colors duration-150";
 
   const variantClasses: Record<SurfaceVariant, string> = {
     flat: "bg-surface text-foreground",
-    elevated: "bg-surface text-foreground shadow-sm border border-border",
+    elevated: "bg-surface text-foreground shadow-xs border border-border",
     muted: "bg-surface-muted text-foreground-secondary border border-border",
     bordered: "bg-surface text-foreground border border-border",
     highlight: "bg-brand-soft/30 text-foreground border border-brand-soft",

@@ -37,7 +37,7 @@ export function StoryTimeline({
             <li key={event.articleId} className="relative">
               <span
                 aria-hidden="true"
-                className="absolute -left-[1.35rem] sm:-left-[1.85rem] top-1.5 size-3 rounded-full border-2 border-surface-card bg-brand-primary ring-4 ring-brand-soft"
+                className="absolute -left-[1.35rem] sm:-left-[1.85rem] top-1.5 size-3 rounded-full border-2 border-surface bg-brand ring-4 ring-brand-soft"
               />
               <Surface variant="bordered" className="p-5 space-y-3">
                 <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-foreground-secondary">
@@ -45,16 +45,16 @@ export function StoryTimeline({
                     {formatPublishedAt(event.publishedAt)}
                   </time>
                   <span>•</span>
-                  <span className="text-brand-primary font-medium">
+                  <span className="text-brand font-medium">
                     {formatTimelineOffset(event.minutesFromFirstReport)}
                   </span>
                 </div>
 
-                <div className="text-xs font-bold text-brand-primary">
+                <div className="text-xs font-bold text-brand">
                   {event.source.name}
                 </div>
 
-                <h3 className="text-base font-bold text-foreground hover:text-brand-primary">
+                <h3 className="text-base font-bold text-foreground hover:text-brand">
                   <Link
                     href={withDisplayLanguage(`/article/${encodeURIComponent(event.articleId)}`, displayLanguage)}
                     className="hover:underline transition-colors"
@@ -70,7 +70,7 @@ export function StoryTimeline({
                 )}
 
                 {translationLabel(event.localizedContent, event.originalLanguage) && (
-                  <p className="text-xs font-semibold text-brand-primary">
+                  <p className="text-xs font-semibold text-brand">
                     {translationLabel(event.localizedContent, event.originalLanguage)} • Platform translation
                   </p>
                 )}
@@ -83,7 +83,7 @@ export function StoryTimeline({
                     href={event.originalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-semibold text-brand-primary hover:underline"
+                    className="inline-flex items-center gap-1 font-semibold text-brand hover:underline"
                   >
                     <span>Original Publisher</span>
                     <ExternalLink className="size-3" />

@@ -137,7 +137,7 @@ export default function AdminAnalyticsDashboard() {
               onClick={() => handleRange(r.days)}
               className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
                 days === r.days
-                  ? "bg-teal-700 text-white shadow-xs"
+                  ? "bg-brand text-white shadow-xs"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >
@@ -175,7 +175,7 @@ export default function AdminAnalyticsDashboard() {
                     title={`${day.date}: ${day.count} views`}
                   >
                     <div
-                      className="w-full bg-teal-600 rounded-t-xs opacity-80 group-hover:opacity-100 transition-all"
+                      className="w-full bg-brand rounded-t-xs opacity-80 group-hover:opacity-100 transition-all"
                       style={{ height }}
                     ></div>
                   </div>
@@ -295,7 +295,7 @@ function MetricCard({
   return (
     <Surface variant="elevated" className="p-5">
       <div className="flex items-center gap-3">
-        <div className="rounded-lg bg-teal-50 p-2 text-teal-700">
+        <div className="rounded-lg bg-brand-soft/30 p-2 text-brand">
           <Icon className="h-4 w-4" />
         </div>
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">{label}</h3>
@@ -340,7 +340,7 @@ function StatBox({
 }) {
   return (
     <div className="rounded-xl bg-slate-50 p-3 border border-slate-100">
-      <Icon className="h-4 w-4 text-teal-700 mx-auto mb-1" />
+      <Icon className="h-4 w-4 text-brand mx-auto mb-1" />
       <div className="text-lg font-black text-slate-900">
         {typeof value === "number" ? value.toLocaleString() : value}
       </div>

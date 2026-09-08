@@ -17,15 +17,16 @@ export const metadata: Metadata = { title: "Processing Queue | Admin" };
 export default async function AdminProcessingPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
+  const resolvedParams = await searchParams;
   const auth = await getValidatedAuth();
   if (!auth) redirect("/auth/login?next=/admin/processing");
   const { data } = await auth.supabase.auth.getSession();
   const token = data.session?.access_token;
   if (!token) redirect("/auth/login?next=/admin/processing");
 
-  const page = searchParams.page ? parseInt(searchParams.page, 10) : 0;
+  const page = resolvedParams.page ? parseInt(resolvedParams.page, 10) : 0;
   let articlesPage;
   let denied = false;
 
@@ -103,7 +104,7 @@ export default async function AdminProcessingPage({
                         <form action={retryFailedArticle.bind(null, article.articleId)}>
                           <button
                             type="submit"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-teal-700 px-3 py-1.5 text-xs font-semibold text-teal-800 hover:bg-teal-50 focus:outline-hidden focus:ring-2 focus:ring-teal-500"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-brand px-3 py-1.5 text-xs font-semibold text-brand hover:bg-brand-soft/30 focus:outline-hidden focus:ring-2 focus:ring-brand"
                           >
                             <RefreshCw className="h-3.5 w-3.5" />
                             Retry

@@ -120,7 +120,7 @@ export function AdminIngestionDashboard({
                           type="button"
                           onClick={() => handleTrigger(source.sourceSlug)}
                           disabled={triggeringSlug === source.sourceSlug}
-                          className="inline-flex items-center gap-1 rounded-lg bg-teal-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-800 disabled:opacity-50"
+                          className="inline-flex items-center gap-1 rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-50"
                         >
                           <Play className="h-3.5 w-3.5" />
                           {triggeringSlug === source.sourceSlug ? "Triggering..." : "Run Now"}
@@ -227,7 +227,7 @@ export function AdminIngestionDashboard({
                   type="checkbox"
                   name="enabled"
                   defaultChecked={editingSource.enabled}
-                  className="rounded border-slate-300 text-teal-700 focus:ring-teal-600"
+                  className="rounded border-slate-300 text-brand focus:ring-brand"
                 />
                 <span>Enable automated scheduling</span>
               </label>
@@ -247,7 +247,7 @@ export function AdminIngestionDashboard({
                   min={5}
                   max={1440}
                   required
-                  className="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-xs focus:border-teal-500 focus:ring-teal-500"
+                  className="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-xs focus:border-brand focus:ring-brand"
                 />
               </div>
 
@@ -266,7 +266,7 @@ export function AdminIngestionDashboard({
                   min={0}
                   max={Math.min(300, editingSource.intervalMinutes * 60 - 1)}
                   required
-                  className="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-xs focus:border-teal-500 focus:ring-teal-500"
+                  className="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-xs focus:border-brand focus:ring-brand"
                 />
               </div>
 
@@ -280,7 +280,7 @@ export function AdminIngestionDashboard({
                 </button>
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-1 rounded-lg bg-teal-700 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-800"
+                  className="inline-flex items-center gap-1 rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand-hover"
                 >
                   <Check className="h-4 w-4" />
                   Save Changes

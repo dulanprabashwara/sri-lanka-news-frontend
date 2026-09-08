@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { safeNextPath } from "@/lib/safe-redirect";
+import { BrandLogo } from "@/components/brand-logo";
 
 type Mode = "login" | "sign-up" | "forgot" | "reset";
 
@@ -69,14 +70,17 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
 
   return (
     <section className="mx-auto max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mb-6 w-36" aria-label="Ceylon News">
+        <BrandLogo />
+      </div>
       <h1 className="text-2xl font-bold text-slate-950">{title}</h1>
       <form onSubmit={submit} className="mt-6 space-y-4">
         {needsEmail && <Field label="Email" name="email" type="email" autoComplete="email" />}
         {needsPassword && <Field label="Password" name="password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} />}
         {needsConfirmation && <Field label="Confirm password" name="confirmPassword" type="password" autoComplete="new-password" />}
         {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
-        {message && <p role="status" className="text-sm text-teal-800">{message}</p>}
-        <button disabled={pending} className="w-full rounded-lg bg-teal-800 px-4 py-2.5 font-semibold text-white disabled:opacity-60">
+        {message && <p role="status" className="text-sm text-brand">{message}</p>}
+        <button disabled={pending} className="w-full rounded-lg bg-brand px-4 py-2.5 font-semibold text-white hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-60">
           {pending ? "Please wait…" : title}
         </button>
       </form>

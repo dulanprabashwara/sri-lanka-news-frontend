@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, Menu, X, User, ChevronDown, LogOut, Settings, Shield, Bookmark, Sparkles, Rss } from "lucide-react";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 import NotificationBadge from "./notifications/NotificationBadge";
+import { BrandLogo } from "./brand-logo";
 
 export function SiteHeader({
   authenticated = false,
@@ -118,26 +119,18 @@ export function SiteHeader({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-surface/95 backdrop-blur-xs">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         {/* Brand Logo */}
         <Link
           href={withDisplayLanguage("/", displayLanguage)}
           className="group flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand shrink-0"
-          aria-label="Sri Lanka News home"
+          aria-label="Ceylon News home"
         >
-          <span
-            aria-hidden="true"
-            className="grid size-9 place-items-center rounded-xl bg-brand text-xs font-black tracking-tight text-white shadow-xs transition-transform group-hover:scale-105"
-          >
-            SL
+          <span className="w-8 sm:hidden" aria-hidden="true">
+            <BrandLogo compact priority />
           </span>
-          <span className="leading-tight">
-            <span className="block text-base font-bold tracking-tight text-foreground">
-              Sri Lanka News
-            </span>
-            <span className="block text-xs font-medium text-foreground-muted hidden sm:block">
-              Independent news index
-            </span>
+          <span className="hidden w-[7.25rem] sm:block">
+            <BrandLogo priority />
           </span>
         </Link>
 
@@ -391,10 +384,10 @@ export function SiteHeader({
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="flex items-center gap-2.5">
-                <span className="grid size-8 place-items-center rounded-lg bg-brand text-xs font-black text-white">
-                  SL
+                <span className="w-8" aria-hidden="true">
+                  <BrandLogo compact />
                 </span>
-                <span className="font-bold text-sm text-foreground">Navigation</span>
+                <span className="font-bold text-sm text-foreground">Ceylon News</span>
               </div>
               <button
                 type="button"

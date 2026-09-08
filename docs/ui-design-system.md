@@ -1,8 +1,8 @@
-# Sri Lankan Multilingual News Intelligence Platform
+# Ceylon News
 ## UI Design System & Foundation Documentation (Phase R1)
 
-**Version:** 1.0.0 (Phase R1)  
-**Visual Theme:** "Editorial Intelligence Room"  
+**Version:** 1.1.0 (UX1)
+**Visual Theme:** "Modern Digital Newspaper"
 **Stack:** Next.js 16.3.3 + React 19 + Tailwind CSS v4
 
 ---
@@ -17,14 +17,14 @@ Defined in `src/app/globals.css` via Tailwind CSS v4 `@theme inline` mapping:
 | | `bg-surface` | `--surface` | `#ffffff` | Primary panel and card background |
 | | `bg-surface-muted` | `--surface-muted` | `#f1f5f9` (slate-100) | Secondary / muted surface background |
 | | `bg-surface-elevated`| `--surface-elevated`| `#ffffff` | Elevated overlays and popovers |
-| **Typography** | `text-foreground` | `--foreground` | `#020617` (slate-950) | High-contrast primary headings and text |
-| | `text-foreground-secondary`| `--foreground-secondary`| `#475569` (slate-600) | Secondary body copy and labels |
+| **Typography** | `text-foreground` | `--foreground` | `#0f172a` (Ceylon Ink) | High-contrast primary headings and text |
+| | `text-foreground-secondary`| `--foreground-secondary`| `#334155` (Tea Leaf Slate) | Secondary body copy and labels |
 | | `text-foreground-muted`| `--foreground-muted`| `#64748b` (slate-500) | Timestamps, metadata, captions |
 | **Borders** | `border-border` | `--border` | `#e2e8f0` (slate-200) | Standard divider and card border |
 | | `border-border-strong`| `--border-strong` | `#cbd5e1` (slate-300) | Input borders and high-contrast lines |
-| **Brand (Slate Teal)**| `bg-brand`, `text-brand`| `--brand` | `#0f766e` (teal-700) | Primary branding, buttons, active tabs |
-| | `bg-brand-hover` | `--brand-hover` | `#115e59` (teal-800) | Primary button hover state |
-| | `bg-brand-soft` | `--brand-soft` | `#ccfbf1` (teal-100) | Highlight badges and soft pills |
+| **Brand (Ceylon Blue)**| `bg-brand`, `text-brand`| `--brand` | `#2563eb` | Primary branding, buttons, active tabs |
+| | `bg-brand-hover` | `--brand-hover` | `#1d4ed8` | Primary button hover state |
+| | `bg-brand-soft` | `--brand-soft` | `#dbeafe` | Selected backgrounds and restrained emphasis |
 | **Status: Success** | `text-success`, `bg-success-soft`| `--success` | `#15803d` / `#dcfce7` | Healthy ingestion, operational status |
 | **Status: Warning** | `text-warning`, `bg-warning-soft`| `--warning` | `#b45309` / `#fef3c7` | Retry queue, processing delays |
 | **Status: Danger** | `text-danger`, `bg-danger-soft` | `--danger` | `#b91c1c` / `#fee2e2` | Failed processing, errors, alerts |
@@ -34,12 +34,13 @@ Defined in `src/app/globals.css` via Tailwind CSS v4 `@theme inline` mapping:
 
 ## 2. Typography & Multilingual Strategy
 
-- **Font Family Stack:** `Inter, "Noto Sans Sinhala", "Noto Sans Tamil", system-ui, sans-serif`
+- **Font Family Stack:** Next.js-loaded Inter, Noto Sans Sinhala, Noto Sans Tamil, then system sans-serif fallbacks.
+- **Editorial Serif:** Source Serif 4 is reserved for major Latin-script editorial headings and reading elements.
 - **Sinhala & Tamil Script Support:** Script-aware line height (`line-height: 1.6`) applied via `:lang(si)`, `.lang-si`, `:lang(ta)`, `.lang-ta`, and `.script-aware-text` to prevent vertical glyph clipping.
 - **Hierarchy Standard:**
   - `page-title` (32px–56px / font-extrabold / tracking-tight)
   - `page-intro` (16px / leading-relaxed / slate-600)
-  - `eyebrow` (12px / uppercase tracking-widest / teal-700)
+  - `eyebrow` (12px / uppercase tracking-widest / Ceylon Blue)
   - `SectionHeader` h2 (20px–24px / font-bold)
 
 ---

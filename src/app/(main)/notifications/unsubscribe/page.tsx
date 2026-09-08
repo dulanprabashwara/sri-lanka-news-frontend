@@ -43,7 +43,7 @@ export default function UnsubscribePage() {
             <div className="flex gap-3 pt-2 w-full">
               <Link
                 href={withDisplayLanguage("/", displayLanguage)}
-                className="flex-1 inline-flex justify-center items-center rounded-lg border border-border bg-surface-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-muted transition-colors"
+                className="flex-1 inline-flex justify-center items-center rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-muted transition-colors"
               >
                 Cancel
               </Link>
@@ -60,7 +60,7 @@ export default function UnsubscribePage() {
 
         {status === "loading" && (
           <div className="flex flex-col items-center space-y-4 py-4">
-            <Loader2 className="w-10 h-10 text-brand-primary animate-spin" />
+            <Loader2 className="w-10 h-10 text-brand animate-spin" />
             <div className="space-y-1">
               <h2 className="text-lg font-bold text-foreground">Processing Request...</h2>
               <p className="text-xs text-foreground-secondary">
@@ -83,7 +83,7 @@ export default function UnsubscribePage() {
             </div>
             <Link
               href={withDisplayLanguage("/account/notifications", displayLanguage)}
-              className="inline-flex items-center justify-center rounded-lg bg-brand-primary px-4 py-2 text-xs font-semibold text-white hover:bg-brand-secondary transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand-hover transition-colors"
             >
               Manage Preferences
             </Link>
@@ -103,7 +103,7 @@ export default function UnsubscribePage() {
             </div>
             <Link
               href={withDisplayLanguage("/account/notifications", displayLanguage)}
-              className="inline-flex items-center justify-center rounded-lg bg-brand-primary px-4 py-2 text-xs font-semibold text-white hover:bg-brand-secondary transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand-hover transition-colors"
             >
               Manage Preferences
             </Link>

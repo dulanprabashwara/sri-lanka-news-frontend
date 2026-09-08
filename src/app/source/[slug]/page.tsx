@@ -69,7 +69,7 @@ export default async function SourcePage({
           href={source.baseUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-5 ml-3 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-teal-700 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          className="mt-5 ml-3 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           Visit publisher
           <span aria-hidden="true" className="ml-2">

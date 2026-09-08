@@ -39,7 +39,7 @@ export default async function TrendingPage({
     stories = await getTrendingStories({ limit: 10, category, displayLanguage });
   } catch (error) {
     return (
-      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <section className="space-y-8">
         <PageHeader          eyebrow="Reporting activity"          title="Trending"          description="Stories receiving recent and broad reporting coverage. Rankings are based on reporting recency, number of reports, and publisher coverage."
           filterSlot={filterNav}
         />
@@ -49,7 +49,7 @@ export default async function TrendingPage({
   }
 
   return (
-    <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <section className="space-y-8">
       <PageHeader        eyebrow="Reporting activity"        title="Trending"        description="Stories receiving recent and broad reporting coverage. Rankings are based on reporting recency, number of reports, and publisher coverage."
         filterSlot={filterNav}
       />

@@ -42,7 +42,7 @@ export function AskThisStory({
 
   return (
     <Surface variant="bordered" className="p-5 sm:p-7 space-y-5">
-      <div className="flex items-center gap-2 text-brand-primary">
+      <div className="flex items-center gap-2 text-brand">
         <Sparkles className="size-4" />
         <span className="text-xs font-bold uppercase tracking-wider">
           Grounded Story Q&amp;A
@@ -69,7 +69,7 @@ export function AskThisStory({
             onChange={(event) => setQuestion(event.target.value)}
             rows={3}
             aria-describedby="story-question-help"
-            className="w-full rounded-xl border border-border bg-surface-card px-4 py-3 text-sm text-foreground placeholder:text-foreground-secondary outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-soft transition-colors"
+            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-foreground-secondary outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft transition-colors"
             placeholder="What key developments were reported across sources?"
           />
         </div>
@@ -81,7 +81,7 @@ export function AskThisStory({
           <button
             type="submit"
             disabled={pending}
-            className="rounded-lg bg-brand-primary px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 transition-colors focus-visible:outline-2 focus-visible:outline-brand"
+            className="rounded-lg bg-brand px-5 py-2.5 text-xs font-bold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 transition-colors focus-visible:outline-2 focus-visible:outline-brand"
           >
             {pending ? "Analyzing Story Reports…" : "Ask Question"}
           </button>
@@ -131,16 +131,16 @@ export function AskStoryAnswer({ response }: { response: AskStoryResponse }) {
             <li
               key={citation.number}
               id={`ask-citation-${citation.number}`}
-              className="rounded-xl border border-border bg-surface-card p-4 text-xs space-y-1.5"
+              className="rounded-xl border border-border bg-surface p-4 text-xs space-y-1.5"
             >
               <div className="font-bold text-foreground flex items-center gap-1.5">
-                <span className="rounded bg-brand-soft px-1.5 py-0.5 text-brand-primary">
+                <span className="rounded bg-brand-soft px-1.5 py-0.5 text-brand">
                   [{citation.number}]
                 </span>
                 <span>{citation.source.name}</span>
               </div>
               <p className="text-foreground-secondary font-medium line-clamp-2">{citation.title}</p>
-              <time className="block text-[11px] font-mono text-foreground-secondary" dateTime={citation.publishedAt}>
+              <time className="block text-xs font-mono text-foreground-secondary" dateTime={citation.publishedAt}>
                 {formatPublishedAt(citation.publishedAt)}
               </time>
               <div>
@@ -148,7 +148,7 @@ export function AskStoryAnswer({ response }: { response: AskStoryResponse }) {
                   href={citation.originalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-brand-primary hover:underline"
+                  className="inline-flex items-center gap-1 font-semibold text-brand hover:underline"
                 >
                   <span>Read Original Report</span>
                   <ExternalLink className="size-3" />
@@ -180,7 +180,7 @@ export function renderAnswerWithCitations(answer: string, validNumbers: number[]
       <a
         key={`${number}-${index}`}
         href={`#ask-citation-${number}`}
-        className="font-bold text-brand-primary hover:underline ml-0.5"
+        className="font-bold text-brand hover:underline ml-0.5"
       >
         [{number}]
       </a>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function SiteFooter() {
   const searchParams = useSearchParams();
@@ -13,18 +14,13 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-auto border-t border-border bg-surface text-foreground">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Main 4-Column Grid */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-5 pb-10 border-b border-border">
           {/* Brand & Purpose Column (Spans 2 on desktop) */}
           <div className="md:col-span-2 space-y-3">
-            <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center rounded-xl bg-brand text-xs font-black tracking-tight text-white shadow-xs">
-                SL
-              </span>
-              <span className="text-base font-bold text-foreground">
-                Sri Lanka News Intelligence
-              </span>
+            <div className="w-36">
+              <BrandLogo />
             </div>
             <p className="text-sm text-foreground-secondary leading-relaxed max-w-sm">
               Aggregating news from independent publishers across Sri Lanka in English, Sinhala, and Tamil.
@@ -115,7 +111,7 @@ export function SiteFooter() {
         {/* Footer Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-foreground-muted">
           <p>
-            © {new Date().getFullYear()} Sri Lanka News. All headlines link directly to original publishers.
+            © {new Date().getFullYear()} Ceylon News. All headlines link directly to original publishers.
           </p>
           <p className="text-center sm:text-right">
             Independent news intelligence platform. Articles remain the property of their respective publishers.

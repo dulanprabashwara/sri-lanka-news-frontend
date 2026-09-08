@@ -58,7 +58,7 @@ export default async function AdminUsersPage() {
         <div className="grid gap-4 sm:grid-cols-3">
           <Surface variant="elevated" className="p-6">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-teal-50 p-2 text-teal-700">
+              <div className="rounded-lg bg-brand-soft/30 p-2 text-brand">
                 <Users className="h-4 w-4" />
               </div>
               <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">

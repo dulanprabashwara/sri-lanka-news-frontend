@@ -23,7 +23,7 @@ export function StoryArticleReport({
       <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-foreground-secondary">
         <Link
           href={withDisplayLanguage(`/source/${encodeURIComponent(article.source.slug)}`, displayLanguage)}
-          className="font-bold text-brand-primary hover:underline"
+          className="font-bold text-brand hover:underline"
         >
           {article.source.name}
         </Link>
@@ -37,7 +37,7 @@ export function StoryArticleReport({
           </span>
         )}
         {article.category && (
-          <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand-primary">
+          <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand">
             {formatCategory(article.category)}
           </span>
         )}
@@ -57,7 +57,7 @@ export function StoryArticleReport({
         )}
 
         <div className="space-y-2 grow">
-          <h3 className="text-base sm:text-lg font-bold text-foreground hover:text-brand-primary">
+          <h3 className="text-base sm:text-lg font-bold text-foreground hover:text-brand">
             <Link
               href={withDisplayLanguage(`/article/${encodeURIComponent(article.id)}`, displayLanguage)}
               className="hover:underline transition-colors"
@@ -73,7 +73,7 @@ export function StoryArticleReport({
           )}
 
           {provenance && (
-            <p className="text-xs font-semibold text-brand-primary">
+            <p className="text-xs font-semibold text-brand">
               {provenance} • Platform translation
             </p>
           )}
@@ -83,7 +83,7 @@ export function StoryArticleReport({
       <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border text-xs">
         <Link
           href={withDisplayLanguage(`/article/${encodeURIComponent(article.id)}`, displayLanguage)}
-          className="font-bold text-brand-primary hover:underline"
+          className="font-bold text-brand hover:underline"
         >
           View Article Metadata & Summary →
         </Link>
@@ -91,7 +91,7 @@ export function StoryArticleReport({
           href={article.originalUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-semibold text-foreground-secondary hover:text-brand-primary transition-colors"
+          className="inline-flex items-center gap-1 font-semibold text-foreground-secondary hover:text-brand transition-colors"
         >
           <span>Read on {article.source.name}</span>
           <ExternalLink className="size-3" />

@@ -35,7 +35,7 @@ export default async function BookmarksPage({ searchParams }: { searchParams: Pr
     return withDisplayLanguage(`/bookmarks?${query}`, displayLanguage);
   };
   return (
-    <section className="space-y-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <section className="space-y-8">
       <PageHeader        eyebrow="Your library"        title="Bookmarks"        filterSlot={<div className="flex flex-wrap gap-2 pt-2">{filter("All")}{filter("Articles", "ARTICLE")}{filter("Stories", "STORY")}</div>}
       />
       <BookmarkList initial={bookmarks.content} displayLanguage={displayLanguage} />

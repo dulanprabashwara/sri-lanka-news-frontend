@@ -17,7 +17,7 @@ import {
   formatLanguage,
   formatPublishedAt,
 } from "@/lib/format";
-import { articleContent, readDisplayLanguage, storyTitle, translationLabel, withDisplayLanguage } from "@/lib/language";
+import { articleContent, articleContentLanguage, readDisplayLanguage, storyTitle, translationLabel, withDisplayLanguage } from "@/lib/language";
 import { ExternalLink, Layers, ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -63,15 +63,16 @@ export default async function ArticlePage({
   }
 
   const content = articleContent(article);
+  const contentLanguage = articleContentLanguage(article);
   const provenance = translationLabel(content.localization, article.originalLanguage);
 
   return (
-    <ContainerReading className="py-6 sm:py-10 space-y-8">
+    <ContainerReading className="space-y-8">
       {/* 1. Context Navigation */}
       <div className="flex items-center justify-between">
         <Link
           href={withDisplayLanguage("/", displayLanguage)}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-foreground-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-brand"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-foreground-secondary hover:text-brand transition-colors focus-visible:outline-2 focus-visible:outline-brand"
         >
           <ArrowLeft className="size-4" />
           <span>Back to Latest News</span>
@@ -91,7 +92,7 @@ export default async function ArticlePage({
           <StatusBadge status="neutral" label="Single Report" />
           <Link
             href={withDisplayLanguage(`/source/${encodeURIComponent(article.source.slug)}`, displayLanguage)}
-            className="font-bold text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-brand"
+            className="font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-brand"
           >
             {article.source.name}
           </Link>
@@ -105,14 +106,14 @@ export default async function ArticlePage({
             </span>
           )}
           {article.category && (
-            <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-primary">
+            <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand">
               {formatCategory(article.category)}
             </span>
           )}
         </div>
 
         {/* 3. Headline */}
-        <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">
+        <h1 lang={contentLanguage} className="font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">
           {content.title}
         </h1>
 
@@ -134,7 +135,7 @@ export default async function ArticlePage({
             loading="lazy"
           />
           {article.leadMedia.caption && (
-            <p className="p-3 text-xs text-foreground-secondary bg-surface-card border-t border-border">
+            <p className="p-3 text-xs text-foreground-secondary bg-surface border-t border-border">
               {article.leadMedia.caption}
             </p>
           )}
@@ -147,11 +148,11 @@ export default async function ArticlePage({
           <h2 className="text-xs font-bold uppercase tracking-wider text-foreground-secondary">
             Report Summary
           </h2>
-          <p className="text-base sm:text-lg leading-relaxed text-foreground font-serif">
+          <p lang={contentLanguage} className="text-base sm:text-lg leading-relaxed text-foreground font-serif">
             {content.summary}
           </p>
           {provenance && (
-            <p className="text-xs font-semibold text-brand-primary pt-2 border-t border-border">
+            <p className="text-xs font-semibold text-brand pt-2 border-t border-border">
               {provenance} • Platform translation
             </p>
           )}
@@ -162,8 +163,8 @@ export default async function ArticlePage({
       {story && (
         <Surface variant="highlight" className="p-6 space-y-4">
           <div className="flex items-center gap-2">
-            <Layers className="size-4 text-brand-primary" />
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-primary">
+            <Layers className="size-4 text-brand" />
+            <span className="text-xs font-bold uppercase tracking-wider text-brand">
               Part of a Multi-Source Story
             </span>
           </div>
@@ -178,7 +179,7 @@ export default async function ArticlePage({
           <div>
             <Link
               href={withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage)}
-              className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
+              className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-xs font-bold text-white hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
             >
               <span>View Full Story Coverage</span>
               <span>→</span>
@@ -203,7 +204,7 @@ export default async function ArticlePage({
       )}
 
       {/* 8. Original Publisher Boundary & Outbound CTA (Copyright Critical) */}
-      <Surface variant="bordered" className="p-6 sm:p-8 space-y-4 border-l-4 border-l-brand-primary">
+      <Surface variant="bordered" className="p-6 sm:p-8 space-y-4 border-l-4 border-l-brand">
         <h3 className="text-base font-bold text-foreground">
           Read full article on {article.source.name}
         </h3>
@@ -215,7 +216,7 @@ export default async function ArticlePage({
             href={article.originalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-3 text-sm font-bold text-white hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
+            className="inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
           >
             <span>Read Original Article</span>
             <ExternalLink className="size-4" />

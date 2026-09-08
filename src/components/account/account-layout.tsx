@@ -50,7 +50,7 @@ export function AccountLayout({
   ];
 
   return (
-    <ContainerContent className="py-8 space-y-6">
+    <ContainerContent className="space-y-6">
       <PageHeader
         eyebrow="ACCOUNT"
         title={title}
@@ -73,11 +73,11 @@ export function AccountLayout({
                     aria-current={isActive ? "page" : undefined}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       isActive
-                        ? "bg-brand-soft text-brand-primary font-bold"
+                        ? "bg-brand-soft text-brand font-bold"
                         : "text-foreground-secondary hover:bg-surface-muted hover:text-foreground"
                     }`}
                   >
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-brand-primary" : "text-foreground-secondary"}`} />
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-brand" : "text-foreground-secondary"}`} />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -96,11 +96,11 @@ export function AccountLayout({
                     aria-current={isActive ? "page" : undefined}
                     className={`flex shrink-0 items-center gap-2 px-3 py-2 text-sm font-semibold rounded-md border-b-2 transition-colors ${
                       isActive
-                        ? "border-brand-primary text-brand-primary font-bold bg-brand-soft/50"
+                        ? "border-brand text-brand font-bold bg-brand-soft/50"
                         : "border-transparent text-foreground-secondary hover:text-foreground"
                     }`}
                   >
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-brand-primary" : "text-foreground-secondary"}`} />
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-brand" : "text-foreground-secondary"}`} />
                     <span>{item.label}</span>
                   </Link>
                 );

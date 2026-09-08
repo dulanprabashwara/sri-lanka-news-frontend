@@ -15,7 +15,7 @@ import { getAuthenticatedAccessToken } from "@/lib/auth";
 import { getOptionalStoryCoverage } from "@/lib/api/coverage";
 import { getOptionalStoryTimeline } from "@/lib/api/timeline";
 import { formatCategory, formatPublishedAt } from "@/lib/format";
-import { readDisplayLanguage, storyTitle, withDisplayLanguage } from "@/lib/language";
+import { readDisplayLanguage, storyContentLanguage, storyTitle, withDisplayLanguage } from "@/lib/language";
 import { ArrowLeft, Layers, Calendar, Newspaper, Clock } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -55,14 +55,15 @@ export default async function StoryPage({
   if (accessToken) {
     try { bookmarked = (await getBookmarkStatus(accessToken, "STORY", id)).bookmarked; } catch { /* Bookmark state is non-critical. */ }
   }
+  const contentLanguage = storyContentLanguage(story);
 
   return (
-    <ContainerWide className="py-6 sm:py-10 space-y-8">
+    <ContainerWide className="space-y-8">
       {/* 1. Context Navigation & Bookmark */}
       <div className="flex items-center justify-between">
         <Link
           href={withDisplayLanguage("/stories", displayLanguage)}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-foreground-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-brand"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-foreground-secondary hover:text-brand transition-colors focus-visible:outline-2 focus-visible:outline-brand"
         >
           <ArrowLeft className="size-4" />
           <span>Back to Grouped Stories</span>
@@ -81,14 +82,14 @@ export default async function StoryPage({
         <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
           <StatusBadge status="info" label="Multi-Source Story" icon={<Layers className="size-3" />} />
           {story.category && (
-            <span className="rounded bg-brand-soft px-2.5 py-1 text-xs font-bold text-brand-primary">
+            <span className="rounded bg-brand-soft px-2.5 py-1 text-xs font-bold text-brand">
               {formatCategory(story.category)}
             </span>
           )}
         </div>
 
         {/* Headline */}
-        <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">
+        <h1 lang={contentLanguage} className="font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">
           {storyTitle(story)}
         </h1>
 
@@ -107,7 +108,7 @@ export default async function StoryPage({
 
         {/* Metrics Bar */}
         <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-foreground-secondary pt-4 border-t border-border">
-          <div className="flex items-center gap-1.5 bg-brand-soft text-brand-primary px-3 py-1.5 rounded-md">
+          <div className="flex items-center gap-1.5 bg-brand-soft text-brand px-3 py-1.5 rounded-md">
             <Newspaper className="size-4" />
             <span>{story.articleCount} reports • {story.sourceCount} publishers</span>
           </div>

@@ -11,7 +11,7 @@ import { ARTICLE_CATEGORIES, type ArticleCategory } from "@/types/api";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Grouped Stories — Sri Lankan News Intelligence",
+  title: "Grouped Stories — Ceylon News",
   description: "Explore multi-publisher news coverage grouped across independent Sri Lankan newsrooms.",
 };
 

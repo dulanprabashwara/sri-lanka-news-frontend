@@ -4,12 +4,19 @@ export function FeedSkeleton() {
       {[0, 1, 2].map((item) => (
         <div
           key={item}
-          className="animate-pulse rounded-2xl border border-slate-200 bg-white p-6"
+          className="animate-pulse rounded-2xl border border-border bg-surface p-5 sm:p-6 flex flex-col sm:flex-row gap-4"
         >
-          <div className="h-3 w-40 rounded bg-slate-200" />
-          <div className="mt-5 h-6 w-full rounded bg-slate-200" />
-          <div className="mt-2 h-6 w-3/4 rounded bg-slate-200" />
-          <div className="mt-5 h-6 w-24 rounded-full bg-slate-100" />
+          <div className="sm:w-[30%] shrink-0 aspect-16/10 rounded-xl bg-surface-muted" />
+          <div className="grow space-y-3">
+            <div className="h-3 w-36 rounded bg-surface-muted" />
+            <div className="h-5 w-full rounded bg-surface-muted" />
+            <div className="h-5 w-3/4 rounded bg-surface-muted" />
+            <div className="h-4 w-5/6 rounded bg-surface-muted" />
+            <div className="pt-2 flex items-center gap-2">
+              <div className="h-6 w-20 rounded bg-surface-muted" />
+              <div className="h-6 w-12 rounded bg-surface-muted" />
+            </div>
+          </div>
         </div>
       ))}
     </div>

@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "www.island.lk" },
       { protocol: "https", hostname: "www.lankadeepa.lk" },
       { protocol: "https", hostname: "cdn.lankadeepa.lk" },
+      { protocol: "https", hostname: "bmkltsly13vb.compat.objectstorage.ap-mumbai-1.oraclecloud.com" },
       { protocol: "https", hostname: "divaina.lk" },
       { protocol: "https", hostname: "www.divaina.lk" },
     ],

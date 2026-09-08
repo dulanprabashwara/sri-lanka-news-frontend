@@ -100,13 +100,13 @@ export function AdminNav() {
                     href={item.href}
                     className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       active
-                        ? "bg-teal-50 text-teal-800 font-semibold shadow-xs"
+                        ? "bg-brand-soft/30 text-brand font-semibold shadow-xs"
                         : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                     }`}
                   >
                     <Icon
                       className={`h-4 w-4 shrink-0 ${
-                        active ? "text-teal-700" : "text-slate-400"
+                        active ? "text-brand" : "text-slate-400"
                       }`}
                     />
                     <span>{item.name}</span>
@@ -125,11 +125,11 @@ export function AdminNav() {
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
           aria-label="Toggle admin section navigation"
-          className="flex w-full items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-teal-500"
+          className="flex w-full items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-brand"
         >
           <span className="flex items-center gap-2">
             <span className="text-xs text-slate-500 uppercase tracking-wider font-bold">Admin Section:</span>
-            <span className="text-teal-800">{currentItemName}</span>
+            <span className="text-brand">{currentItemName}</span>
           </span>
           <ChevronDown
             className={`h-4 w-4 text-slate-500 transition-transform ${
@@ -156,11 +156,11 @@ export function AdminNav() {
                         onClick={() => setMobileOpen(false)}
                         className={`flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs font-medium ${
                           active
-                            ? "bg-teal-50 text-teal-800 font-semibold"
+                            ? "bg-brand-soft/30 text-brand font-semibold"
                             : "text-slate-700 hover:bg-slate-50"
                         }`}
                       >
-                        <Icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-teal-700" : "text-slate-400"}`} />
+                        <Icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-brand" : "text-slate-400"}`} />
                         <span className="truncate">{item.name}</span>
                       </Link>
                     );

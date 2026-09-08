@@ -136,13 +136,13 @@ export default function PrivacySettingsPage() {
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
+                className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 checked={prefs.analyticsEnabled}
                 onChange={(e) => setPrefs({ ...prefs, analyticsEnabled: e.target.checked })}
               />
               <div className="space-y-0.5">
                 <div className="text-sm font-semibold text-foreground flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-brand-primary" />
+                  <Shield className="w-4 h-4 text-brand" />
                   Help improve news intelligence quality
                 </div>
                 <div className="text-xs text-foreground-secondary leading-relaxed">
