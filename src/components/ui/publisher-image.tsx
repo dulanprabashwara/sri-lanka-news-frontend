@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isPublisherPlaceholder } from "./publisher-image-utils";
 
 interface PublisherImageProps {
   src?: string | null;
@@ -29,7 +30,7 @@ export function PublisherImage({
 }: PublisherImageProps) {
   const [hasError, setHasError] = useState(false);
 
-  if (!src || hasError) {
+  if (!src || hasError || isPublisherPlaceholder(src)) {
     return null;
   }
 

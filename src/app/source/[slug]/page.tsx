@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { ArticleFeed } from "@/components/article-feed";
 import { ErrorState } from "@/components/error-state";
 import { FollowButton } from "@/components/follow-button";
-import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticles, getSource } from "@/lib/api/news";
 import { getSourceFollowStatus } from "@/lib/api/user";
@@ -22,8 +21,7 @@ export const metadata: Metadata = { title: "News source" };
 const SLUG_CANDIDATES: Record<string, string[]> = {
   "dailymirror": ["daily-mirror", "dailymirror"],
   "daily-mirror": ["daily-mirror", "dailymirror"],
-  "ada-derana": ["ada-derana-sinhala", "ada-derana"],
-  "ada-derana-sinhala": ["ada-derana-sinhala", "ada-derana"],
+  "newswire": ["newswire"],
   "hiru-news": ["hiru-news-sinhala", "hiru-news"],
   "hiru-news-sinhala": ["hiru-news-sinhala", "hiru-news"],
   "lankadeepa": ["lankadeepa"],
@@ -35,8 +33,7 @@ const SLUG_CANDIDATES: Record<string, string[]> = {
 const STATIC_SOURCES: Record<string, Source> = {
   "dailymirror": { name: "Daily Mirror", slug: "daily-mirror", baseUrl: "https://www.dailymirror.lk", defaultLanguage: "EN" as Language },
   "daily-mirror": { name: "Daily Mirror", slug: "daily-mirror", baseUrl: "https://www.dailymirror.lk", defaultLanguage: "EN" as Language },
-  "ada-derana": { name: "Ada Derana", slug: "ada-derana-sinhala", baseUrl: "https://adaderana.lk", defaultLanguage: "SI" as Language },
-  "ada-derana-sinhala": { name: "Ada Derana", slug: "ada-derana-sinhala", baseUrl: "https://adaderana.lk", defaultLanguage: "SI" as Language },
+  "newswire": { name: "Newswire", slug: "newswire", baseUrl: "https://www.newswire.lk", defaultLanguage: "EN" as Language },
   "hiru-news": { name: "Hiru News", slug: "hiru-news-sinhala", baseUrl: "https://www.hirunews.lk", defaultLanguage: "SI" as Language },
   "hiru-news-sinhala": { name: "Hiru News", slug: "hiru-news-sinhala", baseUrl: "https://www.hirunews.lk", defaultLanguage: "SI" as Language },
   "lankadeepa": { name: "Lankadeepa", slug: "lankadeepa", baseUrl: "https://www.lankadeepa.lk", defaultLanguage: "SI" as Language },
@@ -111,31 +108,10 @@ export default async function SourcePage({
     }
   }
 
-  // 2. Try without displayLanguage filter if no articles returned yet
-  if ((!articles || articles.content.length === 0) && displayLanguage) {
-    for (const cand of allCandidates) {
-      try {
-        const res = await getArticles({
-          page: 0,
-          size: 20,
-          source: cand,
-          sort: "publishedAt,desc",
-        });
-        if (res && res.content.length > 0) {
-          articles = res;
-          articleError = undefined;
-          break;
-        }
-      } catch {
-        /* Ignore error */
-      }
-    }
-  }
-
-  // 3. Fallback: query recent global articles and filter by source matching
+  // Fallback: query recent global articles and filter by source matching.
   if (!articles || articles.content.length === 0) {
     try {
-      const globalArticles = await getArticles({ page: 0, size: 50, sort: "publishedAt,desc" });
+      const globalArticles = await getArticles({ page: 0, size: 50, sort: "publishedAt,desc", displayLanguage });
       if (globalArticles && globalArticles.content.length > 0) {
         const matching = globalArticles.content.filter(a =>
           allCandidates.includes(a.source.slug) ||
@@ -157,8 +133,8 @@ export default async function SourcePage({
       <header className="rounded-xl border border-border border-t-4 border-t-brand bg-surface p-6 shadow-xs sm:p-8">
         <p className="eyebrow">News source</p>
         <h1 className="mt-3 flex items-center gap-5 font-serif text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
-          <SourceIcon name={source.name} baseUrl={source.baseUrl} slug={slug} size="xl" rounded="full" />
           <span>{source.name}</span>
+          <SourceIcon name={source.name} baseUrl={source.baseUrl} slug={slug} size="2xl" rounded="full" />
         </h1>
         <p className="mt-3 text-sm text-slate-600">
           Default language: {formatLanguage(source.defaultLanguage)}

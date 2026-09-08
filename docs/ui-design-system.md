@@ -34,7 +34,7 @@ Defined in `src/app/globals.css` via Tailwind CSS v4 `@theme inline` mapping:
 
 ## 2. Typography & Multilingual Strategy
 
-- **Font Family Stack:** Next.js-loaded Inter, Noto Sans Sinhala, Noto Sans Tamil, then system sans-serif fallbacks.
+- **Font Family Stack:** Self-hosted Fontsource variable builds of Inter, Noto Sans Sinhala, and Noto Sans Tamil, then system sans-serif fallbacks.
 - **Editorial Serif:** Source Serif 4 is reserved for major Latin-script editorial headings and reading elements.
 - **Sinhala & Tamil Script Support:** Script-aware line height (`line-height: 1.6`) applied via `:lang(si)`, `.lang-si`, `:lang(ta)`, `.lang-ta`, and `.script-aware-text` to prevent vertical glyph clipping.
 - **Hierarchy Standard:**

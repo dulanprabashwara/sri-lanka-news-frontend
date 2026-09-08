@@ -22,8 +22,8 @@ export function ProfileForm({ initialName }: { initialName: string }) {
       if (error) throw error;
       router.refresh();
       setMessage({ type: "success", text: "Profile updated successfully. Changes will appear globally." });
-    } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "Failed to update profile." });
+    } catch (err: unknown) {
+      setMessage({ type: "error", text: err instanceof Error ? err.message : "Failed to update profile." });
     } finally {
       setLoading(false);
     }

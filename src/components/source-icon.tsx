@@ -6,9 +6,11 @@ const LOCAL_ICONS: Record<string, string> = {
   "lankadeepa": "/icons/lankadeepa.png",
   "divaina": "/icons/divaina.png",
   "the-island": "/icons/the-island.png",
-  "ada-derana": "/icons/ada-derana.png",
-  "hiru-news": "/icons/hiru-news.ico",
+  "newswire": "/icons/newswire.png",
+  "hiru-news": "/icons/hiru-news.png",
+  "hiru-news-sinhala": "/icons/hiru-news.png",
   "dailymirror": "/icons/dailymirror.png",
+  "daily-mirror": "/icons/dailymirror.png",
   "newsfirst": "/icons/newsfirst.png",
 };
 
@@ -36,7 +38,7 @@ export function SourceIcon({
     if (baseUrl.includes("lankadeepa")) resolvedSlug = "lankadeepa";
     else if (baseUrl.includes("divaina")) resolvedSlug = "divaina";
     else if (baseUrl.includes("island.lk")) resolvedSlug = "the-island";
-    else if (baseUrl.includes("adaderana")) resolvedSlug = "ada-derana";
+    else if (baseUrl.includes("newswire.lk")) resolvedSlug = "newswire";
     else if (baseUrl.includes("hirunews")) resolvedSlug = "hiru-news";
     else if (baseUrl.includes("dailymirror")) resolvedSlug = "dailymirror";
     else if (baseUrl.includes("ft.lk")) resolvedSlug = "dailyft";
@@ -44,6 +46,7 @@ export function SourceIcon({
     else if (name.toLowerCase().includes("lankadeepa")) resolvedSlug = "lankadeepa";
     else if (name.toLowerCase().includes("divaina")) resolvedSlug = "divaina";
     else if (name.toLowerCase().includes("island")) resolvedSlug = "the-island";
+    else if (name.toLowerCase().includes("newswire")) resolvedSlug = "newswire";
   }
 
   let icon: string | undefined = resolvedSlug ? LOCAL_ICONS[resolvedSlug] : undefined;
@@ -79,6 +82,8 @@ export function SourceIcon({
     md: "rounded-lg",
   };
 
+  const isFullBleed = resolvedSlug === "hiru-news" || resolvedSlug === "divaina";
+
   return (
     <span
       className={`inline-grid shrink-0 place-items-center overflow-hidden border border-border bg-white text-xs font-bold text-brand shadow-2xs ${containerSizes[size]} ${roundedClasses[rounded]} ${className}`}
@@ -92,7 +97,7 @@ export function SourceIcon({
           loading="lazy"
           referrerPolicy="no-referrer"
           onError={() => setFailed(true)}
-          className={`${imageSizes[size]} object-contain`}
+          className={isFullBleed ? "size-full object-cover" : `${imageSizes[size]} object-contain`}
         />
       ) : (
         name.split(/\s+/).slice(0, 2).map(word => word[0]).join("")

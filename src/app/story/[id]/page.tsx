@@ -78,7 +78,7 @@ export default async function StoryPage({
       </div>
 
       {/* 2. Flagship Story Header */}
-      <Surface variant="bordered" className="p-6 sm:p-8 space-y-6">
+      <Surface variant="bordered" className="border-t-4 border-t-brand p-6 sm:p-8 space-y-6">
         <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
           <StatusBadge status="info" label="Multi-Source Story" icon={<Layers className="size-3" />} />
           {story.category && (
@@ -89,7 +89,7 @@ export default async function StoryPage({
         </div>
 
         {/* Headline */}
-        <h1 lang={contentLanguage} className="font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">
+        <h1 lang={contentLanguage} className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">
           {storyTitle(story)}
         </h1>
 

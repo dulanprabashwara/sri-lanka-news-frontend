@@ -113,7 +113,7 @@ export default async function ArticlePage({
         </div>
 
         {/* 3. Headline */}
-        <h1 lang={contentLanguage} className="font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">
+        <h1 lang={contentLanguage} className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">
           {content.title}
         </h1>
 

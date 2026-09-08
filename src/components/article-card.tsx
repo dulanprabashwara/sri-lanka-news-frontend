@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PublisherImage } from "@/components/ui/publisher-image";
+import { isPublisherPlaceholder } from "@/components/ui/publisher-image-utils";
 import { formatCategory, formatLanguage, formatPublishedAt } from "@/lib/format";
 import { articleContent, articleContentLanguage, translationLabel, withDisplayLanguage } from "@/lib/language";
 import type { Article, DisplayLanguage } from "@/types/api";
@@ -65,7 +66,7 @@ export function ArticleCard({
   }
 
   const hasLeadImage =
-    article.leadMedia?.type === "IMAGE" && Boolean(article.leadMedia?.url);
+    article.leadMedia?.type === "IMAGE" && Boolean(article.leadMedia?.url) && !isPublisherPlaceholder(article.leadMedia.url);
 
   return (
     <article className="group rounded-2xl border border-border bg-surface shadow-xs transition-all hover:border-brand-soft hover:shadow-md overflow-hidden flex flex-col sm:flex-row">
@@ -105,7 +106,7 @@ export function ArticleCard({
           {/* Headline */}
           <h2
             lang={contentLanguage}
-            className="text-lg font-bold leading-snug tracking-tight text-foreground sm:text-xl wrap-break-word group-hover:text-brand transition-colors"
+            className="font-serif text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl wrap-break-word group-hover:text-brand transition-colors"
           >
             <Link
               href={articleUrl}

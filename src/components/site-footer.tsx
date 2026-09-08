@@ -94,6 +94,10 @@ export function SiteFooter() {
               Platform
             </h3>
             <ul className="space-y-2">
+              <li><Link href={withDisplayLanguage("/about", displayLanguage)} className={footerLinkClasses}>About Ceylon News</Link></li>
+              <li><Link href={withDisplayLanguage("/guide", displayLanguage)} className={footerLinkClasses}>User manual</Link></li>
+              <li><Link href={withDisplayLanguage("/articles", displayLanguage)} className={footerLinkClasses}>All articles</Link></li>
+              <li><Link href={withDisplayLanguage("/sources", displayLanguage)} className={footerLinkClasses}>Publisher directory</Link></li>
               <li>
                 <Link href={withDisplayLanguage("/account/privacy", displayLanguage)} className={footerLinkClasses}>
                   Privacy & Telemetry

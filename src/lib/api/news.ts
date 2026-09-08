@@ -1,5 +1,6 @@
 import { requestJson } from "@/lib/api/client";
 import {
+  ApiResponseError,
   parseArticle,
   parseCoverageComparison,
   parsePagedArticles,
@@ -58,6 +59,13 @@ export function getArticle(id: string, displayLanguage?: Language): Promise<Arti
 
 export function getSource(slug: string): Promise<Source> {
   return requestJson(`/api/v1/sources/${encodeURIComponent(slug)}`, parseSource);
+}
+
+export function getSources(): Promise<Source[]> {
+  return requestJson("/api/v1/sources", (value: unknown) => {
+    if (!Array.isArray(value)) throw new ApiResponseError("Invalid source list.");
+    return value.map(parseSource);
+  });
 }
 
 export interface StoryQuery {

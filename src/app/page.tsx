@@ -70,7 +70,7 @@ export default async function Home({ searchParams }: HomePageProps) {
     { name: "Lankadeepa", slug: "lankadeepa", baseUrl: "https://www.lankadeepa.lk" },
     { name: "Divaina", slug: "divaina", baseUrl: "https://divaina.lk" },
     { name: "The Island", slug: "the-island", baseUrl: "https://island.lk" },
-    { name: "Ada Derana", slug: "ada-derana-sinhala", baseUrl: "https://adaderana.lk" },
+    { name: "Newswire", slug: "newswire", baseUrl: "https://www.newswire.lk" },
     { name: "Hiru News", slug: "hiru-news-sinhala", baseUrl: "https://www.hirunews.lk" },
     { name: "Daily Mirror", slug: "daily-mirror", baseUrl: "https://www.dailymirror.lk" },
     { name: "News First", slug: "newsfirst", baseUrl: "https://www.newsfirst.lk" },

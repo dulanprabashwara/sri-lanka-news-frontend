@@ -73,11 +73,13 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
   const title = { login: "Sign in", "sign-up": "Create account", forgot: "Reset password", reset: "Choose a new password" }[mode];
 
   return (
-    <section className="mx-auto max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="mx-auto max-w-lg rounded-xl border border-border border-t-4 border-t-brand bg-surface p-7 shadow-sm sm:p-10">
       <div className="mb-6 w-36" aria-label="Ceylon News">
         <BrandLogo priority />
       </div>
-      <h1 className="text-2xl font-bold text-slate-950">{title}</h1>
+      <p className="eyebrow mb-3">Your personal news desk</p>
+      <h1 className="font-serif text-3xl font-semibold text-foreground">{title}</h1>
+      <p className="mt-3 text-sm leading-6 text-foreground-secondary">Save useful reporting, follow your interests, and make Ceylon News your own.</p>
       <form onSubmit={submit} className="mt-6 space-y-4">
         {mode === "sign-up" && <Field label="Display Name (Optional)" name="name" type="text" autoComplete="name" required={false} />}
         {needsEmail && <Field label="Email" name="email" type="email" autoComplete="email" />}
