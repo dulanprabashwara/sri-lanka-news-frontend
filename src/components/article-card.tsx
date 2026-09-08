@@ -43,6 +43,11 @@ export function ArticleCard({
             {content.title}
           </Link>
         </h3>
+        {displayLanguage && content.localization?.fallback ? (
+          <p className="mt-1 inline-flex w-fit rounded-md bg-warning-soft px-1.5 py-0.5 text-[0.65rem] font-semibold text-warning">
+            {formatLanguage(displayLanguage)} translation unavailable
+          </p>
+        ) : null}
         <div className="flex items-center justify-between text-xs font-medium text-foreground-muted pt-1">
           {article.category ? (
             <span className="rounded bg-surface-muted px-1.5 py-0.5 text-foreground-secondary font-medium border border-border">
@@ -120,9 +125,13 @@ export function ArticleCard({
             </p>
           ) : null}
 
-          {/* Translation Provenance */}
-          {provenance ? (
-            <p className="mt-2 text-xs font-semibold text-brand">
+          {/* Translation Provenance or Fallback Notice */}
+          {displayLanguage && content.localization?.fallback ? (
+            <p className="mt-2.5 inline-flex rounded-md bg-warning-soft px-2 py-1 text-[0.7rem] font-semibold text-warning">
+              {formatLanguage(displayLanguage)} translation unavailable · Showing {formatLanguage(content.localization.resolvedLanguage)} original
+            </p>
+          ) : provenance ? (
+            <p className="mt-2.5 text-xs font-semibold text-brand">
               {provenance} · Platform translation
             </p>
           ) : null}
