@@ -73,7 +73,6 @@ export default async function Home({ searchParams }: HomePageProps) {
     { name: "Ada Derana", slug: "ada-derana", baseUrl: "https://adaderana.lk" },
     { name: "Hiru News", slug: "hiru-news", baseUrl: "https://www.hirunews.lk" },
     { name: "Daily Mirror", slug: "dailymirror", baseUrl: "https://www.dailymirror.lk" },
-    { name: "Daily FT", slug: "dailyft", baseUrl: "https://www.ft.lk" },
     { name: "News First", slug: "newsfirst", baseUrl: "https://www.newsfirst.lk" },
   ];
   const fetchedSources = sourcesResult.status === "fulfilled" && sourcesResult.value.length > 0 ? sourcesResult.value : articles.content.map(a => a.source);

@@ -9,7 +9,6 @@ const LOCAL_ICONS: Record<string, string> = {
   "ada-derana": "/icons/ada-derana.png",
   "hiru-news": "/icons/hiru-news.ico",
   "dailymirror": "/icons/dailymirror.png",
-  "dailyft": "/icons/dailyft.png",
   "newsfirst": "/icons/newsfirst.png",
 };
 
