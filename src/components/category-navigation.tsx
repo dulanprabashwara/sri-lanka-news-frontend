@@ -14,7 +14,7 @@ const featuredCategories: ArticleCategory[] = [
 
 interface CategoryNavigationProps {
   activeCategory?: ArticleCategory;
-  basePath?: "/" | "/stories" | "/trending";
+  basePath?: "/" | "/articles" | "/stories" | "/trending";
   label?: string;
   displayLanguage?: DisplayLanguage;
 }
@@ -26,10 +26,10 @@ export function CategoryNavigation({
   displayLanguage,
 }: CategoryNavigationProps) {
   const getCategoryLinkClasses = (isActive: boolean) =>
-    `inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-bold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer ${
+    `inline-flex items-center rounded-lg px-3.5 py-2 text-xs font-bold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer ${
       isActive
         ? "bg-brand text-white shadow-xs"
-        : "bg-surface border border-border text-foreground-secondary hover:border-brand-soft hover:text-foreground hover:bg-surface-muted"
+        : "bg-surface border border-transparent text-foreground-secondary hover:border-border hover:text-brand hover:bg-surface-muted"
     }`;
 
   return (

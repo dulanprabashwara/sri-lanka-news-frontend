@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search, Menu, X, User, ChevronDown, LogOut, Settings, Shield, Bookmark, Sparkles, Rss } from "lucide-react";
+import { Search, Menu, X, User, ChevronDown, LogOut, Settings, Shield, Bookmark, Sparkles, Rss, BookOpen, Building2, LibraryBig } from "lucide-react";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 import NotificationBadge from "./notifications/NotificationBadge";
 import { BrandLogo } from "./brand-logo";
@@ -101,10 +101,6 @@ export function SiteHeader({
         : "text-foreground-secondary hover:bg-surface-muted hover:text-foreground"
     }`;
 
-  const currentLoginRedirect = `/auth/login?next=${encodeURIComponent(
-    withDisplayLanguage(pathname, displayLanguage)
-  )}`;
-
   const handleMyNewsKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
       e.preventDefault();
@@ -121,6 +117,16 @@ export function SiteHeader({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-surface/95 backdrop-blur-xs">
+      <div className="hidden border-b border-border/70 bg-foreground text-slate-300 lg:block">
+        <div className="mx-auto flex h-8 w-full max-w-7xl items-center justify-between px-8 text-[0.68rem] font-semibold tracking-wide">
+          <p className="flex items-center gap-2"><span className="size-1.5 rounded-full bg-blue-400" />Independent Sri Lankan news intelligence</p>
+          <nav aria-label="Utility navigation" className="flex items-center gap-5">
+            <Link href={withDisplayLanguage("/articles", displayLanguage)} className="hover:text-white">All reports</Link>
+            <Link href={withDisplayLanguage("/sources", displayLanguage)} className="hover:text-white">Publishers</Link>
+            <Link href={withDisplayLanguage("/guide", displayLanguage)} className="hover:text-white">How to use Ceylon News</Link>
+          </nav>
+        </div>
+      </div>
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         {/* Brand Logo */}
         <Link
@@ -147,7 +153,6 @@ export function SiteHeader({
           <Link href={withDisplayLanguage("/trending", displayLanguage)} className={navLinkClasses("/trending")}>
             Trending
           </Link>
-
           {/* Authenticated Desktop "My News" Grouped Dropdown */}
           {authenticated && (
             <div className="relative" ref={myNewsMenuRef}>
@@ -215,12 +220,13 @@ export function SiteHeader({
           {/* Search Icon Trigger */}
           <Link
             href={withDisplayLanguage("/search", displayLanguage)}
-            className={`p-2 rounded-lg text-foreground-secondary hover:text-foreground hover:bg-surface-muted transition-colors focus-visible:outline-2 focus-visible:outline-brand ${
+            className={`flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-xs font-bold text-foreground-secondary hover:border-brand hover:text-brand transition-colors focus-visible:outline-2 focus-visible:outline-brand ${
               isActive("/search") ? "text-brand bg-brand-soft/40" : ""
             }`}
             aria-label="Search news"
           >
-            <Search className="size-5" />
+            <Search className="size-4" />
+            <span>Search</span>
           </Link>
 
           {/* Language Selector */}
@@ -317,7 +323,7 @@ export function SiteHeader({
             </div>
           ) : (
             <Link
-              href={withDisplayLanguage(currentLoginRedirect, displayLanguage)}
+              href={withDisplayLanguage("/auth/login", displayLanguage)}
               className="inline-flex items-center justify-center rounded-lg bg-brand px-3.5 py-1.5 text-xs font-bold text-brand-foreground shadow-xs hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
             >
               Sign in
@@ -422,6 +428,18 @@ export function SiteHeader({
                 <Search className="size-4" />
                 <span>Search</span>
               </Link>
+              <Link href={withDisplayLanguage("/articles", displayLanguage)} className={mobileNavLinkClasses("/articles")}>
+                <LibraryBig className="size-4" />
+                <span>All reports</span>
+              </Link>
+              <Link href={withDisplayLanguage("/sources", displayLanguage)} className={mobileNavLinkClasses("/sources")}>
+                <Building2 className="size-4" />
+                <span>Publishers</span>
+              </Link>
+              <Link href={withDisplayLanguage("/guide", displayLanguage)} className={mobileNavLinkClasses("/guide")}>
+                <BookOpen className="size-4" />
+                <span>How to use Ceylon News</span>
+              </Link>
             </div>
 
             {/* My News Links (if authenticated) */}
@@ -472,7 +490,7 @@ export function SiteHeader({
                   )}
                 </>
               ) : (
-                <Link href={withDisplayLanguage(currentLoginRedirect, displayLanguage)} className={mobileNavLinkClasses("/auth/login")}>
+                <Link href={withDisplayLanguage("/auth/login", displayLanguage)} className={mobileNavLinkClasses("/auth/login")}>
                   <User className="size-4" />
                   <span>Sign In</span>
                 </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { safeNextPath } from "@/lib/safe-redirect";
@@ -9,6 +10,7 @@ import { BrandLogo } from "@/components/brand-logo";
 type Mode = "login" | "sign-up" | "forgot" | "reset";
 
 export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
+  const router = useRouter();
   const [message, setMessage] = useState<string>();
   const [error, setError] = useState<string>();
   const [pending, setPending] = useState(false);
@@ -32,7 +34,8 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
       if (mode === "login") {
         const result = await supabase.auth.signInWithPassword({ email, password });
         if (result.error) throw result.error;
-        window.location.assign(safeNextPath(next, "/"));
+        router.replace("/");
+        router.refresh();
       } else if (mode === "sign-up") {
         const returnPath = safeNextPath(next, "/");
         const callback = new URL("/auth/confirm", window.location.origin);

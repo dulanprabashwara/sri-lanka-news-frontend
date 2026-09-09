@@ -18,7 +18,7 @@ export function PageHeader({
   className = "",
 }: PageHeaderProps) {
   return (
-    <header className={`relative space-y-5 rounded-xl border border-border border-t-4 border-t-brand bg-surface p-6 shadow-xs sm:p-8 ${className}`.trim()}>
+    <header className={`relative isolate space-y-5 overflow-hidden rounded-xl border border-border bg-surface p-6 shadow-xs before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-brand after:absolute after:-right-20 after:-top-24 after:-z-10 after:size-64 after:rounded-full after:bg-brand-soft/45 sm:p-8 lg:p-10 ${className}`.trim()}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="max-w-3xl space-y-1.5">
           {eyebrow && (
@@ -26,7 +26,7 @@ export function PageHeader({
               {eyebrow}
             </p>
           )}
-          <h1 className="page-title font-serif text-foreground text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className="page-title font-serif text-foreground text-3xl font-semibold leading-[1.08] tracking-tight sm:text-4xl lg:text-5xl">
             {title}
           </h1>
           {description && (

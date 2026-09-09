@@ -39,8 +39,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="en" className="h-full">
       <body className="flex min-h-full flex-col">
+        <a href="#main-content" className="sr-only z-50 rounded-md bg-brand px-4 py-2 font-bold text-white focus:fixed focus:left-4 focus:top-4 focus:not-sr-only">Skip to main content</a>
         <Suspense><SiteHeader authenticated={authenticated} admin={admin} userDisplayName={userDisplayName} /></Suspense>
-        <main className="w-full flex-1">
+        <main id="main-content" className="w-full flex-1" tabIndex={-1}>
           <MainContentWrapper>{children}</MainContentWrapper>
         </main>
         <SiteFooter />

@@ -7,6 +7,7 @@ import { StoryTools } from "@/components/story-tools";
 import { Surface } from "@/components/ui/surface";
 import { ContainerWide } from "@/components/ui/container";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { isPublisherPlaceholder } from "@/components/ui/publisher-image-utils";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getStory } from "@/lib/api/news";
@@ -94,7 +95,7 @@ export default async function StoryPage({
         </h1>
 
         {/* Representative Media (If available) */}
-        {story.representativeMedia?.type === "IMAGE" && story.representativeMedia.url && (
+        {story.representativeMedia?.type === "IMAGE" && story.representativeMedia.url && !isPublisherPlaceholder(story.representativeMedia.url) && (
           <div className="overflow-hidden rounded-xl bg-surface-muted max-h-[360px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

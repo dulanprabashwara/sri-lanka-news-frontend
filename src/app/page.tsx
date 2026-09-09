@@ -59,7 +59,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   if (!articles) {
     const message = articlesResult.status === "rejected" ? getApiErrorMessage(articlesResult.reason) : "Failed to load news articles.";
-    return <div className="space-y-6"><Briefing category={category} /><CategoryBar category={category} displayLanguage={displayLanguage} /><ErrorState title="Unable to load the newsroom" message={message} /></div>;
+    return <div className="space-y-6"><Briefing category={category} displayLanguage={displayLanguage} /><CategoryBar category={category} displayLanguage={displayLanguage} /><ErrorState title="Unable to load the newsroom" message={message} /></div>;
   }
 
   const featured = featuredItems(stories, articles.content);
@@ -81,7 +81,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   return (
     <div className="home-newsroom space-y-7 sm:space-y-9">
-      <Briefing category={category} />
+      <Briefing category={category} displayLanguage={displayLanguage} />
       <CategoryBar category={category} displayLanguage={displayLanguage} />
 
       {featured.length > 0 ? (
@@ -120,12 +120,11 @@ export default async function Home({ searchParams }: HomePageProps) {
   );
 }
 
-function Briefing({ category }: { category?: ArticleCategory }) {
+function Briefing({ category, displayLanguage }: { category?: ArticleCategory; displayLanguage?: DisplayLanguage }) {
   return (
-    <section className="relative overflow-hidden rounded-xl border border-border bg-surface px-5 py-7 shadow-xs sm:px-8 sm:py-9 lg:px-10">
-      <div className="absolute inset-y-0 left-0 w-1.5 bg-brand" aria-hidden="true" />
+    <section className="relative isolate overflow-hidden rounded-xl border border-border bg-surface px-5 py-7 shadow-xs before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-brand after:absolute after:-right-32 after:-top-40 after:-z-10 after:size-96 after:rounded-full after:bg-brand-soft/50 sm:px-8 sm:py-9 lg:px-10">
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(22rem,0.8fr)] lg:items-center">
-        <div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-brand"><Globe2 className="size-4" />About Ceylon News</div><h1 className="mt-4 max-w-3xl font-serif text-3xl font-semibold leading-[1.08] tracking-tight text-foreground sm:text-4xl lg:text-5xl">{category ? `${formatCategory(category)} news, placed in context.` : "One clear view of Sri Lanka’s news."}</h1><p className="mt-4 max-w-2xl text-sm leading-7 text-foreground-secondary sm:text-base">Ceylon News brings independent reporting into one multilingual index, groups related coverage, and always sends readers back to the original publisher.</p></div>
+        <div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-brand"><span className="size-2 rounded-full bg-brand shadow-[0_0_0_5px_var(--brand-soft)]" />Your independent news desk</div><h1 className="mt-5 max-w-3xl font-serif text-3xl font-semibold leading-[1.06] tracking-tight text-foreground sm:text-4xl lg:text-6xl">{category ? `${formatCategory(category)} news, placed in context.` : "Know what happened. See how it was reported."}</h1><p className="mt-5 max-w-2xl text-sm leading-7 text-foreground-secondary sm:text-base">Ceylon News brings Sri Lankan reporting into one multilingual index, connects related coverage, and helps you reach the original journalism.</p><div className="mt-6 flex flex-wrap gap-3"><Link href="#latest-reports-heading" className="inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-brand-hover">Browse latest reports <ArrowRight className="size-4" /></Link><Link href={withDisplayLanguage("/guide", displayLanguage)} className="inline-flex items-center rounded-lg border border-border-strong bg-surface px-5 py-3 text-sm font-bold text-foreground hover:border-brand hover:text-brand">How Ceylon News works</Link></div><p className="mt-5 text-xs font-semibold text-foreground-muted">Original publishers credited on every report · English, Sinhala and Tamil when available</p></div>
         <ul className="grid gap-3 text-sm text-foreground-secondary sm:grid-cols-3 lg:grid-cols-1"><InfoPoint icon={Layers3} title="Compare coverage" text="Follow one event across newsrooms." /><InfoPoint icon={Globe2} title="Read your way" text="Browse English, Sinhala, and Tamil." /><InfoPoint icon={Newspaper} title="Publisher first" text="Every report links to its source." /></ul>
       </div>
     </section>

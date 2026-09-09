@@ -69,7 +69,7 @@ export function ArticleCard({
     article.leadMedia?.type === "IMAGE" && Boolean(article.leadMedia?.url) && !isPublisherPlaceholder(article.leadMedia.url);
 
   return (
-    <article className="group rounded-2xl border border-border bg-surface shadow-xs transition-all hover:border-brand-soft hover:shadow-md overflow-hidden flex flex-col sm:flex-row">
+    <article className="group relative overflow-hidden rounded-xl border border-border bg-surface shadow-xs transition-all duration-200 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-transparent hover:-translate-y-0.5 hover:border-brand-soft hover:shadow-md hover:before:bg-brand flex flex-col sm:flex-row">
       {hasLeadImage ? (
         <div className="sm:w-[30%] shrink-0">
           <PublisherImage
@@ -81,11 +81,11 @@ export function ArticleCard({
         </div>
       ) : null}
 
-      <div className="p-5 sm:p-6 flex flex-col grow justify-between">
+      <div className="p-5 sm:p-6 sm:pl-7 flex flex-col grow justify-between">
         <div>
           {/* Header Metadata */}
           <div className="mb-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-semibold text-foreground-muted">
-            <span className="inline-flex items-center gap-1 rounded bg-brand-soft/50 px-2 py-0.5 text-xs font-bold text-brand uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1 border-l-2 border-brand pl-2 text-[0.68rem] font-bold text-brand uppercase tracking-[0.12em]">
               Single Report
             </span>
             <span aria-hidden="true" className="text-border-strong">
@@ -151,8 +151,8 @@ export function ArticleCard({
             </span>
           </div>
 
-          <Link href={articleUrl} className="text-xs font-bold text-brand hover:underline flex items-center gap-1">
-            Read report →
+          <Link href={articleUrl} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold text-brand hover:bg-brand-soft hover:no-underline">
+            Open report →
           </Link>
         </div>
       </div>

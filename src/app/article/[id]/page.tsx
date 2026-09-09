@@ -7,6 +7,7 @@ import { TopicFollowList } from "@/components/topic-follow-list";
 import { Surface } from "@/components/ui/surface";
 import { ContainerReading } from "@/components/ui/container";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { isPublisherPlaceholder } from "@/components/ui/publisher-image-utils";
 import { ApiError } from "@/lib/api/client";
 import { getApiErrorMessage } from "@/lib/api/errors";
 import { getArticle, getArticleStory } from "@/lib/api/news";
@@ -125,7 +126,7 @@ export default async function ArticlePage({
       </header>
 
       {/* 4. Lead Media */}
-      {article.leadMedia?.type === "IMAGE" && article.leadMedia.url && (
+      {article.leadMedia?.type === "IMAGE" && article.leadMedia.url && !isPublisherPlaceholder(article.leadMedia.url) && (
         <div className="overflow-hidden rounded-2xl bg-surface-muted border border-border">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

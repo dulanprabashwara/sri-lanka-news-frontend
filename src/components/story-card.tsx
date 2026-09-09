@@ -4,6 +4,7 @@ import { formatCategory, formatPublishedAt } from "@/lib/format";
 import { storyContentLanguage, storyTitle, withDisplayLanguage } from "@/lib/language";
 import type { DisplayLanguage, StorySummary, TrendingReason } from "@/types/api";
 import { Layers, Newspaper, Sparkles } from "lucide-react";
+import { isPublisherPlaceholder } from "@/components/ui/publisher-image-utils";
 
 const reasonLabels: Record<TrendingReason, string> = {
   RECENTLY_UPDATED: "Recently updated",
@@ -26,11 +27,11 @@ export function StoryCard({
   const contentLanguage = storyContentLanguage(story);
   const storyUrl = withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, displayLanguage);
   const hasImage =
-    story.representativeMedia?.type === "IMAGE" && Boolean(story.representativeMedia?.url);
+    story.representativeMedia?.type === "IMAGE" && Boolean(story.representativeMedia?.url) && !isPublisherPlaceholder(story.representativeMedia.url);
 
   if (variant === "lead") {
     return (
-      <article className="group relative rounded-2xl border border-border bg-surface p-6 sm:p-8 shadow-xs hover:border-brand-soft hover:shadow-md transition-all overflow-hidden">
+      <article className="group relative overflow-hidden rounded-xl border border-border border-t-4 border-t-brand bg-surface p-6 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-8">
         {/* Lead Badge Header */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border">
           <div className="flex items-center gap-2">
@@ -66,7 +67,7 @@ export function StoryCard({
           <div className={hasImage ? "md:col-span-7 space-y-4" : "md:col-span-12 space-y-4"}>
             <h2
               lang={contentLanguage}
-              className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground leading-snug group-hover:text-brand transition-colors wrap-break-word"
+            className="font-serif text-2xl font-semibold tracking-tight text-foreground leading-snug group-hover:text-brand transition-colors wrap-break-word sm:text-3xl"
             >
               <Link href={storyUrl} className="focus-visible:outline-2 focus-visible:outline-brand">
                 {title}
@@ -118,7 +119,7 @@ export function StoryCard({
   }
 
   return (
-    <article className="group rounded-2xl border border-border bg-surface shadow-xs transition-all hover:border-brand-soft hover:shadow-md overflow-hidden flex flex-col justify-between">
+    <article className="group overflow-hidden rounded-xl border border-border bg-surface shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-soft hover:shadow-md flex flex-col justify-between">
       {hasImage ? (
         <PublisherImage
           src={story.representativeMedia?.url}
@@ -144,7 +145,7 @@ export function StoryCard({
           {/* Title */}
           <h3
             lang={contentLanguage}
-            className="text-base sm:text-lg font-bold leading-snug tracking-tight text-foreground group-hover:text-brand transition-colors wrap-break-word"
+            className="font-serif text-lg font-semibold leading-snug tracking-tight text-foreground group-hover:text-brand transition-colors wrap-break-word sm:text-xl"
           >
             <Link href={storyUrl} className="focus-visible:outline-2 focus-visible:outline-brand">
               {title}

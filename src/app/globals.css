@@ -129,13 +129,22 @@ html {
 
 body {
   margin: 0;
-  background: var(--background);
+  background:
+    radial-gradient(circle at 8% 0%, rgb(219 234 254 / 0.32), transparent 24rem),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
   text-underline-offset: 3px;
+}
+
+button,
+a,
+select {
+  -webkit-tap-highlight-color: transparent;
 }
 
 :where(a, button, input, select, textarea):focus-visible {

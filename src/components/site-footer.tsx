@@ -10,29 +10,29 @@ export function SiteFooter() {
   const displayLanguage = readDisplayLanguage(searchParams.get("lang"));
 
   const footerLinkClasses =
-    "text-sm text-foreground-secondary hover:text-brand hover:underline transition-colors focus-visible:outline-2 focus-visible:outline-brand";
+    "text-sm text-slate-300 hover:text-white hover:underline transition-colors focus-visible:outline-2 focus-visible:outline-blue-300";
 
   return (
-    <footer className="mt-auto border-t border-border bg-surface text-foreground">
-      <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <footer className="mt-auto border-t border-slate-700 bg-foreground text-white">
+      <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
         {/* Main 4-Column Grid */}
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-5 pb-10 border-b border-border">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-5 pb-12 border-b border-white/10">
           {/* Brand & Purpose Column (Spans 2 on desktop) */}
           <div className="md:col-span-2 space-y-3">
-            <div className="w-36">
+            <div className="w-40 rounded-lg bg-white p-2">
               <BrandLogo />
             </div>
-            <p className="text-sm text-foreground-secondary leading-relaxed max-w-sm">
-              Aggregating news from independent publishers across Sri Lanka in English, Sinhala, and Tamil.
+            <p className="text-sm text-slate-300 leading-relaxed max-w-sm">
+              A clearer way to discover, compare, and follow reporting from independent publishers across Sri Lanka.
             </p>
-            <div className="pt-1 text-xs text-foreground-muted">
-              Built for analytical neutrality, multi-publisher clustering, and multilingual verification.
+            <div className="pt-1 text-xs leading-5 text-slate-400">
+              English, Sinhala, and Tamil when available. Every report leads back to the original publisher.
             </div>
           </div>
 
           {/* Column 1: Explore */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-blue-300">
               Explore
             </h3>
             <ul className="space-y-2">
@@ -61,7 +61,7 @@ export function SiteFooter() {
 
           {/* Column 2: My News */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-blue-300">
               My News
             </h3>
             <ul className="space-y-2">
@@ -90,7 +90,7 @@ export function SiteFooter() {
 
           {/* Column 3: Platform */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-blue-300">
               Platform
             </h3>
             <ul className="space-y-2">
@@ -113,7 +113,7 @@ export function SiteFooter() {
         </div>
 
         {/* Footer Bottom Bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-foreground-muted">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>
             © {new Date().getFullYear()} Ceylon News. All headlines link directly to original publishers.
           </p>
