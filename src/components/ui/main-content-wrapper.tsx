@@ -5,9 +5,9 @@ import { ReactNode } from "react";
 
 export function MainContentWrapper({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isAdmin = pathname?.startsWith("/admin");
+  const isFullWidth = pathname?.startsWith("/admin") || pathname?.startsWith("/account");
 
-  if (isAdmin) {
+  if (isFullWidth) {
     return <>{children}</>;
   }
 

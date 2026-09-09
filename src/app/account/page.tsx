@@ -132,15 +132,29 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <PreferencesForm initial={preferences} />
         </Surface>
 
-        {/* Sign Out */}
-        <div className="pt-2 flex justify-end">
-          <form action={`/auth/logout?next=${encodeURIComponent(withDisplayLanguage("/", language))}`} method="post">
-            <Button variant="outline" type="submit" className="gap-2 text-foreground-secondary hover:text-foreground">
-              <LogOut className="w-4 h-4" />
-              Sign out
-            </Button>
-          </form>
-        </div>
+        {/* Session Management & Sign Out */}
+        <Surface variant="elevated" className="p-6 border-l-4 border-l-red-500 border-border">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm font-bold text-red-600 dark:text-red-400">
+                <LogOut className="size-4" aria-hidden="true" />
+                Sign Out of Account
+              </div>
+              <p className="text-xs text-foreground-secondary">
+                End your active session on this device. You can log back in at any time.
+              </p>
+            </div>
+            <form action={`/auth/logout?next=${encodeURIComponent(withDisplayLanguage("/", language))}`} method="post" className="shrink-0">
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-700 active:bg-red-800 cursor-pointer"
+              >
+                <LogOut className="size-4 text-white" aria-hidden="true" />
+                Sign out
+              </button>
+            </form>
+          </div>
+        </Surface>
       </div>
     </AccountLayout>
   );

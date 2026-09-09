@@ -12,8 +12,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="w-full px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <div className="grid items-start gap-7 lg:grid-cols-[17.5rem_minmax(0,1fr)] lg:gap-10">
-        <aside className="lg:sticky lg:top-20">
+      <div className="grid items-start gap-7 lg:grid-cols-[22rem_minmax(0,1fr)] lg:gap-10">
+        <aside className="w-full lg:sticky lg:top-[7rem]">
           <AdminNav />
         </aside>
         <main className="min-w-0">
