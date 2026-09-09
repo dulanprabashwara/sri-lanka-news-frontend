@@ -81,21 +81,22 @@ export function AdminNav() {
   return (
     <nav aria-label="Admin Navigation" className="w-full">
       <div className="hidden overflow-hidden rounded-xl border border-slate-800 bg-foreground shadow-lg lg:flex lg:flex-col">
-        <div className="relative overflow-hidden border-b border-white/10 px-5 py-6 text-white">
-          <div className="absolute -right-10 -top-10 size-32 rounded-full bg-brand/25" aria-hidden="true" />
-          <div className="relative">
-            <span className="mb-4 flex size-10 items-center justify-center rounded-lg bg-brand shadow-sm">
-              <ShieldCheck className="size-5" aria-hidden="true" />
+        <div className="relative overflow-hidden border-b border-white/10 px-4 py-4 text-white">
+          <div className="absolute -right-8 -top-8 size-24 rounded-full bg-brand/25" aria-hidden="true" />
+          <div className="relative flex items-center gap-3">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand shadow-2xs">
+              <ShieldCheck className="size-5 text-white" aria-hidden="true" />
             </span>
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-blue-300">Restricted workspace</p>
-            <h2 className="mt-1 font-serif text-2xl font-semibold">Admin console</h2>
-            <p className="mt-2 text-xs leading-5 text-slate-300">Monitor newsroom operations and platform health.</p>
+            <div className="min-w-0">
+              <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-blue-300">Restricted workspace</p>
+              <h2 className="font-serif text-xl font-bold leading-tight truncate text-white">Admin console</h2>
+            </div>
           </div>
         </div>
-        <div className="space-y-5 p-3">
+        <div className="space-y-3.5 p-3">
           {ADMIN_PILLARS.map((pillar) => (
             <div key={pillar.title} className="space-y-1">
-              <h3 className="px-3 pb-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-slate-500">
+              <h3 className="px-3 pb-0.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-slate-500">
                 {pillar.title}
               </h3>
               <div className="space-y-0.5">
@@ -107,15 +108,15 @@ export function AdminNav() {
                       key={item.href}
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
+                      className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
                         active
-                          ? "bg-brand text-white shadow-sm"
+                          ? "bg-brand text-white shadow-2xs"
                           : "text-slate-300 hover:bg-white/8 hover:text-white"
                       }`}
                     >
                       <Icon className={`size-4 shrink-0 ${active ? "text-white" : "text-slate-500 group-hover:text-blue-300"}`} />
-                      <span className="flex-1">{item.name}</span>
-                      {active ? <span className="size-1.5 rounded-full bg-white" aria-hidden="true" /> : null}
+                      <span className="flex-1 truncate">{item.name}</span>
+                      {active ? <span className="size-1.5 rounded-full bg-white shrink-0" aria-hidden="true" /> : null}
                     </Link>
                   );
                 })}
@@ -123,9 +124,9 @@ export function AdminNav() {
             </div>
           ))}
         </div>
-        <div className="border-t border-white/10 p-3">
-          <Link href="/" className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-xs font-semibold text-slate-400 transition-colors hover:bg-white/8 hover:text-white">
-            <ArrowLeft className="size-3.5" aria-hidden="true" />
+        <div className="border-t border-white/10 p-2.5">
+          <Link href="/" className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-semibold text-slate-400 transition-colors hover:bg-white/8 hover:text-white">
+            <ArrowLeft className="size-4" aria-hidden="true" />
             Back to newsroom
           </Link>
         </div>

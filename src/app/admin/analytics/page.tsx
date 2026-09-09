@@ -122,30 +122,30 @@ export default function AdminAnalyticsDashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Header + Date Range Controls */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <PageHeader
-          eyebrow="Insights & Security"
-          title="Platform Analytics"
-          description="Aggregate operational metrics and readership trends (PII is completely omitted)."
-        />
-        <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-xs self-start sm:self-auto">
-          {DATE_RANGES.map((r) => (
-            <button
-              key={r.days}
-              type="button"
-              onClick={() => handleRange(r.days)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
-                days === r.days
-                  ? "bg-brand text-white shadow-xs"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-              }`}
-            >
-              {r.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Full-Width Header Card with Date Range Actions */}
+      <PageHeader
+        eyebrow="Insights & Security"
+        title="Platform Analytics"
+        description="Aggregate operational metrics and readership trends (PII is completely omitted)."
+        actions={
+          <div className="flex items-center gap-1 rounded-xl border border-border bg-surface p-1 shadow-2xs">
+            {DATE_RANGES.map((r) => (
+              <button
+                key={r.days}
+                type="button"
+                onClick={() => handleRange(r.days)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
+                  days === r.days
+                    ? "bg-brand text-white shadow-2xs"
+                    : "text-foreground-secondary hover:bg-surface-muted hover:text-foreground"
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       {/* Overview Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -163,30 +163,55 @@ export default function AdminAnalyticsDashboard() {
           description="Daily aggregate view volume across stories and articles."
         />
         <Surface variant="elevated" className="p-6">
-          <div className="h-48 flex items-end gap-1">
-            {timeseries.length > 0 ? (
-              timeseries.map((day: any) => {
-                const maxVal = Math.max(...timeseries.map((d: any) => d.count || 0), 1);
-                const height = `${((day.count || 0) / maxVal) * 100}%`;
-                return (
-                  <div
-                    key={day.date}
-                    className="relative flex-1 group h-full flex flex-col justify-end"
-                    title={`${day.date}: ${day.count} views`}
-                  >
+          {timeseries.length > 0 ? (
+            <div className="space-y-4">
+              <div className="h-56 sm:h-64 flex items-end justify-center gap-3 sm:gap-6 border-b border-border pb-3 pt-6">
+                {timeseries.map((day: any) => {
+                  const maxVal = Math.max(...timeseries.map((d: any) => d.count || 0), 1);
+                  const height = `${Math.max(((day.count || 0) / maxVal) * 100, 4)}%`;
+                  const formattedDate = day.date
+                    ? new Date(day.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                    : "";
+                  return (
                     <div
-                      className="w-full bg-brand rounded-t-xs opacity-80 group-hover:opacity-100 transition-all"
-                      style={{ height }}
-                    ></div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="w-full text-center text-slate-400 text-sm self-center">
-                No trend data for selected date range.
+                      key={day.date}
+                      className="relative flex-1 max-w-16 sm:max-w-20 group h-full flex flex-col justify-end items-center"
+                      title={`${day.date}: ${day.count} views`}
+                    >
+                      {/* Top value badge */}
+                      <span className="mb-1 text-xs font-bold text-foreground-secondary group-hover:text-brand transition-colors">
+                        {day.count || 0}
+                      </span>
+                      {/* Floating hover tooltip */}
+                      <div className="absolute -top-6 hidden rounded-md bg-foreground px-2.5 py-1 text-xs font-bold text-white shadow-md group-hover:block z-10 whitespace-nowrap">
+                        {day.count} views ({formattedDate})
+                      </div>
+                      <div
+                        className="w-full bg-brand rounded-t-md opacity-85 group-hover:opacity-100 transition-all shadow-2xs"
+                        style={{ height }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-            )}
-          </div>
+              <div className="flex justify-center gap-3 sm:gap-6 text-xs font-semibold text-foreground-muted">
+                {timeseries.map((day: any) => {
+                  const formattedDate = day.date
+                    ? new Date(day.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                    : day.date;
+                  return (
+                    <div key={`lbl-${day.date}`} className="flex-1 max-w-16 sm:max-w-20 text-center truncate">
+                      {formattedDate}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="py-12 text-center text-foreground-muted text-sm">
+              No trend data recorded for the selected date range.
+            </div>
+          )}
         </Surface>
       </section>
 

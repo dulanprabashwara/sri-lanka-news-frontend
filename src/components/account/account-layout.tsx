@@ -69,7 +69,7 @@ export function AccountLayout({
   ];
 
   return (
-    <ContainerWide>
+    <div className="w-full px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
       <div className="grid items-start gap-7 lg:grid-cols-[17.5rem_minmax(0,1fr)] lg:gap-10">
         <aside className="overflow-hidden rounded-xl border border-border bg-surface shadow-sm lg:sticky lg:top-28">
           <div className="relative overflow-hidden bg-foreground px-5 py-6 text-white">
@@ -145,6 +145,6 @@ export function AccountLayout({
           <main className="min-w-0">{children}</main>
         </div>
       </div>
-    </ContainerWide>
+    </div>
   );
 }
