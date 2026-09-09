@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search, Menu, X, User, ChevronDown, LogOut, Settings, Shield, Bookmark, Sparkles, Rss, BookOpen, Building2, LibraryBig } from "lucide-react";
+import { Search, Menu, X, User, ChevronDown, LogOut, Settings, Shield, Bookmark, Sparkles, Rss, BookOpen, Building2, LibraryBig, Globe } from "lucide-react";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 import NotificationBadge from "./notifications/NotificationBadge";
 import { BrandLogo } from "./brand-logo";
@@ -220,17 +220,18 @@ export function SiteHeader({
           {/* Search Icon Trigger */}
           <Link
             href={withDisplayLanguage("/search", displayLanguage)}
-            className={`flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-xs font-bold text-foreground-secondary hover:border-brand hover:text-brand transition-colors focus-visible:outline-2 focus-visible:outline-brand ${
+            className={`group h-9 flex items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground hover:bg-surface-muted hover:border-border-strong shadow-2xs transition-all focus-visible:outline-2 focus-visible:outline-brand ${
               isActive("/search") ? "text-brand bg-brand-soft/40" : ""
             }`}
             aria-label="Search news"
           >
-            <Search className="size-4" />
+            <Search className="size-4 text-foreground-muted group-hover:text-brand transition-colors" />
             <span>Search</span>
           </Link>
 
           {/* Language Selector */}
-          <div className="relative">
+          <div className="relative flex items-center">
+            <Globe className="pointer-events-none absolute left-2.5 size-4 text-foreground-muted z-10" />
             <label className="sr-only" htmlFor="desktop-display-language">
               Display language
             </label>
@@ -238,13 +239,14 @@ export function SiteHeader({
               id="desktop-display-language"
               value={displayLanguage ?? "original"}
               onChange={(e) => selectLanguage(e.target.value)}
-              className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-xs font-bold text-foreground hover:border-brand focus-visible:outline-2 focus-visible:outline-brand cursor-pointer"
+              className="h-9 appearance-none rounded-xl border border-border bg-surface pl-8 pr-7 text-xs font-semibold text-foreground hover:bg-surface-muted hover:border-border-strong shadow-2xs transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-brand"
             >
               <option value="original">Original</option>
               <option value="en">English</option>
               <option value="si">සිංහල</option>
               <option value="ta">தமிழ்</option>
             </select>
+            <ChevronDown className="pointer-events-none absolute right-2 size-3.5 text-foreground-muted z-10" />
           </div>
 
           {/* Notifications (Authenticated Only) */}
@@ -257,14 +259,16 @@ export function SiteHeader({
                 type="button"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 onKeyDown={handleUserMenuKeyDown}
-                className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs font-bold text-foreground hover:bg-surface-muted hover:border-brand transition-colors focus-visible:outline-2 focus-visible:outline-brand cursor-pointer"
+                className="h-9 flex items-center gap-2 rounded-xl border border-border bg-surface px-2.5 text-xs font-semibold text-foreground hover:bg-surface-muted hover:border-border-strong shadow-2xs transition-all focus-visible:outline-2 focus-visible:outline-brand cursor-pointer"
                 aria-expanded={userMenuOpen}
                 aria-haspopup="true"
                 aria-label="User account menu"
               >
-                <User className="size-4 text-brand" />
+                <div className="grid size-5 place-items-center rounded-full bg-brand-soft text-brand font-bold text-[10px] shrink-0">
+                  {userDisplayName ? userDisplayName[0].toUpperCase() : <User className="size-3" />}
+                </div>
                 <span>{userDisplayName || "Account"}</span>
-                <ChevronDown className={`size-3.5 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
+                <ChevronDown className={`size-3.5 text-foreground-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
               </button>
 
               {userMenuOpen && (

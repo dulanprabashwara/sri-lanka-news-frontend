@@ -32,12 +32,12 @@ export default function NotificationBadge({
   return (
     <Link
       href={withDisplayLanguage("/notifications", displayLanguage)}
-      className={`relative inline-flex items-center justify-center p-2 text-foreground-secondary hover:text-foreground hover:bg-surface-muted rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-brand ${className}`.trim()}
+      className={`relative h-9 min-w-9 px-2.5 inline-flex items-center justify-center rounded-xl border border-border bg-surface hover:bg-surface-muted hover:border-border-strong text-foreground-secondary hover:text-foreground shadow-2xs transition-all focus-visible:outline-2 focus-visible:outline-brand ${className}`.trim()}
       aria-label={`Notifications ${count > 0 ? `(${count} unread)` : ""}`}
     >
-      <Bell className="w-5 h-5 shrink-0" />
+      <Bell className="size-4 shrink-0 text-foreground-secondary" />
       {count > 0 && (
-        <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] font-bold text-white shadow-sm">
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-danger text-[9px] font-bold text-white shadow-xs">
           {count > 99 ? "99+" : count}
         </span>
       )}
