@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, Menu, X, User, ChevronDown, LogOut, Settings, Shield, Bookmark, Sparkles, Rss, BookOpen, Building2, LibraryBig, Globe } from "lucide-react";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
+import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import NotificationBadge from "./notifications/NotificationBadge";
 import { BrandLogo } from "./brand-logo";
 
@@ -22,12 +24,62 @@ export function SiteHeader({
   const router = useRouter();
   const displayLanguage = readDisplayLanguage(searchParams.get("lang"));
 
+  const [isAuth, setIsAuth] = useState(authenticated);
+  const [isAdmin, setIsAdmin] = useState(admin);
+  const [displayName, setDisplayName] = useState(userDisplayName);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [myNewsMenuOpen, setMyNewsMenuOpen] = useState(false);
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const myNewsMenuRef = useRef<HTMLDivElement>(null);
+
+  // Sync state with props
+  useEffect(() => {
+    setIsAuth(authenticated);
+  }, [authenticated]);
+
+  useEffect(() => {
+    setIsAdmin(admin);
+  }, [admin]);
+
+  useEffect(() => {
+    setDisplayName(userDisplayName);
+  }, [userDisplayName]);
+
+  // Listen to client-side auth state changes so UI immediately reflects sign-out
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    const supabase = createBrowserSupabaseClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        setIsAuth(false);
+        setIsAdmin(false);
+        setDisplayName(undefined);
+      } else if (event === "SIGNED_IN" && session) {
+        setIsAuth(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    setUserMenuOpen(false);
+    setMobileMenuOpen(false);
+    setIsAuth(false);
+    setIsAdmin(false);
+    setDisplayName(undefined);
+    try {
+      if (isSupabaseConfigured()) {
+        const supabase = createBrowserSupabaseClient();
+        await supabase.auth.signOut();
+      }
+    } catch (err) {
+      console.error("Sign out error", err);
+    }
+    window.location.href = withDisplayLanguage("/auth/logout", displayLanguage);
+  };
 
   // Close menus on route change
   useEffect(() => {
@@ -155,6 +207,7 @@ export function SiteHeader({
           </Link>
           {/* Authenticated Desktop "My News" Grouped Dropdown */}
           {authenticated && (
+          {isAuth && (
             <div className="relative" ref={myNewsMenuRef}>
               <button
                 type="button"
@@ -209,6 +262,7 @@ export function SiteHeader({
           )}
 
           {admin && (
+          {isAdmin && (
             <Link href={withDisplayLanguage("/admin", displayLanguage)} className={navLinkClasses("/admin")}>
               Admin
             </Link>
@@ -251,9 +305,11 @@ export function SiteHeader({
 
           {/* Notifications (Authenticated Only) */}
           {authenticated && <NotificationBadge displayLanguage={displayLanguage} />}
+          {isAuth && <NotificationBadge displayLanguage={displayLanguage} />}
 
           {/* Auth Button or User Menu Dropdown */}
           {authenticated ? (
+          {isAuth ? (
             <div className="relative" ref={userMenuRef}>
               <button
                 type="button"
@@ -266,8 +322,10 @@ export function SiteHeader({
               >
                 <div className="grid size-5 place-items-center rounded-full bg-brand-soft text-brand font-bold text-[10px] shrink-0">
                   {userDisplayName ? userDisplayName[0].toUpperCase() : <User className="size-3" />}
+                  {displayName ? displayName[0].toUpperCase() : <User className="size-3" />}
                 </div>
                 <span>{userDisplayName || "Account"}</span>
+                <span>{displayName || "Account"}</span>
                 <ChevronDown className={`size-3.5 text-foreground-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
               </button>
 
@@ -305,6 +363,7 @@ export function SiteHeader({
                     <span>Privacy & Telemetry</span>
                   </Link>
                   {admin && (
+                  {isAdmin && (
                     <Link
                       href={withDisplayLanguage("/admin", displayLanguage)}
                       className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-brand hover:bg-brand-soft/30 font-bold transition-colors border-t border-border mt-1"
@@ -317,11 +376,16 @@ export function SiteHeader({
                   <Link
                     href="/auth/logout"
                     className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-danger hover:bg-danger-soft/60 font-medium transition-colors border-t border-border mt-1"
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-danger hover:bg-danger-soft/60 font-medium transition-colors border-t border-border mt-1 text-left cursor-pointer"
                     role="menuitem"
                   >
                     <LogOut className="size-4 text-danger" />
                     <span>Sign Out</span>
                   </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -362,6 +426,7 @@ export function SiteHeader({
 
           {/* Notifications (Authenticated Only) */}
           {authenticated && <NotificationBadge displayLanguage={displayLanguage} />}
+          {isAuth && <NotificationBadge displayLanguage={displayLanguage} />}
 
           {/* Mobile Drawer Trigger */}
           <button
@@ -448,6 +513,7 @@ export function SiteHeader({
 
             {/* My News Links (if authenticated) */}
             {authenticated && (
+            {isAuth && (
               <div className="space-y-1 border-t border-border pt-4">
                 <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
                   My News
@@ -473,6 +539,7 @@ export function SiteHeader({
                 Account & Settings
               </div>
               {authenticated ? (
+              {isAuth ? (
                 <>
                   <Link href={withDisplayLanguage("/account", displayLanguage)} className={mobileNavLinkClasses("/account")}>
                     <User className="size-4" />
@@ -487,6 +554,7 @@ export function SiteHeader({
                     <span>Privacy & Telemetry</span>
                   </Link>
                   {admin && (
+                  {isAdmin && (
                     <Link href={withDisplayLanguage("/admin", displayLanguage)} className={mobileNavLinkClasses("/admin")}>
                       <Settings className="size-4 text-brand" />
                       <span className="text-brand font-bold">Admin Portal</span>
@@ -548,14 +616,20 @@ export function SiteHeader({
 
             {/* Auth Action */}
             {authenticated && (
+            {isAuth && (
               <div className="border-t border-border pt-4">
                 <Link
                   href="/auth/logout"
                   className="flex w-full items-center justify-center gap-2 rounded-lg bg-danger-soft px-4 py-2 text-sm font-bold text-danger hover:bg-red-200 transition-colors"
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-danger-soft px-4 py-2 text-sm font-bold text-danger hover:bg-red-200 transition-colors cursor-pointer"
                 >
                   <LogOut className="size-4" />
                   <span>Sign Out</span>
                 </Link>
+                </button>
               </div>
             )}
           </div>
