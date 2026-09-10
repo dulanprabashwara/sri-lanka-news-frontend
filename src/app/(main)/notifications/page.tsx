@@ -78,6 +78,32 @@ export default function NotificationsPage() {
               onClick={handleMarkAllAsRead}
               disabled={markingAll}
               className="gap-2 text-xs"
+    <section className="w-full space-y-6">
+      <PageHeader
+        eyebrow="MY NEWS"
+        title="Notifications"
+        description="Updates from sources and topics you follow."
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            {hasUnread && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleMarkAllAsRead}
+                disabled={markingAll}
+                className="gap-2 text-xs"
+              >
+                {markingAll ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-brand" />
+                ) : (
+                  <Check className="w-4 h-4 text-brand" />
+                )}
+                {markingAll ? "Marking..." : "Mark all read"}
+              </Button>
+            )}
+            <Link
+              href={withDisplayLanguage("/account/notifications", displayLanguage)}
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-semibold text-foreground hover:bg-surface-muted transition-colors shadow-2xs"
             >
               {markingAll ? (
                 <Loader2 className="w-4 h-4 animate-spin text-brand" />
@@ -96,6 +122,12 @@ export default function NotificationsPage() {
           </Link>
         </div>
       </div>
+              <Settings className="w-4 h-4 text-foreground-secondary" />
+              Notification Preferences
+            </Link>
+          </div>
+        }
+      />
 
       {actionError && (
         <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-800">
@@ -104,6 +136,7 @@ export default function NotificationsPage() {
       )}
 
       <Surface variant="elevated" className="divide-y divide-border overflow-hidden p-0">
+      <Surface variant="elevated" className="w-full divide-y divide-border overflow-hidden p-0">
         {isLoading ? (
           <div className="p-6 space-y-4">
             <Skeleton className="h-16 w-full" />
@@ -143,6 +176,7 @@ export default function NotificationsPage() {
         )}
       </Surface>
     </ContainerContent>
+    </section>
   );
 }
 
@@ -174,9 +208,14 @@ function NotificationItem({
     <div className={`p-5 transition-colors ${isUnread ? "bg-brand-soft/30" : "bg-surface"}`}>
       <div className="flex gap-4">
         <div className="flex-1 min-w-0 space-y-1">
+    <div className={`p-5 sm:p-6 transition-colors ${isUnread ? "bg-brand-soft/30" : "bg-surface"}`}>
+      <div className="flex gap-4 sm:gap-6 items-start justify-between">
+        <div className="flex-1 min-w-0 space-y-1.5">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-brand flex items-center gap-1">
               <Bell className="w-3 h-3" />
+            <span className="text-xs font-bold uppercase tracking-wider text-brand flex items-center gap-1.5">
+              <Bell className="w-3.5 h-3.5" />
               {notification.sourceName || "News Intelligence"}
             </span>
             <span className="text-border">&bull;</span>
@@ -187,9 +226,22 @@ function NotificationItem({
 
           <h4 className="text-base font-bold text-foreground leading-snug">
             {notification.title}
+          <h4 className="text-base sm:text-lg font-bold text-foreground leading-snug">
+            {targetPath ? (
+              <Link
+                href={withDisplayLanguage(targetPath, displayLanguage)}
+                onClick={isUnread ? onRead : undefined}
+                className="hover:text-brand transition-colors"
+              >
+                {notification.title}
+              </Link>
+            ) : (
+              notification.title
+            )}
           </h4>
 
           <p className="text-xs text-foreground-secondary line-clamp-2 leading-relaxed">
+          <p className="text-sm text-foreground-secondary line-clamp-2 leading-relaxed">
             {notification.message}
           </p>
 
@@ -209,6 +261,7 @@ function NotificationItem({
                 onClick={onRead}
                 disabled={isMarkingRead}
                 className="text-xs font-medium text-foreground-secondary hover:text-foreground transition-colors disabled:opacity-50 flex items-center gap-1"
+                className="text-xs font-medium text-foreground-secondary hover:text-foreground transition-colors disabled:opacity-50 flex items-center gap-1 cursor-pointer"
               >
                 {isMarkingRead ? (
                   <>
@@ -225,6 +278,7 @@ function NotificationItem({
 
         {isUnread && (
           <div className="shrink-0 flex items-start pt-1">
+          <div className="shrink-0 flex items-start pt-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-brand ring-4 ring-brand-soft" aria-label="Unread notification" />
           </div>
         )}
