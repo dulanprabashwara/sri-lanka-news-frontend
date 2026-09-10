@@ -9,6 +9,7 @@ import {
   getStoryCoverage,
   getStoryTimeline,
   askStory,
+  getTrendingArticles,
   getTrendingStories,
 } from "./news";
 
@@ -157,5 +158,40 @@ test("uses the guest Trending endpoint with category and presentation language",
   assert.deepEqual(result[0].reasons, [
     "RECENTLY_UPDATED", "MULTIPLE_SOURCES", "MULTIPLE_REPORTS",
   ]);
+  assert.equal("score" in result[0], false);
+});
+
+test("uses the guest Trending articles endpoint with category and presentation language", async () => {
+  let path = "";
+  let authorization: string | null = "unexpected";
+  globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+    const url = new URL(String(input));
+    path = url.pathname + url.search;
+    authorization = new Headers(init?.headers).get("Authorization");
+    return Response.json([{
+      id: "art-1",
+      title: "Breaking News",
+      originalUrl: "https://example.com/1",
+      originalLanguage: "en",
+      authors: [],
+      publishedAt: "2026-09-10T12:00:00Z",
+      discoveredAt: "2026-09-10T12:05:00Z",
+      category: "LOCAL",
+      summary: "Summary",
+      topics: [],
+      source: { name: "Daily News", slug: "daily-news", baseUrl: "https://example.com" },
+    }]);
+  }) as typeof fetch;
+
+  const result = await getTrendingArticles({
+    limit: 10,
+    category: "LOCAL",
+    displayLanguage: "si",
+  });
+
+  assert.equal(path, "/api/v1/trending/articles?limit=10&category=LOCAL&displayLanguage=si");
+  assert.equal(authorization, null);
+  assert.equal(result[0].id, "art-1");
+  assert.equal(result[0].title, "Breaking News");
   assert.equal("score" in result[0], false);
 });

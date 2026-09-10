@@ -112,11 +112,15 @@ function parseLanguage(value: unknown): Language {
 
 function parseLocalizedContent(value: unknown): LocalizedContent | undefined {
   if (value === null || value === undefined) return undefined;
-  if (!isRecord(value)) throw new ApiResponseError("Invalid localized content.");
+  if (!isRecord(value))
+    throw new ApiResponseError("Invalid localized content.");
   return {
     requestedLanguage: parseLanguage(value.requestedLanguage),
     resolvedLanguage: parseLanguage(value.resolvedLanguage),
-    translated: requireBoolean(value.translated, "localized translated indicator"),
+    translated: requireBoolean(
+      value.translated,
+      "localized translated indicator",
+    ),
     fallback: requireBoolean(value.fallback, "localized fallback indicator"),
     title: requireString(value.title, "localized title"),
     summary: optionalString(value.summary, "localized summary"),
@@ -127,12 +131,19 @@ function parseLocalizedStoryContent(
   value: unknown,
 ): LocalizedStoryContent | undefined {
   if (value === null || value === undefined) return undefined;
-  if (!isRecord(value)) throw new ApiResponseError("Invalid localized Story content.");
+  if (!isRecord(value))
+    throw new ApiResponseError("Invalid localized Story content.");
   return {
     requestedLanguage: parseLanguage(value.requestedLanguage),
     resolvedLanguage: parseLanguage(value.resolvedLanguage),
-    translated: requireBoolean(value.translated, "localized Story translated indicator"),
-    fallback: requireBoolean(value.fallback, "localized Story fallback indicator"),
+    translated: requireBoolean(
+      value.translated,
+      "localized Story translated indicator",
+    ),
+    fallback: requireBoolean(
+      value.fallback,
+      "localized Story fallback indicator",
+    ),
     title: requireString(value.title, "localized Story title"),
   };
 }
@@ -142,7 +153,10 @@ function parseArticleLeadMedia(value: unknown): ArticleLeadMedia | undefined {
   if (!isRecord(value)) throw new ApiResponseError("Invalid lead media.");
   return {
     url: requireHttpUrl(value.url, "lead media URL"),
-    type: requireString(value.type, "lead media type") as ArticleLeadMedia["type"],
+    type: requireString(
+      value.type,
+      "lead media type",
+    ) as ArticleLeadMedia["type"],
     altText: optionalString(value.altText, "lead media alt text"),
     caption: optionalString(value.caption, "lead media caption"),
     credit: optionalString(value.credit, "lead media credit"),
@@ -151,18 +165,27 @@ function parseArticleLeadMedia(value: unknown): ArticleLeadMedia | undefined {
   };
 }
 
-function parseStoryRepresentativeMedia(value: unknown): StoryRepresentativeMedia | undefined {
+function parseStoryRepresentativeMedia(
+  value: unknown,
+): StoryRepresentativeMedia | undefined {
   if (value === null || value === undefined) return undefined;
-  if (!isRecord(value)) throw new ApiResponseError("Invalid representative media.");
+  if (!isRecord(value))
+    throw new ApiResponseError("Invalid representative media.");
   return {
     url: requireHttpUrl(value.url, "representative media URL"),
-    type: requireString(value.type, "representative media type") as StoryRepresentativeMedia["type"],
+    type: requireString(
+      value.type,
+      "representative media type",
+    ) as StoryRepresentativeMedia["type"],
     altText: optionalString(value.altText, "representative media alt text"),
     caption: optionalString(value.caption, "representative media caption"),
     credit: optionalString(value.credit, "representative media credit"),
     width: optionalNumber(value.width, "representative media width"),
     height: optionalNumber(value.height, "representative media height"),
-    articleId: requireString(value.articleId, "representative media article ID"),
+    articleId: requireString(
+      value.articleId,
+      "representative media article ID",
+    ),
     source: requireString(value.source, "representative media source"),
   };
 }
@@ -259,17 +282,27 @@ function parseTimelineEvent(value: unknown): TimelineEvent {
 }
 
 function parseSourceCoverage(value: unknown): SourceCoverage {
-  if (!isRecord(value) || !Array.isArray(value.languages) ||
-      !Array.isArray(value.articles) || !Array.isArray(value.entities) ||
-      !Array.isArray(value.uniqueEntities)) {
+  if (
+    !isRecord(value) ||
+    !Array.isArray(value.languages) ||
+    !Array.isArray(value.articles) ||
+    !Array.isArray(value.entities) ||
+    !Array.isArray(value.uniqueEntities)
+  ) {
     throw new ApiResponseError("Invalid source coverage in API response.");
   }
   return {
     source: parseCoverageSource(value.source),
     reportCount: requireNumber(value.reportCount, "coverage report count"),
     languages: value.languages.map(parseLanguage),
-    firstPublishedAt: requireDate(value.firstPublishedAt, "coverage first publication date"),
-    lastPublishedAt: requireDate(value.lastPublishedAt, "coverage latest publication date"),
+    firstPublishedAt: requireDate(
+      value.firstPublishedAt,
+      "coverage first publication date",
+    ),
+    lastPublishedAt: requireDate(
+      value.lastPublishedAt,
+      "coverage latest publication date",
+    ),
     articles: value.articles.map(parseCoverageArticle),
     topics: parseStrings(value.topics, "coverage topic"),
     uniqueTopics: parseStrings(value.uniqueTopics, "source-specific topic"),
@@ -305,7 +338,9 @@ export function parseArticle(value: unknown): Article {
     summary: optionalString(value.summary, "article summary"),
     topics: parseStrings(value.topics, "article topic"),
     source: parseSourceSummary(value.source),
-    ...(value.leadMedia ? { leadMedia: parseArticleLeadMedia(value.leadMedia) } : {}),
+    ...(value.leadMedia
+      ? { leadMedia: parseArticleLeadMedia(value.leadMedia) }
+      : {}),
     ...(localizedContent ? { localizedContent } : {}),
   };
 }
@@ -319,11 +354,23 @@ export function parseStorySummary(value: unknown): StorySummary {
     id: requireString(value.id, "story ID"),
     canonicalTitle: requireString(value.canonicalTitle, "story title"),
     category: parseCategory(value.category),
-    firstPublishedAt: requireDate(value.firstPublishedAt, "first publication date"),
-    lastPublishedAt: requireDate(value.lastPublishedAt, "latest publication date"),
+    firstPublishedAt: requireDate(
+      value.firstPublishedAt,
+      "first publication date",
+    ),
+    lastPublishedAt: requireDate(
+      value.lastPublishedAt,
+      "latest publication date",
+    ),
     articleCount: requireNumber(value.articleCount, "article count"),
     sourceCount: requireNumber(value.sourceCount, "source count"),
-    ...(value.representativeMedia ? { representativeMedia: parseStoryRepresentativeMedia(value.representativeMedia) } : {}),
+    ...(value.representativeMedia
+      ? {
+          representativeMedia: parseStoryRepresentativeMedia(
+            value.representativeMedia,
+          ),
+        }
+      : {}),
     ...(localizedContent ? { localizedContent } : {}),
   };
 }
@@ -337,6 +384,13 @@ function parseTrendingReason(value: unknown): TrendingReason {
     return value;
   }
   throw new ApiResponseError("Invalid Trending reason in API response.");
+}
+
+export function parseTrendingArticles(value: unknown): Article[] {
+  if (!Array.isArray(value)) {
+    throw new ApiResponseError("Invalid Trending Articles response.");
+  }
+  return value.map(parseArticle);
 }
 
 export function parseTrendingStories(value: unknown): TrendingStory[] {
@@ -365,8 +419,11 @@ export function parseStoryDetail(value: unknown): StoryDetail {
 }
 
 export function parseCoverageComparison(value: unknown): CoverageComparison {
-  if (!isRecord(value) || !Array.isArray(value.sharedEntities) ||
-      !Array.isArray(value.sources)) {
+  if (
+    !isRecord(value) ||
+    !Array.isArray(value.sharedEntities) ||
+    !Array.isArray(value.sources)
+  ) {
     throw new ApiResponseError("Invalid coverage comparison response.");
   }
   const localizedContent = parseLocalizedStoryContent(value.localizedContent);
@@ -375,7 +432,10 @@ export function parseCoverageComparison(value: unknown): CoverageComparison {
     canonicalTitle: requireString(value.canonicalTitle, "coverage story title"),
     articleCount: requireNumber(value.articleCount, "coverage article count"),
     sourceCount: requireNumber(value.sourceCount, "coverage source count"),
-    comparisonAvailable: requireBoolean(value.comparisonAvailable, "comparison availability"),
+    comparisonAvailable: requireBoolean(
+      value.comparisonAvailable,
+      "comparison availability",
+    ),
     sharedTopics: parseStrings(value.sharedTopics, "shared topic"),
     sharedEntities: value.sharedEntities.map(parseCoverageEntity),
     sources: value.sources.map(parseSourceCoverage),
@@ -391,8 +451,14 @@ export function parseStoryTimeline(value: unknown): StoryTimeline {
   return {
     storyId: requireString(value.storyId, "timeline story ID"),
     canonicalTitle: requireString(value.canonicalTitle, "timeline Story title"),
-    firstPublishedAt: requireDate(value.firstPublishedAt, "timeline first publication date"),
-    lastPublishedAt: requireDate(value.lastPublishedAt, "timeline latest publication date"),
+    firstPublishedAt: requireDate(
+      value.firstPublishedAt,
+      "timeline first publication date",
+    ),
+    lastPublishedAt: requireDate(
+      value.lastPublishedAt,
+      "timeline latest publication date",
+    ),
     eventCount: requireNumber(value.eventCount, "timeline event count"),
     sourceCount: requireNumber(value.sourceCount, "timeline source count"),
     events: value.events.map(parseTimelineEvent),

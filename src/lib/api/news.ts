@@ -10,6 +10,7 @@ import {
   parseStorySummary,
   parseStoryTimeline,
   parseAskStoryResponse,
+  parseTrendingArticles,
   parseTrendingStories,
 } from "@/lib/api/parsers";
 import type {
@@ -52,18 +53,28 @@ export function getArticles(
   );
 }
 
-export function getArticle(id: string, displayLanguage?: Language): Promise<Article> {
+export function getArticle(
+  id: string,
+  displayLanguage?: Language,
+): Promise<Article> {
   const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
-  return requestJson(`/api/v1/articles/${encodeURIComponent(id)}${query}`, parseArticle);
+  return requestJson(
+    `/api/v1/articles/${encodeURIComponent(id)}${query}`,
+    parseArticle,
+  );
 }
 
 export function getSource(slug: string): Promise<Source> {
-  return requestJson(`/api/v1/sources/${encodeURIComponent(slug)}`, parseSource);
+  return requestJson(
+    `/api/v1/sources/${encodeURIComponent(slug)}`,
+    parseSource,
+  );
 }
 
 export function getSources(): Promise<Source[]> {
   return requestJson("/api/v1/sources", (value: unknown) => {
-    if (!Array.isArray(value)) throw new ApiResponseError("Invalid source list.");
+    if (!Array.isArray(value))
+      throw new ApiResponseError("Invalid source list.");
     return value.map(parseSource);
   });
 }
@@ -114,12 +125,35 @@ export function getTrendingStories(
   );
 }
 
-export function getStory(id: string, displayLanguage?: Language): Promise<StoryDetail> {
-  const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
-  return requestJson(`/api/v1/stories/${encodeURIComponent(id)}${query}`, parseStoryDetail);
+export function getTrendingArticles(
+  query: TrendingQuery = {},
+): Promise<Article[]> {
+  const parameters = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined) parameters.set(key, String(value));
+  });
+  const queryString = parameters.toString();
+  return requestJson(
+    `/api/v1/trending/articles${queryString ? `?${queryString}` : ""}`,
+    parseTrendingArticles,
+  );
 }
 
-export function getStoryCoverage(id: string, displayLanguage?: Language): Promise<CoverageComparison> {
+export function getStory(
+  id: string,
+  displayLanguage?: Language,
+): Promise<StoryDetail> {
+  const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
+  return requestJson(
+    `/api/v1/stories/${encodeURIComponent(id)}${query}`,
+    parseStoryDetail,
+  );
+}
+
+export function getStoryCoverage(
+  id: string,
+  displayLanguage?: Language,
+): Promise<CoverageComparison> {
   const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
   return requestJson(
     `/api/v1/stories/${encodeURIComponent(id)}/coverage${query}`,
@@ -127,7 +161,10 @@ export function getStoryCoverage(id: string, displayLanguage?: Language): Promis
   );
 }
 
-export function getStoryTimeline(id: string, displayLanguage?: Language): Promise<StoryTimeline> {
+export function getStoryTimeline(
+  id: string,
+  displayLanguage?: Language,
+): Promise<StoryTimeline> {
   const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
   return requestJson(
     `/api/v1/stories/${encodeURIComponent(id)}/timeline${query}`,
@@ -135,7 +172,10 @@ export function getStoryTimeline(id: string, displayLanguage?: Language): Promis
   );
 }
 
-export function getArticleStory(articleId: string, displayLanguage?: Language): Promise<StorySummary> {
+export function getArticleStory(
+  articleId: string,
+  displayLanguage?: Language,
+): Promise<StorySummary> {
   const query = displayLanguage ? `?displayLanguage=${displayLanguage}` : "";
   return requestJson(
     `/api/v1/articles/${encodeURIComponent(articleId)}/story${query}`,
