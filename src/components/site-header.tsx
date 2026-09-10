@@ -49,10 +49,12 @@ export function SiteHeader({
     setDisplayName(userDisplayName);
   }, [userDisplayName]);
 
+  // Listen to client-side auth state changes so UI immediately reflects sign-out
   // Listen to client-side auth state changes so UI immediately reflects sign-out or sign-in
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     const supabase = createBrowserSupabaseClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
     const checkAdmin = async (token?: string) => {
       if (!token) {
         setIsAdmin(false);
@@ -71,6 +73,7 @@ export function SiteHeader({
         setIsAuth(false);
         setIsAdmin(false);
         setDisplayName(undefined);
+      } else if (event === "SIGNED_IN" && session) {
       } else if (session) {
         setIsAuth(true);
         const userMeta = session.user?.user_metadata;
