@@ -5,6 +5,7 @@ import {
   ApiError,
   ApiUnavailableError,
   requestJson,
+  requestNoContent,
 } from "./client";
 import { ApiResponseError } from "./parsers";
 
@@ -101,5 +102,54 @@ test("rejects invalid JSON from a successful response", async () => {
   await assert.rejects(
     requestJson("/api/v1/example", (payload) => payload, { fetcher }),
     ApiResponseError,
+  );
+});
+
+test("handles empty body in successful response gracefully in requestJson", async () => {
+  const fetcher = (async () =>
+    new Response("", {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    })) as typeof fetch;
+
+  const result = await requestJson(
+    "/api/v1/example",
+    (payload) => payload ?? "empty",
+    { fetcher },
+  );
+  assert.equal(result, "empty");
+});
+
+test("requestNoContent succeeds on 200 or 204 empty response", async () => {
+  let calledMethod = "";
+  let calledAuth = "";
+  const fetcher = (async (_input: string | URL | Request, init?: RequestInit) => {
+    calledMethod = init?.method ?? "GET";
+    calledAuth = new Headers(init?.headers).get("Authorization") ?? "";
+    return new Response(null, { status: 200 });
+  }) as typeof fetch;
+
+  await requestNoContent("/api/v1/me/notifications/123/read", {
+    fetcher,
+    method: "POST",
+    accessToken: "test-token",
+  });
+  assert.equal(calledMethod, "POST");
+  assert.equal(calledAuth, "Bearer test-token");
+});
+
+test("requestNoContent throws ApiError on non-ok status", async () => {
+  const fetcher = (async () =>
+    new Response(null, { status: 404 })) as typeof fetch;
+
+  await assert.rejects(
+    requestNoContent("/api/v1/me/notifications/123/read", {
+      fetcher,
+      method: "POST",
+    }),
+    (error: unknown) =>
+      error instanceof ApiError &&
+      error.status === 404 &&
+      error.message === "Request failed with status 404.",
   );
 });

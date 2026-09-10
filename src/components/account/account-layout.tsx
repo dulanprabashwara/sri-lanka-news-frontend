@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ContainerWide } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { withDisplayLanguage } from "@/lib/language";
 import type { DisplayLanguage } from "@/types/api";

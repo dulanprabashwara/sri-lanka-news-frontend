@@ -41,9 +41,15 @@ export function SiteHeader({
   const router = useRouter();
   const displayLanguage = readDisplayLanguage(searchParams.get("lang"));
 
-  const [isAuth, setIsAuth] = useState(authenticated);
-  const [isAdmin, setIsAdmin] = useState(admin);
-  const [displayName, setDisplayName] = useState(userDisplayName);
+  const [clientAuth, setClientAuth] = useState<{
+    isAuth: boolean;
+    isAdmin: boolean;
+    displayName: string | undefined;
+  } | null>(null);
+
+  const isAuth = clientAuth !== null ? clientAuth.isAuth : Boolean(authenticated);
+  const isAdmin = clientAuth !== null ? clientAuth.isAdmin : Boolean(admin);
+  const displayName = clientAuth !== null ? clientAuth.displayName : userDisplayName;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -52,64 +58,45 @@ export function SiteHeader({
   const userMenuRef = useRef<HTMLDivElement>(null);
   const myNewsMenuRef = useRef<HTMLDivElement>(null);
 
-  // Sync state with props
-  useEffect(() => {
-    setIsAuth(authenticated);
-  }, [authenticated]);
-
-  useEffect(() => {
-    setIsAdmin(admin);
-  }, [admin]);
-
-  useEffect(() => {
-    setDisplayName(userDisplayName);
-  }, [userDisplayName]);
-
   // Listen to client-side auth state changes so UI immediately reflects sign-out or sign-in
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     const supabase = createBrowserSupabaseClient();
-    const checkAdmin = async (token?: string) => {
-      if (!token) {
-        setIsAdmin(false);
-        return;
-      }
-      try {
-        const res = await getAdminMe(token);
-        setIsAdmin(res.admin === true);
-      } catch {
-        setIsAdmin(false);
-      }
-    };
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_OUT" || !session) {
-        setIsAuth(false);
-        setIsAdmin(false);
-        setDisplayName(undefined);
+        setClientAuth({ isAuth: false, isAdmin: false, displayName: undefined });
       } else if (session) {
-        setIsAuth(true);
+        let name = userDisplayName;
         const userMeta = session.user?.user_metadata;
         const userEmail = session.user?.email;
         if (userMeta?.full_name || userMeta?.name) {
-          setDisplayName(userMeta.full_name || userMeta.name);
+          name = userMeta.full_name || userMeta.name;
         } else if (userEmail) {
-          setDisplayName(userEmail.split("@")[0]);
+          name = userEmail.split("@")[0];
         }
-        await checkAdmin(session.access_token);
+
+        let adminStatus = false;
+        if (session.access_token) {
+          try {
+            const res = await getAdminMe(session.access_token);
+            adminStatus = res.admin === true;
+          } catch {
+            adminStatus = false;
+          }
+        }
+        setClientAuth({ isAuth: true, isAdmin: adminStatus, displayName: name });
       }
     });
     return () => subscription.unsubscribe();
-  }, []);
+  }, [userDisplayName]);
 
   const handleSignOut = async () => {
     setUserMenuOpen(false);
     setMobileMenuOpen(false);
-    setIsAuth(false);
-    setIsAdmin(false);
-    setDisplayName(undefined);
+    setClientAuth({ isAuth: false, isAdmin: false, displayName: undefined });
     try {
       if (isSupabaseConfigured()) {
         const supabase = createBrowserSupabaseClient();
@@ -118,7 +105,7 @@ export function SiteHeader({
     } catch (err) {
       console.error("Sign out error", err);
     }
-    window.location.href = withDisplayLanguage("/auth/logout", displayLanguage);
+    window.location.assign(withDisplayLanguage("/auth/logout", displayLanguage));
   };
 
   // Close menus on route change

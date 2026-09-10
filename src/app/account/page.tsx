@@ -5,7 +5,6 @@ import { ProfileForm } from "@/components/profile-form";
 import { PreferencesForm } from "@/components/preferences-form";
 import { Surface } from "@/components/ui/surface";
 import { SectionHeader } from "@/components/ui/section-header";
-import { Button } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/client";
 import { getCurrentUser } from "@/lib/api/me";
 import { getPreferences } from "@/lib/api/user";

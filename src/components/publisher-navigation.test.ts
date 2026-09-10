@@ -6,26 +6,41 @@ import { PublisherDirectory } from "./publisher-directory";
 import { PublisherStrip } from "./publisher-strip";
 import { SourceIcon } from "./source-icon";
 
-const sources = [{ name: "Daily Mirror", slug: "daily-mirror", baseUrl: "https://www.dailymirror.lk" }];
+const sources = [
+  {
+    name: "Daily Mirror",
+    slug: "daily-mirror",
+    baseUrl: "https://www.dailymirror.lk",
+  },
+];
 
 test("publisher directory links to source pages with selected language and official icons", () => {
-  const html = renderToStaticMarkup(createElement(PublisherDirectory, { sources, displayLanguage: "si" }));
+  const html = renderToStaticMarkup(
+    createElement(PublisherDirectory, { sources, displayLanguage: "si" }),
+  );
   assert.match(html, /\/source\/daily-mirror\?lang=si/);
   assert.match(html, /Daily Mirror/);
   assert.match(html, /\/icons\/dailymirror.png/);
   assert.match(html, /referrerPolicy="no-referrer"/i);
 });
 
-test("publisher strip offers pause and hides the duplicate copy from accessibility tree", () => {
+test("publisher strip renders sources and hides the duplicate copy from accessibility tree", () => {
   const html = renderToStaticMarkup(createElement(PublisherStrip, { sources }));
-  assert.match(html, /Pause animation/);
-  assert.match(html, /aria-pressed="false"/);
+  assert.match(html, /Across Sri Lanka’s newsrooms/);
   assert.match(html, /aria-hidden="true" class="publisher-track-copy/);
-  assert.equal(renderToStaticMarkup(createElement(PublisherStrip, { sources: [] })), "");
+  assert.equal(
+    renderToStaticMarkup(createElement(PublisherStrip, { sources: [] })),
+    "",
+  );
 });
 
 test("invalid icon URLs use initials without generating unsafe image requests", () => {
-  const html = renderToStaticMarkup(createElement(SourceIcon, { name: "Daily Mirror", baseUrl: "javascript:alert(1)" }));
+  const html = renderToStaticMarkup(
+    createElement(SourceIcon, {
+      name: "Daily Mirror",
+      baseUrl: "javascript:alert(1)",
+    }),
+  );
   assert.match(html, />DM<\/span>/);
   assert.doesNotMatch(html, /<img/);
 });

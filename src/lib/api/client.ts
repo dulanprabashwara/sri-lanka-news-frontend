@@ -52,20 +52,34 @@ export async function requestJson<T>(
       method: options.method ?? "GET",
       headers: {
         Accept: "application/json",
-        ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
+        ...(options.body === undefined
+          ? {}
+          : { "Content-Type": "application/json" }),
         ...(options.accessToken
           ? { Authorization: `Bearer ${options.accessToken}` }
           : {}),
       },
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      body:
+        options.body === undefined ? undefined : JSON.stringify(options.body),
     });
   } catch {
     throw new ApiUnavailableError();
   }
 
+  const text = await response.text();
+  if (!text.trim()) {
+    if (!response.ok) {
+      throw new ApiError(
+        `Request failed with status ${response.status}.`,
+        response.status,
+      );
+    }
+    return parser(undefined);
+  }
+
   let payload: unknown;
   try {
-    payload = await response.json();
+    payload = JSON.parse(text);
   } catch {
     if (!response.ok) {
       throw new ApiError(
@@ -78,7 +92,10 @@ export async function requestJson<T>(
 
   if (!response.ok) {
     throw new ApiError(
-      readErrorMessage(payload, `Request failed with status ${response.status}.`),
+      readErrorMessage(
+        payload,
+        `Request failed with status ${response.status}.`,
+      ),
       response.status,
     );
   }
@@ -97,13 +114,22 @@ export async function requestNoContent(
       method: options.method ?? "DELETE",
       headers: {
         Accept: "application/json",
-        ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
-        ...(options.accessToken ? { Authorization: `Bearer ${options.accessToken}` } : {}),
+        ...(options.body === undefined
+          ? {}
+          : { "Content-Type": "application/json" }),
+        ...(options.accessToken
+          ? { Authorization: `Bearer ${options.accessToken}` }
+          : {}),
       },
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      body:
+        options.body === undefined ? undefined : JSON.stringify(options.body),
     });
   } catch {
     throw new ApiUnavailableError();
   }
-  if (!response.ok) throw new ApiError(`Request failed with status ${response.status}.`, response.status);
+  if (!response.ok)
+    throw new ApiError(
+      `Request failed with status ${response.status}.`,
+      response.status,
+    );
 }
