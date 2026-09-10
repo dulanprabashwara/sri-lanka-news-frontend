@@ -64,7 +64,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   const featured = featuredItems(stories, articles.content);
   const featuredArticleIds = new Set(featured.filter((item) => item.kind === "article").map((item) => item.data.id));
-  const reports = articles.content.filter((article) => !featuredArticleIds.has(article.id));
+  const reports = articles.content.filter((article) => !featuredArticleIds.has(article.id)).slice(0, 7);
   const pulse = sourcePulse(articles.content);
   const ALL_ACTIVE_SOURCES: SourceSummary[] = [
     { name: "Lankadeepa", slug: "lankadeepa", baseUrl: "https://www.lankadeepa.lk" },
@@ -98,7 +98,7 @@ export default async function Home({ searchParams }: HomePageProps) {
       {stories.length > 0 && <CoverageMonitor stories={stories} displayLanguage={displayLanguage} />}
 
       <div className="grid items-start gap-9 lg:grid-cols-[minmax(0,1.75fr)_minmax(18rem,0.8fr)] lg:gap-10">
-        <section tabIndex={0} aria-labelledby="latest-reports-heading" className="lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-4">
+        <section aria-labelledby="latest-reports-heading" className="min-w-0">
           <header className="flex flex-col gap-3 py-5 sm:flex-row sm:items-end sm:justify-between">
             <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">Publisher wire</p><h2 id="latest-reports-heading" className="mt-1 font-serif text-3xl font-semibold tracking-tight">{category ? `${formatCategory(category)} reports` : "Latest reports"}</h2></div>
             <p className="max-w-md text-sm leading-6 text-foreground-secondary">Direct reporting from independent Sri Lankan newsrooms, ordered by publication time.</p>
@@ -108,7 +108,7 @@ export default async function Home({ searchParams }: HomePageProps) {
           </div>
           <Link href={withDisplayLanguage(`/articles${category ? `?category=${category}` : ""}`, displayLanguage)} className="my-5 flex items-center justify-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-hover">View all articles <ArrowRight className="size-4" /></Link>
         </section>
-        <aside tabIndex={0} className="space-y-6 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-2" aria-label="Newsroom intelligence">
+        <aside className="space-y-6" aria-label="Newsroom intelligence">
           <Headlines articles={articles.content.slice(0, 8)} displayLanguage={displayLanguage} />
           <NewsroomPulse sources={pulse} displayLanguage={displayLanguage} />
           <ExplorePanel displayLanguage={displayLanguage} />

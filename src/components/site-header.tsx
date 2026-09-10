@@ -267,8 +267,8 @@ export function SiteHeader({
           className="hidden lg:flex items-center gap-1"
         >
           <Link
-            href={withDisplayLanguage("/", displayLanguage)}
-            className={navLinkClasses("/")}
+            href={withDisplayLanguage("/articles", displayLanguage)}
+            className={navLinkClasses("/articles")}
           >
             Latest news
           </Link>
@@ -572,8 +572,8 @@ export function SiteHeader({
                 Discovery
               </div>
               <Link
-                href={withDisplayLanguage("/", displayLanguage)}
-                className={mobileNavLinkClasses("/")}
+                href={withDisplayLanguage("/articles", displayLanguage)}
+                className={mobileNavLinkClasses("/articles")}
               >
                 <Rss className="size-4" />
                 <span>Latest News</span>

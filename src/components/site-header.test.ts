@@ -4,13 +4,16 @@ import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 
 test("guest header navigation state: shows Discovery links and Sign in CTA, conceals My News, Bell, and Admin", () => {
   const displayLang = readDisplayLanguage(undefined);
-  const latestNewsHref = withDisplayLanguage("/", displayLang);
+  const latestNewsHref = withDisplayLanguage("/articles", displayLang);
   const storiesHref = withDisplayLanguage("/stories", displayLang);
   const trendingHref = withDisplayLanguage("/trending", displayLang);
   const searchHref = withDisplayLanguage("/search", displayLang);
-  const loginHref = withDisplayLanguage("/auth/login?next=/account", displayLang);
+  const loginHref = withDisplayLanguage(
+    "/auth/login?next=/account",
+    displayLang,
+  );
 
-  assert.equal(latestNewsHref, "/");
+  assert.equal(latestNewsHref, "/articles");
   assert.equal(storiesHref, "/stories");
   assert.equal(trendingHref, "/trending");
   assert.equal(searchHref, "/search");
