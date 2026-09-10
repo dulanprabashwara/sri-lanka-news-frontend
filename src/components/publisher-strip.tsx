@@ -8,10 +8,6 @@ export function PublisherStrip({ sources }: { sources: SourceSummary[] }) {
   const [paused, setPaused] = useState(false);
   if (!sources.length) return null;
   return (
-    <section aria-label="Publishers in the news index" className="publisher-strip overflow-hidden rounded-xl border border-slate-700 bg-foreground py-6 text-white shadow-sm sm:py-8">
-      <div className="mb-5 px-6">
-        <p className="text-xs font-bold uppercase tracking-widest text-blue-300">Across Sri Lanka’s newsrooms</p>
-        <p className="mt-1 text-xs text-slate-400">Select a publisher above to explore its reporting.</p>
     <section aria-label="Publishers in the news index" className="publisher-strip overflow-hidden rounded-xl border border-slate-700 bg-foreground py-6 text-white shadow-sm sm:py-8" data-paused={paused}>
       <div className="mb-5 flex items-center justify-between gap-4 px-6">
         <div>
