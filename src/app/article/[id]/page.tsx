@@ -19,6 +19,7 @@ import {
   formatPublishedAt,
 } from "@/lib/format";
 import { articleContent, articleContentLanguage, readDisplayLanguage, storyTitle, translationLabel, withDisplayLanguage } from "@/lib/language";
+import { isMultiSourceStory } from "@/lib/story";
 import { ExternalLink, Layers, ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -161,7 +162,7 @@ export default async function ArticlePage({
       )}
 
       {/* 6. Connected Story Context (If present) */}
-      {story && (
+      {story && isMultiSourceStory(story) && (
         <Surface variant="highlight" className="p-6 space-y-4">
           <div className="flex items-center gap-2">
             <Layers className="size-4 text-brand" />

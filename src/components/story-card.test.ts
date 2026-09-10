@@ -22,6 +22,33 @@ test("renders a Story card with public counts and detail link", () => {
   assert.match(html, /href="\/story\/64f0c2f1289c0f0a87654321"/);
   assert.match(html, /3 reports/);
   assert.match(html, /2 publishers/);
+  assert.match(html, /Multi-Source Story/);
+});
+
+test("hides the Multi-Source Story badge unless both public thresholds are met", () => {
+  const singlePublisher = renderToStaticMarkup(createElement(StoryCard, { story: {
+    id: "64f0c2f1289c0f0a87654322",
+    canonicalTitle: "Two reports from one publisher",
+    category: "LOCAL",
+    firstPublishedAt: "2026-08-30T05:00:00Z",
+    lastPublishedAt: "2026-08-30T06:00:00Z",
+    articleCount: 2,
+    sourceCount: 1,
+  } }));
+  const singleton = renderToStaticMarkup(createElement(StoryCard, { story: {
+    id: "64f0c2f1289c0f0a87654323",
+    canonicalTitle: "One report",
+    category: "LOCAL",
+    firstPublishedAt: "2026-08-30T05:00:00Z",
+    lastPublishedAt: "2026-08-30T06:00:00Z",
+    articleCount: 1,
+    sourceCount: 1,
+  } }));
+
+  assert.doesNotMatch(singlePublisher, /Multi-Source Story/);
+  assert.doesNotMatch(singleton, /Multi-Source Story/);
+  assert.match(singlePublisher, /2 reports/);
+  assert.match(singlePublisher, /1 publisher/);
 });
 
 test("renders Lead variant of StoryCard", () => {

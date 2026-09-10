@@ -5,6 +5,7 @@ import { storyContentLanguage, storyTitle, withDisplayLanguage } from "@/lib/lan
 import type { DisplayLanguage, StorySummary, TrendingReason } from "@/types/api";
 import { Layers, Newspaper, Sparkles } from "lucide-react";
 import { isPublisherPlaceholder } from "@/components/ui/publisher-image-utils";
+import { isMultiSourceStory } from "@/lib/story";
 
 const reasonLabels: Record<TrendingReason, string> = {
   RECENTLY_UPDATED: "Recently updated",
@@ -133,10 +134,12 @@ export function StoryCard({
         <div>
           {/* Header Tag */}
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-foreground-muted mb-2">
-            <span className="inline-flex items-center gap-1 rounded bg-brand-soft/50 px-2 py-0.5 text-xs font-bold text-brand uppercase tracking-wider">
-              <Layers className="size-3" />
-              Multi-Source Story
-            </span>
+            {isMultiSourceStory(story) ? (
+              <span className="inline-flex items-center gap-1 rounded bg-brand-soft/50 px-2 py-0.5 text-xs font-bold text-brand uppercase tracking-wider">
+                <Layers className="size-3" />
+                Multi-Source Story
+              </span>
+            ) : null}
             <time dateTime={story.lastPublishedAt} className="text-xs">
               {formatPublishedAt(story.lastPublishedAt)}
             </time>

@@ -17,6 +17,7 @@ import { getOptionalStoryCoverage } from "@/lib/api/coverage";
 import { getOptionalStoryTimeline } from "@/lib/api/timeline";
 import { formatCategory, formatPublishedAt } from "@/lib/format";
 import { readDisplayLanguage, storyContentLanguage, storyTitle, withDisplayLanguage } from "@/lib/language";
+import { isMultiSourceStory } from "@/lib/story";
 import { ArrowLeft, Layers, Calendar, Newspaper, Clock } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -81,7 +82,9 @@ export default async function StoryPage({
       {/* 2. Flagship Story Header */}
       <Surface variant="bordered" className="border-t-4 border-t-brand p-6 sm:p-8 space-y-6">
         <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
-          <StatusBadge status="info" label="Multi-Source Story" icon={<Layers className="size-3" />} />
+          {isMultiSourceStory(story) ? (
+            <StatusBadge status="info" label="Multi-Source Story" icon={<Layers className="size-3" />} />
+          ) : null}
           {story.category && (
             <span className="rounded bg-brand-soft px-2.5 py-1 text-xs font-bold text-brand">
               {formatCategory(story.category)}
