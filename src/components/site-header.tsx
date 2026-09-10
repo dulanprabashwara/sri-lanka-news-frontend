@@ -3,7 +3,23 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search, Menu, X, User, ChevronDown, LogOut, Settings, Shield, Bookmark, Sparkles, Rss, BookOpen, Building2, LibraryBig, Globe } from "lucide-react";
+import {
+  Search,
+  Menu,
+  X,
+  User,
+  ChevronDown,
+  LogOut,
+  Settings,
+  Shield,
+  Bookmark,
+  Sparkles,
+  Rss,
+  BookOpen,
+  Building2,
+  LibraryBig,
+  Globe,
+} from "lucide-react";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -49,12 +65,10 @@ export function SiteHeader({
     setDisplayName(userDisplayName);
   }, [userDisplayName]);
 
-  // Listen to client-side auth state changes so UI immediately reflects sign-out
   // Listen to client-side auth state changes so UI immediately reflects sign-out or sign-in
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     const supabase = createBrowserSupabaseClient();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
     const checkAdmin = async (token?: string) => {
       if (!token) {
         setIsAdmin(false);
@@ -68,12 +82,13 @@ export function SiteHeader({
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_OUT" || !session) {
         setIsAuth(false);
         setIsAdmin(false);
         setDisplayName(undefined);
-      } else if (event === "SIGNED_IN" && session) {
       } else if (session) {
         setIsAuth(true);
         const userMeta = session.user?.user_metadata;
@@ -117,10 +132,16 @@ export function SiteHeader({
   // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
         setUserMenuOpen(false);
       }
-      if (myNewsMenuRef.current && !myNewsMenuRef.current.contains(event.target as Node)) {
+      if (
+        myNewsMenuRef.current &&
+        !myNewsMenuRef.current.contains(event.target as Node)
+      ) {
         setMyNewsMenuOpen(false);
       }
     }
@@ -196,11 +217,32 @@ export function SiteHeader({
     <header className="sticky top-0 z-40 w-full border-b border-border bg-surface/95 backdrop-blur-xs">
       <div className="hidden border-b border-border/70 bg-foreground text-slate-300 lg:block">
         <div className="mx-auto flex h-8 w-full max-w-7xl items-center justify-between px-8 text-[0.68rem] font-semibold tracking-wide">
-          <p className="flex items-center gap-2"><span className="size-1.5 rounded-full bg-blue-400" />Independent Sri Lankan news intelligence</p>
-          <nav aria-label="Utility navigation" className="flex items-center gap-5">
-            <Link href={withDisplayLanguage("/articles", displayLanguage)} className="hover:text-white">All reports</Link>
-            <Link href={withDisplayLanguage("/sources", displayLanguage)} className="hover:text-white">Publishers</Link>
-            <Link href={withDisplayLanguage("/guide", displayLanguage)} className="hover:text-white">How to use Ceylon News</Link>
+          <p className="flex items-center gap-2">
+            <span className="size-1.5 rounded-full bg-blue-400" />
+            Independent Sri Lankan news intelligence
+          </p>
+          <nav
+            aria-label="Utility navigation"
+            className="flex items-center gap-5"
+          >
+            <Link
+              href={withDisplayLanguage("/articles", displayLanguage)}
+              className="hover:text-white"
+            >
+              All reports
+            </Link>
+            <Link
+              href={withDisplayLanguage("/sources", displayLanguage)}
+              className="hover:text-white"
+            >
+              Publishers
+            </Link>
+            <Link
+              href={withDisplayLanguage("/guide", displayLanguage)}
+              className="hover:text-white"
+            >
+              How to use Ceylon News
+            </Link>
           </nav>
         </div>
       </div>
@@ -220,14 +262,26 @@ export function SiteHeader({
         </Link>
 
         {/* Desktop Primary Navigation (lg+ breakpoint to prevent wrapping on 768px/820px) */}
-        <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-1">
-          <Link href={withDisplayLanguage("/", displayLanguage)} className={navLinkClasses("/")}>
+        <nav
+          aria-label="Primary navigation"
+          className="hidden lg:flex items-center gap-1"
+        >
+          <Link
+            href={withDisplayLanguage("/", displayLanguage)}
+            className={navLinkClasses("/")}
+          >
             Latest news
           </Link>
-          <Link href={withDisplayLanguage("/stories", displayLanguage)} className={navLinkClasses("/stories")}>
+          <Link
+            href={withDisplayLanguage("/stories", displayLanguage)}
+            className={navLinkClasses("/stories")}
+          >
             Stories
           </Link>
-          <Link href={withDisplayLanguage("/trending", displayLanguage)} className={navLinkClasses("/trending")}>
+          <Link
+            href={withDisplayLanguage("/trending", displayLanguage)}
+            className={navLinkClasses("/trending")}
+          >
             Trending
           </Link>
           {/* Authenticated Desktop "My News" Grouped Dropdown */}
@@ -247,7 +301,9 @@ export function SiteHeader({
                 aria-label="My News navigation menu"
               >
                 <span>My News</span>
-                <ChevronDown className={`size-4 transition-transform ${myNewsMenuOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`size-4 transition-transform ${myNewsMenuOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {myNewsMenuOpen && (
@@ -286,7 +342,10 @@ export function SiteHeader({
           )}
 
           {isAdmin && (
-            <Link href={withDisplayLanguage("/admin", displayLanguage)} className={navLinkClasses("/admin")}>
+            <Link
+              href={withDisplayLanguage("/admin", displayLanguage)}
+              className={navLinkClasses("/admin")}
+            >
               Admin
             </Link>
           )}
@@ -342,10 +401,16 @@ export function SiteHeader({
                 aria-label="User account menu"
               >
                 <div className="grid size-5 place-items-center rounded-full bg-brand-soft text-brand font-bold text-[10px] shrink-0">
-                  {displayName ? displayName[0].toUpperCase() : <User className="size-3" />}
+                  {displayName ? (
+                    displayName[0].toUpperCase()
+                  ) : (
+                    <User className="size-3" />
+                  )}
                 </div>
                 <span>{displayName || "Account"}</span>
-                <ChevronDown className={`size-3.5 text-foreground-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`size-3.5 text-foreground-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {userMenuOpen && (
@@ -366,7 +431,10 @@ export function SiteHeader({
                     <span>Account Settings</span>
                   </Link>
                   <Link
-                    href={withDisplayLanguage("/account/notifications", displayLanguage)}
+                    href={withDisplayLanguage(
+                      "/account/notifications",
+                      displayLanguage,
+                    )}
                     className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-foreground hover:bg-surface-muted font-medium transition-colors"
                     role="menuitem"
                   >
@@ -374,7 +442,10 @@ export function SiteHeader({
                     <span>Notifications</span>
                   </Link>
                   <Link
-                    href={withDisplayLanguage("/account/privacy", displayLanguage)}
+                    href={withDisplayLanguage(
+                      "/account/privacy",
+                      displayLanguage,
+                    )}
                     className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-foreground hover:bg-surface-muted font-medium transition-colors"
                     role="menuitem"
                   >
@@ -449,7 +520,11 @@ export function SiteHeader({
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+            {mobileMenuOpen ? (
+              <X className="size-6" />
+            ) : (
+              <Menu className="size-6" />
+            )}
           </button>
         </div>
       </div>
@@ -477,7 +552,9 @@ export function SiteHeader({
                 <span className="w-8" aria-hidden="true">
                   <BrandLogo compact />
                 </span>
-                <span className="font-bold text-sm text-foreground">Ceylon News</span>
+                <span className="font-bold text-sm text-foreground">
+                  Ceylon News
+                </span>
               </div>
               <button
                 type="button"
@@ -494,31 +571,52 @@ export function SiteHeader({
               <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
                 Discovery
               </div>
-              <Link href={withDisplayLanguage("/", displayLanguage)} className={mobileNavLinkClasses("/")}>
+              <Link
+                href={withDisplayLanguage("/", displayLanguage)}
+                className={mobileNavLinkClasses("/")}
+              >
                 <Rss className="size-4" />
                 <span>Latest News</span>
               </Link>
-              <Link href={withDisplayLanguage("/stories", displayLanguage)} className={mobileNavLinkClasses("/stories")}>
+              <Link
+                href={withDisplayLanguage("/stories", displayLanguage)}
+                className={mobileNavLinkClasses("/stories")}
+              >
                 <Sparkles className="size-4" />
                 <span>Stories</span>
               </Link>
-              <Link href={withDisplayLanguage("/trending", displayLanguage)} className={mobileNavLinkClasses("/trending")}>
+              <Link
+                href={withDisplayLanguage("/trending", displayLanguage)}
+                className={mobileNavLinkClasses("/trending")}
+              >
                 <Rss className="size-4" />
                 <span>Trending</span>
               </Link>
-              <Link href={withDisplayLanguage("/search", displayLanguage)} className={mobileNavLinkClasses("/search")}>
+              <Link
+                href={withDisplayLanguage("/search", displayLanguage)}
+                className={mobileNavLinkClasses("/search")}
+              >
                 <Search className="size-4" />
                 <span>Search</span>
               </Link>
-              <Link href={withDisplayLanguage("/articles", displayLanguage)} className={mobileNavLinkClasses("/articles")}>
+              <Link
+                href={withDisplayLanguage("/articles", displayLanguage)}
+                className={mobileNavLinkClasses("/articles")}
+              >
                 <LibraryBig className="size-4" />
                 <span>All reports</span>
               </Link>
-              <Link href={withDisplayLanguage("/sources", displayLanguage)} className={mobileNavLinkClasses("/sources")}>
+              <Link
+                href={withDisplayLanguage("/sources", displayLanguage)}
+                className={mobileNavLinkClasses("/sources")}
+              >
                 <Building2 className="size-4" />
                 <span>Publishers</span>
               </Link>
-              <Link href={withDisplayLanguage("/guide", displayLanguage)} className={mobileNavLinkClasses("/guide")}>
+              <Link
+                href={withDisplayLanguage("/guide", displayLanguage)}
+                className={mobileNavLinkClasses("/guide")}
+              >
                 <BookOpen className="size-4" />
                 <span>How to use Ceylon News</span>
               </Link>
@@ -530,15 +628,24 @@ export function SiteHeader({
                 <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
                   My News
                 </div>
-                <Link href={withDisplayLanguage("/for-you", displayLanguage)} className={mobileNavLinkClasses("/for-you")}>
+                <Link
+                  href={withDisplayLanguage("/for-you", displayLanguage)}
+                  className={mobileNavLinkClasses("/for-you")}
+                >
                   <Sparkles className="size-4" />
                   <span>For You</span>
                 </Link>
-                <Link href={withDisplayLanguage("/bookmarks", displayLanguage)} className={mobileNavLinkClasses("/bookmarks")}>
+                <Link
+                  href={withDisplayLanguage("/bookmarks", displayLanguage)}
+                  className={mobileNavLinkClasses("/bookmarks")}
+                >
                   <Bookmark className="size-4" />
                   <span>Bookmarks</span>
                 </Link>
-                <Link href={withDisplayLanguage("/following", displayLanguage)} className={mobileNavLinkClasses("/following")}>
+                <Link
+                  href={withDisplayLanguage("/following", displayLanguage)}
+                  className={mobileNavLinkClasses("/following")}
+                >
                   <Rss className="size-4" />
                   <span>Following</span>
                 </Link>
@@ -552,27 +659,48 @@ export function SiteHeader({
               </div>
               {isAuth ? (
                 <>
-                  <Link href={withDisplayLanguage("/account", displayLanguage)} className={mobileNavLinkClasses("/account")}>
+                  <Link
+                    href={withDisplayLanguage("/account", displayLanguage)}
+                    className={mobileNavLinkClasses("/account")}
+                  >
                     <User className="size-4" />
                     <span>Account Overview</span>
                   </Link>
-                  <Link href={withDisplayLanguage("/account/notifications", displayLanguage)} className={mobileNavLinkClasses("/account/notifications")}>
+                  <Link
+                    href={withDisplayLanguage(
+                      "/account/notifications",
+                      displayLanguage,
+                    )}
+                    className={mobileNavLinkClasses("/account/notifications")}
+                  >
                     <Settings className="size-4" />
                     <span>Notification Preferences</span>
                   </Link>
-                  <Link href={withDisplayLanguage("/account/privacy", displayLanguage)} className={mobileNavLinkClasses("/account/privacy")}>
+                  <Link
+                    href={withDisplayLanguage(
+                      "/account/privacy",
+                      displayLanguage,
+                    )}
+                    className={mobileNavLinkClasses("/account/privacy")}
+                  >
                     <Shield className="size-4" />
                     <span>Privacy & Telemetry</span>
                   </Link>
                   {isAdmin && (
-                    <Link href={withDisplayLanguage("/admin", displayLanguage)} className={mobileNavLinkClasses("/admin")}>
+                    <Link
+                      href={withDisplayLanguage("/admin", displayLanguage)}
+                      className={mobileNavLinkClasses("/admin")}
+                    >
                       <Settings className="size-4 text-brand" />
                       <span className="text-brand font-bold">Admin Portal</span>
                     </Link>
                   )}
                 </>
               ) : (
-                <Link href={withDisplayLanguage("/auth/login", displayLanguage)} className={mobileNavLinkClasses("/auth/login")}>
+                <Link
+                  href={withDisplayLanguage("/auth/login", displayLanguage)}
+                  className={mobileNavLinkClasses("/auth/login")}
+                >
                   <User className="size-4" />
                   <span>Sign In</span>
                 </Link>
@@ -589,7 +717,9 @@ export function SiteHeader({
                   type="button"
                   onClick={() => selectLanguage("original")}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    !displayLanguage ? "bg-brand text-white border-brand" : "bg-surface border-border text-foreground"
+                    !displayLanguage
+                      ? "bg-brand text-white border-brand"
+                      : "bg-surface border-border text-foreground"
                   }`}
                 >
                   Original
@@ -598,7 +728,9 @@ export function SiteHeader({
                   type="button"
                   onClick={() => selectLanguage("en")}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    displayLanguage === "en" ? "bg-brand text-white border-brand" : "bg-surface border-border text-foreground"
+                    displayLanguage === "en"
+                      ? "bg-brand text-white border-brand"
+                      : "bg-surface border-border text-foreground"
                   }`}
                 >
                   English
@@ -607,7 +739,9 @@ export function SiteHeader({
                   type="button"
                   onClick={() => selectLanguage("si")}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    displayLanguage === "si" ? "bg-brand text-white border-brand" : "bg-surface border-border text-foreground"
+                    displayLanguage === "si"
+                      ? "bg-brand text-white border-brand"
+                      : "bg-surface border-border text-foreground"
                   }`}
                 >
                   සිංහල
@@ -616,7 +750,9 @@ export function SiteHeader({
                   type="button"
                   onClick={() => selectLanguage("ta")}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    displayLanguage === "ta" ? "bg-brand text-white border-brand" : "bg-surface border-border text-foreground"
+                    displayLanguage === "ta"
+                      ? "bg-brand text-white border-brand"
+                      : "bg-surface border-border text-foreground"
                   }`}
                 >
                   தமிழ்
