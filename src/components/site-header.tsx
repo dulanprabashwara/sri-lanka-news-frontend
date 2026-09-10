@@ -9,6 +9,7 @@ import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/clie
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import NotificationBadge from "./notifications/NotificationBadge";
 import { BrandLogo } from "./brand-logo";
+import { getAdminMe } from "@/lib/api/admin";
 
 export function SiteHeader({
   authenticated = false,
@@ -48,17 +49,38 @@ export function SiteHeader({
     setDisplayName(userDisplayName);
   }, [userDisplayName]);
 
-  // Listen to client-side auth state changes so UI immediately reflects sign-out
+  // Listen to client-side auth state changes so UI immediately reflects sign-out or sign-in
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     const supabase = createBrowserSupabaseClient();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const checkAdmin = async (token?: string) => {
+      if (!token) {
+        setIsAdmin(false);
+        return;
+      }
+      try {
+        const res = await getAdminMe(token);
+        setIsAdmin(res.admin === true);
+      } catch {
+        setIsAdmin(false);
+      }
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_OUT" || !session) {
         setIsAuth(false);
         setIsAdmin(false);
         setDisplayName(undefined);
-      } else if (event === "SIGNED_IN" && session) {
+      } else if (session) {
         setIsAuth(true);
+        const userMeta = session.user?.user_metadata;
+        const userEmail = session.user?.email;
+        if (userMeta?.full_name || userMeta?.name) {
+          setDisplayName(userMeta.full_name || userMeta.name);
+        } else if (userEmail) {
+          setDisplayName(userEmail.split("@")[0]);
+        }
+        await checkAdmin(session.access_token);
       }
     });
     return () => subscription.unsubscribe();
@@ -206,7 +228,6 @@ export function SiteHeader({
             Trending
           </Link>
           {/* Authenticated Desktop "My News" Grouped Dropdown */}
-          {authenticated && (
           {isAuth && (
             <div className="relative" ref={myNewsMenuRef}>
               <button
@@ -261,7 +282,6 @@ export function SiteHeader({
             </div>
           )}
 
-          {admin && (
           {isAdmin && (
             <Link href={withDisplayLanguage("/admin", displayLanguage)} className={navLinkClasses("/admin")}>
               Admin
@@ -304,11 +324,9 @@ export function SiteHeader({
           </div>
 
           {/* Notifications (Authenticated Only) */}
-          {authenticated && <NotificationBadge displayLanguage={displayLanguage} />}
           {isAuth && <NotificationBadge displayLanguage={displayLanguage} />}
 
           {/* Auth Button or User Menu Dropdown */}
-          {authenticated ? (
           {isAuth ? (
             <div className="relative" ref={userMenuRef}>
               <button
@@ -321,10 +339,8 @@ export function SiteHeader({
                 aria-label="User account menu"
               >
                 <div className="grid size-5 place-items-center rounded-full bg-brand-soft text-brand font-bold text-[10px] shrink-0">
-                  {userDisplayName ? userDisplayName[0].toUpperCase() : <User className="size-3" />}
                   {displayName ? displayName[0].toUpperCase() : <User className="size-3" />}
                 </div>
-                <span>{userDisplayName || "Account"}</span>
                 <span>{displayName || "Account"}</span>
                 <ChevronDown className={`size-3.5 text-foreground-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
               </button>
@@ -362,7 +378,6 @@ export function SiteHeader({
                     <Shield className="size-4 text-foreground-secondary" />
                     <span>Privacy & Telemetry</span>
                   </Link>
-                  {admin && (
                   {isAdmin && (
                     <Link
                       href={withDisplayLanguage("/admin", displayLanguage)}
@@ -373,9 +388,6 @@ export function SiteHeader({
                       <span>Admin Portal</span>
                     </Link>
                   )}
-                  <Link
-                    href="/auth/logout"
-                    className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-danger hover:bg-danger-soft/60 font-medium transition-colors border-t border-border mt-1"
                   <button
                     type="button"
                     onClick={handleSignOut}
@@ -384,7 +396,6 @@ export function SiteHeader({
                   >
                     <LogOut className="size-4 text-danger" />
                     <span>Sign Out</span>
-                  </Link>
                   </button>
                 </div>
               )}
@@ -425,7 +436,6 @@ export function SiteHeader({
           </select>
 
           {/* Notifications (Authenticated Only) */}
-          {authenticated && <NotificationBadge displayLanguage={displayLanguage} />}
           {isAuth && <NotificationBadge displayLanguage={displayLanguage} />}
 
           {/* Mobile Drawer Trigger */}
@@ -512,7 +522,6 @@ export function SiteHeader({
             </div>
 
             {/* My News Links (if authenticated) */}
-            {authenticated && (
             {isAuth && (
               <div className="space-y-1 border-t border-border pt-4">
                 <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
@@ -538,7 +547,6 @@ export function SiteHeader({
               <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
                 Account & Settings
               </div>
-              {authenticated ? (
               {isAuth ? (
                 <>
                   <Link href={withDisplayLanguage("/account", displayLanguage)} className={mobileNavLinkClasses("/account")}>
@@ -553,7 +561,6 @@ export function SiteHeader({
                     <Shield className="size-4" />
                     <span>Privacy & Telemetry</span>
                   </Link>
-                  {admin && (
                   {isAdmin && (
                     <Link href={withDisplayLanguage("/admin", displayLanguage)} className={mobileNavLinkClasses("/admin")}>
                       <Settings className="size-4 text-brand" />
@@ -615,12 +622,8 @@ export function SiteHeader({
             </div>
 
             {/* Auth Action */}
-            {authenticated && (
             {isAuth && (
               <div className="border-t border-border pt-4">
-                <Link
-                  href="/auth/logout"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-danger-soft px-4 py-2 text-sm font-bold text-danger hover:bg-red-200 transition-colors"
                 <button
                   type="button"
                   onClick={handleSignOut}
@@ -628,7 +631,6 @@ export function SiteHeader({
                 >
                   <LogOut className="size-4" />
                   <span>Sign Out</span>
-                </Link>
                 </button>
               </div>
             )}
