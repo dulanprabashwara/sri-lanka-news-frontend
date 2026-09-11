@@ -8,7 +8,7 @@ import { ErrorState } from "@/components/error-state";
 import { PublisherImage } from "@/components/ui/publisher-image";
 import { isPublisherPlaceholder } from "@/components/ui/publisher-image-utils";
 import { getApiErrorMessage } from "@/lib/api/errors";
-import { getArticles, getTrendingStories, getSources } from "@/lib/api/news";
+import { getArticles, getTrendingArticles, getTrendingStories, getSources } from "@/lib/api/news";
 import { formatCategory, formatLanguage, formatPublishedAt } from "@/lib/format";
 import { articleContent, articleContentLanguage, readDisplayLanguage, storyContentLanguage, storyTitle, translationLabel, withDisplayLanguage } from "@/lib/language";
 import { ARTICLE_CATEGORIES, type Article, type ArticleCategory, type DisplayLanguage, type PagedResponse, type SourceSummary, type TrendingStory } from "@/types/api";
@@ -19,7 +19,11 @@ interface HomePageProps {
   searchParams: Promise<{ category?: string | string[]; lang?: string | string[] }>;
 }
 
-type FeaturedItem = { kind: "story"; data: TrendingStory } | { kind: "article"; data: Article };
+export type HeroArticle = {
+  article: Article;
+  label: "Most trending" | "Trending now" | "Latest report";
+};
+
 type SourcePulse = { name: string; slug: string; baseUrl: string; count: number };
 
 function readCategory(value: string | string[] | undefined) {
@@ -27,13 +31,33 @@ function readCategory(value: string | string[] | undefined) {
   return ARTICLE_CATEGORIES.includes(candidate as ArticleCategory) ? (candidate as ArticleCategory) : undefined;
 }
 
-function featuredItems(stories: TrendingStory[], articles: Article[]) {
-  const items: FeaturedItem[] = stories.slice(0, 3).map((data) => ({ kind: "story", data }));
-  for (const data of articles) {
-    if (items.length === 3) break;
-    items.push({ kind: "article", data });
+export function buildHeroArticles(
+  trendingArticles: Article[],
+  latestArticles: Article[],
+): HeroArticle[] {
+  const hero: HeroArticle[] = [];
+  const seenIds = new Set<string>();
+
+  // 1. Start with valid Trending Articles in backend-ranked order up to 3
+  for (const article of trendingArticles) {
+    if (hero.length === 3) break;
+    if (article?.id && !seenIds.has(article.id)) {
+      seenIds.add(article.id);
+      const label = hero.length === 0 ? "Most trending" : "Trending now";
+      hero.push({ article, label });
+    }
   }
-  return items;
+
+  // 2. If fewer than 3, fill remaining positions with Latest Articles (publishedAt DESC)
+  for (const article of latestArticles) {
+    if (hero.length === 3) break;
+    if (article?.id && !seenIds.has(article.id)) {
+      seenIds.add(article.id);
+      hero.push({ article, label: "Latest report" });
+    }
+  }
+
+  return hero;
 }
 
 function sourcePulse(articles: Article[]): SourcePulse[] {
@@ -49,23 +73,33 @@ export default async function Home({ searchParams }: HomePageProps) {
   const params = await searchParams;
   const category = readCategory(params.category);
   const displayLanguage = readDisplayLanguage(params.lang);
-  const [trendingResult, articlesResult, sourcesResult] = await Promise.allSettled([
+  const [trendingArticlesResult, trendingStoriesResult, articlesResult, sourcesResult] = await Promise.allSettled([
+    getTrendingArticles({ limit: 6, category, displayLanguage }),
     getTrendingStories({ limit: 5, category, displayLanguage }),
     getArticles({ page: 0, size: 20, category, sort: "publishedAt,desc", displayLanguage }),
     getSources(),
   ]);
-  const stories = trendingResult.status === "fulfilled" ? trendingResult.value : [];
+  const trendingArticles = trendingArticlesResult.status === "fulfilled" ? trendingArticlesResult.value : [];
+  const stories = trendingStoriesResult.status === "fulfilled" ? trendingStoriesResult.value : [];
   const articles: PagedResponse<Article> | null = articlesResult.status === "fulfilled" ? articlesResult.value : null;
+  const latestArticles = articles?.content ?? [];
 
-  if (!articles) {
+  const featured = buildHeroArticles(trendingArticles, latestArticles);
+
+  if (featured.length === 0 && !articles) {
     const message = articlesResult.status === "rejected" ? getApiErrorMessage(articlesResult.reason) : "Failed to load news articles.";
-    return <div className="space-y-6"><Briefing category={category} displayLanguage={displayLanguage} /><CategoryBar category={category} displayLanguage={displayLanguage} /><ErrorState title="Unable to load the newsroom" message={message} /></div>;
+    return (
+      <div className="space-y-6">
+        <Briefing category={category} displayLanguage={displayLanguage} />
+        <CategoryBar category={category} displayLanguage={displayLanguage} />
+        <ErrorState title="Unable to load the newsroom" message={message} />
+      </div>
+    );
   }
 
-  const featured = featuredItems(stories, articles.content);
-  const featuredArticleIds = new Set(featured.filter((item) => item.kind === "article").map((item) => item.data.id));
-  const reports = articles.content.filter((article) => !featuredArticleIds.has(article.id)).slice(0, 7);
-  const pulse = sourcePulse(articles.content);
+  const featuredArticleIds = new Set(featured.map((item) => item.article.id));
+  const reports = latestArticles.filter((article) => !featuredArticleIds.has(article.id)).slice(0, 7);
+  const pulse = sourcePulse(latestArticles);
   const ALL_ACTIVE_SOURCES: SourceSummary[] = [
     { name: "Lankadeepa", slug: "lankadeepa", baseUrl: "https://www.lankadeepa.lk" },
     { name: "Divaina", slug: "divaina", baseUrl: "https://divaina.lk" },
@@ -75,7 +109,7 @@ export default async function Home({ searchParams }: HomePageProps) {
     { name: "Daily Mirror", slug: "daily-mirror", baseUrl: "https://www.dailymirror.lk" },
     { name: "News First", slug: "newsfirst", baseUrl: "https://www.newsfirst.lk" },
   ];
-  const fetchedSources = sourcesResult.status === "fulfilled" && sourcesResult.value.length > 0 ? sourcesResult.value : articles.content.map(a => a.source);
+  const fetchedSources = sourcesResult.status === "fulfilled" && sourcesResult.value.length > 0 ? sourcesResult.value : latestArticles.map(a => a.source);
   const fetchedMap = new Map(fetchedSources.map(p => [p.slug, p]));
   const publishers = ALL_ACTIVE_SOURCES.map(def => fetchedMap.get(def.slug) || def);
 
@@ -89,7 +123,9 @@ export default async function Home({ searchParams }: HomePageProps) {
           <div className="grid gap-7 lg:grid-cols-[minmax(0,1.75fr)_minmax(18rem,0.8fr)] lg:gap-8">
             <Lead item={featured[0]} displayLanguage={displayLanguage} />
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1 lg:border-l lg:border-border lg:pl-8">
-              {featured.slice(1).map((item, index) => <Supporting key={`${item.kind}-${item.data.id}`} item={item} number={index + 2} displayLanguage={displayLanguage} />)}
+              {featured.slice(1).map((item, index) => (
+                <Supporting key={item.article.id} item={item} number={index + 2} displayLanguage={displayLanguage} />
+              ))}
             </div>
           </div>
         </section>
@@ -109,7 +145,7 @@ export default async function Home({ searchParams }: HomePageProps) {
           <Link href={withDisplayLanguage(`/articles${category ? `?category=${category}` : ""}`, displayLanguage)} className="my-5 flex items-center justify-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-hover">View all articles <ArrowRight className="size-4" /></Link>
         </section>
         <aside className="space-y-6" aria-label="Newsroom intelligence">
-          <Headlines articles={articles.content.slice(0, 8)} displayLanguage={displayLanguage} />
+          <Headlines articles={latestArticles.slice(0, 8)} displayLanguage={displayLanguage} />
           <NewsroomPulse sources={pulse} displayLanguage={displayLanguage} />
           <ExplorePanel displayLanguage={displayLanguage} />
         </aside>
@@ -143,15 +179,25 @@ function EmptyDesk() {
   return <div className="rounded-xl border border-border bg-surface px-6 py-12 text-center shadow-xs"><Newspaper className="mx-auto size-7 text-brand" /><h2 className="mt-3 font-serif text-2xl font-semibold">The desk is quiet</h2><p className="mt-2 text-sm text-foreground-secondary">New publisher reports will appear here as they arrive.</p></div>;
 }
 
-function itemView(item: FeaturedItem, lang?: DisplayLanguage) {
-  if (item.kind === "story") {
-    const story = item.data;
-    const image = story.representativeMedia?.type === "IMAGE" && !isPublisherPlaceholder(story.representativeMedia.url) ? story.representativeMedia : undefined;
-    return { title: storyTitle(story), summary: null, language: storyContentLanguage(story), href: withDisplayLanguage(`/story/${encodeURIComponent(story.id)}`, lang), category: story.category, date: story.lastPublishedAt, image, label: "Developing story", attribution: `${story.sourceCount} publishers`, detail: `${story.articleCount} reports`, notice: fallbackNotice(lang, story.localizedContent) };
-  }
-  const article = item.data, content = articleContent(article);
-  const image = article.leadMedia?.type === "IMAGE" && !isPublisherPlaceholder(article.leadMedia.url) ? article.leadMedia : undefined;
-  return { title: content.title, summary: content.summary, language: articleContentLanguage(article), href: withDisplayLanguage(`/article/${encodeURIComponent(article.id)}`, lang), category: article.category, date: article.publishedAt, image, label: "Latest report", attribution: article.source.name, detail: null, notice: fallbackNotice(lang, article.localizedContent) };
+function articleHeroView(item: HeroArticle, lang?: DisplayLanguage) {
+  const { article, label } = item;
+  const content = articleContent(article);
+  const image =
+    article.leadMedia?.type === "IMAGE" && !isPublisherPlaceholder(article.leadMedia.url)
+      ? article.leadMedia
+      : undefined;
+  return {
+    title: content.title,
+    summary: content.summary,
+    language: articleContentLanguage(article),
+    href: withDisplayLanguage(`/article/${encodeURIComponent(article.id)}`, lang),
+    category: article.category,
+    date: article.publishedAt,
+    image,
+    label,
+    attribution: article.source.name,
+    notice: fallbackNotice(lang, article.localizedContent),
+  };
 }
 
 function fallbackNotice(requested: DisplayLanguage | undefined, localized: { fallback: boolean; resolvedLanguage: DisplayLanguage } | undefined) {
@@ -163,22 +209,22 @@ function LanguageNotice({ notice }: { notice: string | null }) {
   return notice ? <p className="mt-3 inline-flex rounded-md bg-warning-soft px-2 py-1 text-[0.7rem] font-semibold text-warning">{notice}</p> : null;
 }
 
-function Meta({ view }: { view: ReturnType<typeof itemView> }) {
+function Meta({ view }: { view: ReturnType<typeof articleHeroView> }) {
   return <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] font-bold uppercase tracking-[0.13em] text-foreground-muted"><span className="text-brand">{view.label}</span><span>/</span><span>{view.category ? formatCategory(view.category) : "News"}</span><span>/</span><time dateTime={view.date}>{formatPublishedAt(view.date)}</time></div>;
 }
 
-function Lead({ item, displayLanguage }: { item: FeaturedItem; displayLanguage?: DisplayLanguage }) {
-  const view = itemView(item, displayLanguage);
+function Lead({ item, displayLanguage }: { item: HeroArticle; displayLanguage?: DisplayLanguage }) {
+  const view = articleHeroView(item, displayLanguage);
   return (
     <article className="group min-w-0">
       {view.image && <Link href={view.href} className="block overflow-hidden rounded-lg"><PublisherImage src={view.image.url} alt={view.image.altText || view.title} aspectRatio="16/9" priority className="border-0" imageClassName="duration-500 group-hover:scale-[1.025]" /></Link>}
-      <div className={view.image ? "pt-5" : "border-t-4 border-brand pt-5"}><Meta view={item.kind === "story" ? { ...view, label: "Most trending" } : view} /><Link href={view.href}><h2 lang={view.language} className="mt-3 max-w-4xl font-serif text-3xl font-semibold leading-[1.12] tracking-tight transition-colors group-hover:text-brand sm:text-4xl lg:text-[2.85rem]">{view.title}</h2></Link>{view.summary && <p lang={view.language} className="mt-4 max-w-3xl text-[0.95rem] leading-7 text-foreground-secondary">{view.summary}</p>}<LanguageNotice notice={view.notice} /><div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-xs font-semibold text-foreground-muted"><span>{view.attribution}</span>{view.detail && <span>{view.detail}</span>}<Link href={view.href} className="inline-flex items-center gap-1.5 font-bold text-brand hover:underline sm:ml-auto">{item.kind === "story" ? "Open full coverage" : "Read publisher report"}<ArrowRight className="size-3.5" /></Link></div></div>
+      <div className={view.image ? "pt-5" : "border-t-4 border-brand pt-5"}><Meta view={view} /><Link href={view.href}><h2 lang={view.language} className="mt-3 max-w-4xl font-serif text-3xl font-semibold leading-[1.12] tracking-tight transition-colors group-hover:text-brand sm:text-4xl lg:text-[2.85rem]">{view.title}</h2></Link>{view.summary && <p lang={view.language} className="mt-4 max-w-3xl text-[0.95rem] leading-7 text-foreground-secondary">{view.summary}</p>}<LanguageNotice notice={view.notice} /><div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-xs font-semibold text-foreground-muted"><span>{view.attribution}</span><Link href={view.href} className="inline-flex items-center gap-1.5 font-bold text-brand hover:underline sm:ml-auto">Read publisher report<ArrowRight className="size-3.5" /></Link></div></div>
     </article>
   );
 }
 
-function Supporting({ item, number, displayLanguage }: { item: FeaturedItem; number: number; displayLanguage?: DisplayLanguage }) {
-  const view = itemView(item, displayLanguage);
+function Supporting({ item, number, displayLanguage }: { item: HeroArticle; number: number; displayLanguage?: DisplayLanguage }) {
+  const view = articleHeroView(item, displayLanguage);
   return <article className="group grid min-w-0 grid-cols-[2.25rem_minmax(0,1fr)] gap-3 border-t border-border pt-5 first:border-t-0 first:pt-0"><span className="font-serif text-2xl font-semibold text-border-strong">{String(number).padStart(2, "0")}</span><div>{view.image && <Link href={view.href} className="mb-4 block overflow-hidden rounded-md"><PublisherImage src={view.image.url} alt={view.image.altText || view.title} aspectRatio="16/9" className="border-0" /></Link>}<Meta view={view} /><Link href={view.href}><h3 lang={view.language} className="mt-2 font-serif text-xl font-semibold leading-snug transition-colors group-hover:text-brand sm:text-2xl lg:text-xl">{view.title}</h3></Link><LanguageNotice notice={view.notice} /><p className="mt-3 text-xs font-semibold text-foreground-muted">{view.attribution}</p></div></article>;
 }
 
