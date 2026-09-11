@@ -80,4 +80,56 @@ test("followingList renders sources and topics, uses R1 EmptyState, handles unfo
   );
   assert.match(html, /Source 1/);
   assert.match(html, /Unfollow/);
+  assert.match(html, /No new articles/);
+});
+
+test("followingList renders restrained publisher new article counts and excludes topics", () => {
+  const follows: Follow[] = [
+    {
+      followId: "f-zero",
+      targetType: "SOURCE",
+      createdAt: "2026-09-02T12:00:00Z",
+      topic: null,
+      source: { slug: "source-a", name: "Publisher A", baseUrl: "https://a.com" },
+      newArticleCount: 0,
+    },
+    {
+      followId: "f-one",
+      targetType: "SOURCE",
+      createdAt: "2026-09-02T12:00:00Z",
+      topic: null,
+      source: { slug: "source-b", name: "Publisher B", baseUrl: "https://b.com" },
+      newArticleCount: 1,
+    },
+    {
+      followId: "f-multi",
+      targetType: "SOURCE",
+      createdAt: "2026-09-02T12:00:00Z",
+      topic: null,
+      source: { slug: "source-c", name: "Publisher C", baseUrl: "https://c.com" },
+      newArticleCount: 7,
+    },
+    {
+      followId: "f-topic",
+      targetType: "TOPIC",
+      createdAt: "2026-09-02T12:00:00Z",
+      topic: { label: "Economy" },
+      source: null,
+      newArticleCount: null,
+    },
+  ];
+
+  const html = renderToStaticMarkup(
+    createElement(PureFollowingList, { initial: follows, displayLanguage: "en", onUnsave: async () => {} })
+  );
+
+  // Publisher count formatting
+  assert.match(html, /No new articles/);
+  assert.match(html, /1 new article/);
+  assert.match(html, /7 new articles/);
+  assert.match(html, /Mark caught up/);
+
+  // Verify Topic card does not have article count badge
+  assert.match(html, /Economy/);
+  assert.equal(html.includes("new-articles-f-topic"), false);
 });

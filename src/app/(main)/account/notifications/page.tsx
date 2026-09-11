@@ -145,20 +145,6 @@ export default function NotificationPreferencesPage() {
             description="Select which news events trigger notifications."
           />
           <div className="space-y-4 pt-2">
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
-                checked={prefs.sourceFollowNotificationsEnabled}
-                onChange={(e) => setPrefs({ ...prefs, sourceFollowNotificationsEnabled: e.target.checked })}
-              />
-              <div>
-                <div className="text-sm font-semibold text-foreground">Followed Sources</div>
-                <div className="text-xs text-foreground-secondary">
-                  Notify when news publishers you follow release new reports.
-                </div>
-              </div>
-            </label>
 
             <label className="flex items-start gap-3 cursor-pointer">
               <input

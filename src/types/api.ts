@@ -227,11 +227,20 @@ export interface Follow {
   createdAt: string;
   source: SourceSummary | null;
   topic: { label: string } | null;
+  newArticleCount?: number | null;
 }
 
 export interface FollowBatchStatus {
-  sources: Array<{ slug: string; followed: boolean; followedAt: string | null }>;
-  topics: Array<{ topic: string; followed: boolean; followedAt: string | null }>;
+  sources: Array<{
+    slug: string;
+    followed: boolean;
+    followedAt: string | null;
+  }>;
+  topics: Array<{
+    topic: string;
+    followed: boolean;
+    followedAt: string | null;
+  }>;
 }
 
 export type RecommendationReasonType =
@@ -320,10 +329,23 @@ export interface AdminSource {
 
 export interface AdminOverview {
   sources: { total: number; enabled: number; paused: number; failing: number };
-  articles: Record<"total" | "pending" | "processing" | "completed" | "retrying" | "failed", number>;
+  articles: Record<
+    "total" | "pending" | "processing" | "completed" | "retrying" | "failed",
+    number
+  >;
   stories: { total: number; createdRecently: number; recentActive: number };
-  ingestion: { totalRuns: number; completedRuns: number; failedRuns: number; currentlyRunning: number; failingSources: number };
-  users: { totalProfiles: number; totalBookmarks: number; totalFollows: number };
+  ingestion: {
+    totalRuns: number;
+    completedRuns: number;
+    failedRuns: number;
+    currentlyRunning: number;
+    failingSources: number;
+  };
+  users: {
+    totalProfiles: number;
+    totalBookmarks: number;
+    totalFollows: number;
+  };
   recentFailures: AdminArticle[];
 }
 
@@ -348,7 +370,13 @@ export interface AdminAuditEvent {
   createdAt: string;
 }
 
-export type IngestionHealthStatus = "HEALTHY" | "WARNING" | "STALE" | "FAILING" | "PAUSED" | "NEVER_RUN";
+export type IngestionHealthStatus =
+  | "HEALTHY"
+  | "WARNING"
+  | "STALE"
+  | "FAILING"
+  | "PAUSED"
+  | "NEVER_RUN";
 
 export interface AdminIngestionSource {
   sourceId: string;

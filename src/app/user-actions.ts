@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAuthenticatedAccessToken } from "@/lib/auth";
-import { createBookmark, createSourceFollow, createTopicFollow, deleteBookmark, deleteSourceFollow, deleteTopicFollow, updatePreferences } from "@/lib/api/user";
+import { createBookmark, createSourceFollow, createTopicFollow, deleteBookmark, deleteSourceFollow, deleteTopicFollow, markSourceSeen, updatePreferences } from "@/lib/api/user";
 import type { ArticleCategory, BookmarkTargetType, FollowTargetType, PreferredDisplayLanguage } from "@/types/api";
 
 async function token() {
@@ -45,5 +45,16 @@ export async function setFollowAction(input: { type: FollowTargetType; target: s
     return { ok: true as const, followed: !input.followed };
   } catch (error) {
     return { ok: false as const, message: error instanceof Error ? error.message : "Unable to update follow." };
+  }
+}
+
+export async function markSourceSeenAction(slug: string) {
+  try {
+    const accessToken = await token();
+    await markSourceSeen(accessToken, slug);
+    revalidatePath("/following");
+    return { ok: true as const };
+  } catch (error) {
+    return { ok: false as const, message: error instanceof Error ? error.message : "Unable to mark source as seen." };
   }
 }

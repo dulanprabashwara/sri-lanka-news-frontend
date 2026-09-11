@@ -1,6 +1,6 @@
 "use client";
 
-import { setFollowAction } from "@/app/user-actions";
+import { markSourceSeenAction, setFollowAction } from "@/app/user-actions";
 import type { DisplayLanguage, Follow } from "@/types/api";
 import { PureFollowingList } from "./following-list-ui";
 
@@ -9,5 +9,8 @@ export function FollowingList(props: { initial: Follow[]; displayLanguage?: Disp
     await setFollowAction({ type: follow.targetType, target, followed: true });
     return;
   };
-  return <PureFollowingList {...props} onUnsave={handleUnsave} />;
+  const handleMarkSeen = async (slug: string) => {
+    await markSourceSeenAction(slug);
+  };
+  return <PureFollowingList {...props} onUnsave={handleUnsave} onMarkSeen={handleMarkSeen} />;
 }
