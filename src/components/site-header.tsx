@@ -47,9 +47,11 @@ export function SiteHeader({
     displayName: string | undefined;
   } | null>(null);
 
-  const isAuth = clientAuth !== null ? clientAuth.isAuth : Boolean(authenticated);
+  const isAuth =
+    clientAuth !== null ? clientAuth.isAuth : Boolean(authenticated);
   const isAdmin = clientAuth !== null ? clientAuth.isAdmin : Boolean(admin);
-  const displayName = clientAuth !== null ? clientAuth.displayName : userDisplayName;
+  const displayName =
+    clientAuth !== null ? clientAuth.displayName : userDisplayName;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -67,7 +69,11 @@ export function SiteHeader({
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_OUT" || !session) {
-        setClientAuth({ isAuth: false, isAdmin: false, displayName: undefined });
+        setClientAuth({
+          isAuth: false,
+          isAdmin: false,
+          displayName: undefined,
+        });
       } else if (session) {
         let name = userDisplayName;
         const userMeta = session.user?.user_metadata;
@@ -87,7 +93,11 @@ export function SiteHeader({
             adminStatus = false;
           }
         }
-        setClientAuth({ isAuth: true, isAdmin: adminStatus, displayName: name });
+        setClientAuth({
+          isAuth: true,
+          isAdmin: adminStatus,
+          displayName: name,
+        });
       }
     });
     return () => subscription.unsubscribe();
@@ -105,7 +115,9 @@ export function SiteHeader({
     } catch (err) {
       console.error("Sign out error", err);
     }
-    window.location.assign(withDisplayLanguage("/auth/logout", displayLanguage));
+    window.location.assign(
+      withDisplayLanguage("/auth/logout", displayLanguage),
+    );
   };
 
   // Close menus on route change

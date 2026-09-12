@@ -45,14 +45,14 @@ export default async function AdminUsersPage() {
       <PageHeader
         eyebrow="Insights & Security"
         title="User & Personalization Metrics"
-        description="Aggregate statistics for user profile registrations, saved bookmarks, and followed news sources (strictly non-identifying)."
+        description="Aggregate statistics for provisioned reader profiles, saved bookmarks, and followed news sources (strictly non-identifying)."
       />
 
       <section aria-labelledby="user-metrics-heading" className="space-y-4">
         <SectionHeader
           id="user-metrics-heading"
           title="Platform User Aggregates"
-          description="Total account profile counts and personalization activity across all readers."
+          description="Provisioned reader profile counts and personalization activity across active users."
         />
 
         <div className="grid gap-4 sm:grid-cols-3">
@@ -62,7 +62,7 @@ export default async function AdminUsersPage() {
                 <Users className="h-4 w-4" />
               </div>
               <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Total Profiles
+                Reader Profiles
               </dt>
             </div>
             <dd className="mt-4 text-3xl font-black text-slate-900">
