@@ -414,3 +414,28 @@ export interface AdminRunHistoryResponse {
   safeErrorCode: string | null;
   safeErrorMessage: string | null;
 }
+
+export interface AdminAiModelProvider {
+  id: string;
+  name: string;
+  pipeline: "ENRICHMENT" | "TRANSLATION" | "EMBEDDING" | "GROUNDED_QA" | string;
+  role: "PRIMARY" | "FALLBACK" | string;
+  model: string;
+  configured: boolean;
+  details: string;
+}
+
+export interface AdminAiOverviewResponse {
+  enrichment: {
+    completed: number;
+    failed: number;
+    retrying: number;
+  };
+  provider: {
+    configured: boolean;
+    providerName: string;
+    modelName: string;
+    embeddingModelName: string;
+  };
+  providers?: AdminAiModelProvider[];
+}

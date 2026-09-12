@@ -1,6 +1,9 @@
 import { requestJson, requestNoContent } from "@/lib/api/client";
 import type {
-  AdminArticle, AdminOverview, AdminSource, ProcessingStatus,
+  AdminArticle,
+  AdminOverview,
+  AdminSource,
+  ProcessingStatus,
 } from "@/types/api";
 
 function record(value: unknown, name: string): Record<string, unknown> {
@@ -16,12 +19,17 @@ function string(value: unknown, name: string) {
 }
 
 function number(value: unknown, name: string) {
-  if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`Invalid ${name}.`);
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new Error(`Invalid ${name}.`);
   return value;
 }
 
 function status(value: unknown): ProcessingStatus {
-  if (["PENDING", "PROCESSING", "COMPLETED", "FAILED", "RETRYING"].includes(String(value))) {
+  if (
+    ["PENDING", "PROCESSING", "COMPLETED", "FAILED", "RETRYING"].includes(
+      String(value),
+    )
+  ) {
     return value as ProcessingStatus;
   }
   throw new Error("Invalid processing status.");
@@ -33,7 +41,10 @@ export function parseAdminArticle(value: unknown): AdminArticle {
   return {
     articleId: string(item.articleId, "Article ID"),
     title: string(item.title, "Article title"),
-    source: { name: string(source.name, "Source name"), slug: string(source.slug, "Source slug") },
+    source: {
+      name: string(source.name, "Source name"),
+      slug: string(source.slug, "Source slug"),
+    },
     processingStatus: status(item.processingStatus),
     discoveredAt: string(item.discoveredAt, "discovered date"),
     publishedAt: string(item.publishedAt, "published date"),
@@ -41,7 +52,8 @@ export function parseAdminArticle(value: unknown): AdminArticle {
 }
 
 function parseAdminArticles(value: unknown): AdminArticle[] {
-  if (!Array.isArray(value)) throw new Error("Invalid admin Articles response.");
+  if (!Array.isArray(value))
+    throw new Error("Invalid admin Articles response.");
   return value.map(parseAdminArticle);
 }
 
@@ -53,7 +65,12 @@ export function parseAdminOverview(value: unknown): AdminOverview {
   const ingestion = record(overview.ingestion, "Ingestion counts");
   const users = record(overview.users, "User counts");
   return {
-    sources: { total: number(sources.total, "total"), enabled: number(sources.enabled, "enabled"), paused: number(sources.paused, "paused"), failing: number(sources.failing, "failing") },
+    sources: {
+      total: number(sources.total, "total"),
+      enabled: number(sources.enabled, "enabled"),
+      paused: number(sources.paused, "paused"),
+      failing: number(sources.failing, "failing"),
+    },
     articles: {
       total: number(articles.total, "Article total"),
       pending: number(articles.pending, "pending total"),
@@ -62,9 +79,23 @@ export function parseAdminOverview(value: unknown): AdminOverview {
       retrying: number(articles.retrying, "retrying total"),
       failed: number(articles.failed, "failed total"),
     },
-    stories: { total: number(stories.total, "total"), createdRecently: number(stories.createdRecently, "createdRecently"), recentActive: number(stories.recentActive, "recentActive") },
-    ingestion: { totalRuns: number(ingestion.totalRuns, "totalRuns"), completedRuns: number(ingestion.completedRuns, "completedRuns"), failedRuns: number(ingestion.failedRuns, "failedRuns"), currentlyRunning: number(ingestion.currentlyRunning, "currentlyRunning"), failingSources: number(ingestion.failingSources, "failingSources") },
-    users: { totalProfiles: number(users.totalProfiles, "totalProfiles"), totalBookmarks: number(users.totalBookmarks, "totalBookmarks"), totalFollows: number(users.totalFollows, "totalFollows") },
+    stories: {
+      total: number(stories.total, "total"),
+      createdRecently: number(stories.createdRecently, "createdRecently"),
+      recentActive: number(stories.recentActive, "recentActive"),
+    },
+    ingestion: {
+      totalRuns: number(ingestion.totalRuns, "totalRuns"),
+      completedRuns: number(ingestion.completedRuns, "completedRuns"),
+      failedRuns: number(ingestion.failedRuns, "failedRuns"),
+      currentlyRunning: number(ingestion.currentlyRunning, "currentlyRunning"),
+      failingSources: number(ingestion.failingSources, "failingSources"),
+    },
+    users: {
+      totalProfiles: number(users.totalProfiles, "totalProfiles"),
+      totalBookmarks: number(users.totalBookmarks, "totalBookmarks"),
+      totalFollows: number(users.totalFollows, "totalFollows"),
+    },
     recentFailures: parseAdminArticles(overview.recentFailures),
   };
 }
@@ -75,12 +106,17 @@ function parseAdminSources(value: unknown): AdminSource[] {
     const item = record(entry, "admin Source");
     const language = string(item.defaultLanguage, "Source language");
     const ingestionType = string(item.ingestionType, "ingestion type");
-    if (!["en", "si", "ta"].includes(language) || !["RSS", "HTML"].includes(ingestionType)) {
+    if (
+      !["en", "si", "ta"].includes(language) ||
+      !["RSS", "HTML"].includes(ingestionType)
+    ) {
       throw new Error("Invalid admin Source metadata.");
     }
     return {
-      id: string(item.id, "Source ID"), name: string(item.name, "Source name"),
-      slug: string(item.slug, "Source slug"), baseUrl: string(item.baseUrl, "Source URL"),
+      id: string(item.id, "Source ID"),
+      name: string(item.name, "Source name"),
+      slug: string(item.slug, "Source slug"),
+      baseUrl: string(item.baseUrl, "Source URL"),
       defaultLanguage: language as AdminSource["defaultLanguage"],
       ingestionType: ingestionType as AdminSource["ingestionType"],
       enabled: item.enabled === true,
@@ -92,105 +128,217 @@ function parseAdminSources(value: unknown): AdminSource[] {
 }
 
 export function getAdminMe(accessToken: string): Promise<{ admin: true }> {
-  return requestJson("/api/v1/admin/me", (value) => {
-    if (record(value, "admin identity").admin !== true) throw new Error("Invalid admin identity.");
-    return { admin: true };
-  }, { accessToken });
+  return requestJson(
+    "/api/v1/admin/me",
+    (value) => {
+      if (record(value, "admin identity").admin !== true)
+        throw new Error("Invalid admin identity.");
+      return { admin: true };
+    },
+    { accessToken },
+  );
 }
 
 export function getAdminOverview(accessToken: string) {
-  return requestJson("/api/v1/admin/overview", parseAdminOverview, { accessToken });
+  return requestJson("/api/v1/admin/overview", parseAdminOverview, {
+    accessToken,
+  });
 }
 
 export function getAdminSources(accessToken: string) {
-  return requestJson("/api/v1/admin/sources", parseAdminSources, { accessToken });
+  return requestJson("/api/v1/admin/sources", parseAdminSources, {
+    accessToken,
+  });
 }
 
 export function getAdminArticles(accessToken: string, limit = 25) {
-  return requestJson(`/api/v1/admin/articles?limit=${limit}`, parseAdminArticles, { accessToken });
+  return requestJson(
+    `/api/v1/admin/articles?limit=${limit}`,
+    parseAdminArticles,
+    { accessToken },
+  );
 }
 
 export function retryAdminArticle(articleId: string, accessToken: string) {
-  return requestJson(`/api/v1/admin/articles/${encodeURIComponent(articleId)}/retry`,
-    parseAdminArticle, { accessToken, method: "POST" });
+  return requestJson(
+    `/api/v1/admin/articles/${encodeURIComponent(articleId)}/retry`,
+    parseAdminArticle,
+    { accessToken, method: "POST" },
+  );
 }
 
 export function getAdminIngestionSources(accessToken: string) {
-  return requestJson("/api/v1/admin/ingestion/sources", (value) => {
-    if (!Array.isArray(value)) throw new Error("Invalid response");
-    return value;
-  }, { accessToken });
+  return requestJson(
+    "/api/v1/admin/ingestion/sources",
+    (value) => {
+      if (!Array.isArray(value)) throw new Error("Invalid response");
+      return value;
+    },
+    { accessToken },
+  );
 }
 
 export function updateAdminIngestionSettings(
   sourceSlug: string,
-  settings: { enabled: boolean; intervalMinutes: number; jitterSeconds: number },
-  accessToken: string
+  settings: {
+    enabled: boolean;
+    intervalMinutes: number;
+    jitterSeconds: number;
+  },
+  accessToken: string,
 ) {
   return requestNoContent(
     `/api/v1/admin/ingestion/sources/${encodeURIComponent(sourceSlug)}/settings`,
-    { accessToken, method: "PUT", body: settings }
+    { accessToken, method: "PUT", body: settings },
   );
 }
 
-export function triggerManualIngestionRun(sourceSlug: string, accessToken: string) {
+export function triggerManualIngestionRun(
+  sourceSlug: string,
+  accessToken: string,
+) {
   return requestNoContent(
     `/api/v1/admin/ingestion/sources/${encodeURIComponent(sourceSlug)}/trigger`,
-    { accessToken, method: "POST" }
+    { accessToken, method: "POST" },
   );
 }
 
-export function getAdminIngestionRuns(accessToken: string, page = 0, size = 50) {
-  return requestJson(`/api/v1/admin/ingestion/runs?page=${page}&size=${size}`, (value) => {
-    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminRunHistoryResponse>;
-  }, { accessToken });
+export function getAdminIngestionRuns(
+  accessToken: string,
+  page = 0,
+  size = 50,
+) {
+  return requestJson(
+    `/api/v1/admin/ingestion/runs?page=${page}&size=${size}`,
+    (value) => {
+      return value as import("@/types/api").PagedResponse<
+        import("@/types/api").AdminRunHistoryResponse
+      >;
+    },
+    { accessToken },
+  );
 }
 
-export function getAdminProcessingArticles(accessToken: string, page = 0, size = 20) {
-  return requestJson(`/api/v1/admin/processing?page=${page}&size=${size}`, (value) => {
-    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminArticle>;
-  }, { accessToken });
+export function getAdminProcessingArticles(
+  accessToken: string,
+  page = 0,
+  size = 20,
+) {
+  return requestJson(
+    `/api/v1/admin/processing?page=${page}&size=${size}`,
+    (value) => {
+      return value as import("@/types/api").PagedResponse<
+        import("@/types/api").AdminArticle
+      >;
+    },
+    { accessToken },
+  );
 }
 
 export function getAdminStories(accessToken: string, page = 0, size = 20) {
-  return requestJson(`/api/v1/admin/stories?page=${page}&size=${size}`, (value) => {
-    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminStory>;
-  }, { accessToken });
+  return requestJson(
+    `/api/v1/admin/stories?page=${page}&size=${size}`,
+    (value) => {
+      return value as import("@/types/api").PagedResponse<
+        import("@/types/api").AdminStory
+      >;
+    },
+    { accessToken },
+  );
 }
 
 export function getAdminAiOverview(accessToken: string) {
-  return requestJson(`/api/v1/admin/ai`, (value) => value as Record<string, unknown>, { accessToken });
+  return requestJson(
+    `/api/v1/admin/ai`,
+    (value) => value as import("@/types/api").AdminAiOverviewResponse,
+    { accessToken },
+  );
 }
 
 export function getAdminUsersSummary(accessToken: string) {
-  return requestJson(`/api/v1/admin/users/summary`, (value) => value as { totalProfiles: number; totalBookmarks: number; totalFollows: number }, { accessToken });
+  return requestJson(
+    `/api/v1/admin/users/summary`,
+    (value) =>
+      value as {
+        totalProfiles: number;
+        totalBookmarks: number;
+        totalFollows: number;
+      },
+    { accessToken },
+  );
 }
 
 export function getAdminAuditEvents(accessToken: string, page = 0, size = 50) {
-  return requestJson(`/api/v1/admin/audit?page=${page}&size=${size}`, (value) => {
-    return value as import("@/types/api").PagedResponse<import("@/types/api").AdminAuditEvent>;
-  }, { accessToken });
+  return requestJson(
+    `/api/v1/admin/audit?page=${page}&size=${size}`,
+    (value) => {
+      return value as import("@/types/api").PagedResponse<
+        import("@/types/api").AdminAuditEvent
+      >;
+    },
+    { accessToken },
+  );
 }
 
 export function getAdminAnalyticsOverview(accessToken: string, days: number) {
-  return requestJson(`/api/v1/admin/analytics/overview?days=${days}`, (value) => value as Record<string, unknown>, { accessToken });
+  return requestJson(
+    `/api/v1/admin/analytics/overview?days=${days}`,
+    (value) => value as Record<string, unknown>,
+    { accessToken },
+  );
 }
 
-export function getAdminAnalyticsTimeseries(accessToken: string, days: number, metrics: string[]) {
-  const metricsParam = metrics.map(m => `metrics=${encodeURIComponent(m)}`).join('&');
-  return requestJson(`/api/v1/admin/analytics/timeseries?days=${days}&${metricsParam}`, (value) => value as Record<string, unknown>[], { accessToken });
+export function getAdminAnalyticsTimeseries(
+  accessToken: string,
+  days: number,
+  metrics: string[],
+) {
+  const metricsParam = metrics
+    .map((m) => `metrics=${encodeURIComponent(m)}`)
+    .join("&");
+  return requestJson(
+    `/api/v1/admin/analytics/timeseries?days=${days}&${metricsParam}`,
+    (value) => value as Record<string, unknown>[],
+    { accessToken },
+  );
 }
 
-export function getAdminAnalyticsContent(accessToken: string, days: number, type: 'ARTICLE' | 'STORY' | 'SOURCE' | 'CATEGORY') {
-  return requestJson(`/api/v1/admin/analytics/content?days=${days}&type=${encodeURIComponent(type)}`, (value) => value as Record<string, unknown>[], { accessToken });
+export function getAdminAnalyticsContent(
+  accessToken: string,
+  days: number,
+  type: "ARTICLE" | "STORY" | "SOURCE" | "CATEGORY",
+) {
+  return requestJson(
+    `/api/v1/admin/analytics/content?days=${days}&type=${encodeURIComponent(type)}`,
+    (value) => value as Record<string, unknown>[],
+    { accessToken },
+  );
 }
 
-export function getAdminAnalyticsSections(accessToken: string, days: number, types: string[]) {
-  const typesParam = types.map(t => `types=${encodeURIComponent(t)}`).join('&');
-  return requestJson(`/api/v1/admin/analytics/sections?days=${days}&${typesParam}`, (value) => value as Record<string, unknown>, { accessToken });
+export function getAdminAnalyticsSections(
+  accessToken: string,
+  days: number,
+  types: string[],
+) {
+  const typesParam = types
+    .map((t) => `types=${encodeURIComponent(t)}`)
+    .join("&");
+  return requestJson(
+    `/api/v1/admin/analytics/sections?days=${days}&${typesParam}`,
+    (value) => value as Record<string, unknown>,
+    { accessToken },
+  );
 }
 
-export function getAdminAnalyticsDimensions(accessToken: string, days: number, metric: string, dimensionType: string) {
-  return requestJson(`/api/v1/admin/analytics/dimensions?days=${days}&metric=${encodeURIComponent(metric)}&dimensionType=${encodeURIComponent(dimensionType)}`, (value) => value as Record<string, unknown>, { accessToken });
+export function getAdminAnalyticsDimensions(
+  accessToken: string,
+  days: number,
+  metric: string,
+  dimensionType: string,
+) {
+  return requestJson(
+    `/api/v1/admin/analytics/dimensions?days=${days}&metric=${encodeURIComponent(metric)}&dimensionType=${encodeURIComponent(dimensionType)}`,
+    (value) => value as Record<string, unknown>,
+    { accessToken },
+  );
 }
-
