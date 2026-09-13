@@ -94,7 +94,9 @@ export function Toaster() {
                   <Info className="size-4" />
                 </div>
               )}
-              <span className="font-medium text-foreground truncate">{item.message}</span>
+              <span className="font-medium text-foreground truncate">
+                {item.message}
+              </span>
             </div>
             <button
               type="button"

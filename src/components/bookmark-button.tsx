@@ -41,9 +41,17 @@ export function BookmarkButton({
       if (result.ok) {
         setBookmarked(result.bookmarked);
         if (result.bookmarked) {
-          toast.success(type === "ARTICLE" ? "Article saved to bookmarks" : "Story saved to bookmarks");
+          toast.success(
+            type === "ARTICLE"
+              ? "Article saved to bookmarks"
+              : "Story saved to bookmarks",
+          );
         } else {
-          toast.info(type === "ARTICLE" ? "Article removed from bookmarks" : "Story removed from bookmarks");
+          toast.info(
+            type === "ARTICLE"
+              ? "Article removed from bookmarks"
+              : "Story removed from bookmarks",
+          );
         }
       } else {
         toast.error(result.message || "Unable to update bookmark");
@@ -73,7 +81,15 @@ export function BookmarkButton({
       ) : (
         <Bookmark className="size-4 shrink-0" />
       )}
-      <span>{pending ? (bookmarked ? "Removing…" : "Saving…") : bookmarked ? "Saved" : "Save"}</span>
+      <span>
+        {pending
+          ? bookmarked
+            ? "Removing…"
+            : "Saving…"
+          : bookmarked
+            ? "Saved"
+            : "Save"}
+      </span>
     </button>
   );
 }
