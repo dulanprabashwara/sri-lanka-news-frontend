@@ -6,13 +6,13 @@ export function PublisherStrip({ sources }: { sources: SourceSummary[] }) {
   return (
     <section
       aria-label="Publishers in the news index"
-      className="publisher-strip overflow-hidden rounded-xl border border-slate-700 bg-foreground py-6 text-white shadow-sm sm:py-8"
+      className="publisher-strip overflow-hidden py-6 sm:py-8"
     >
       <div className="mb-5 px-6">
         <p className="text-xs font-bold uppercase tracking-widest text-blue-300">
           Across Sri Lanka’s newsrooms
         </p>
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-xs text-foreground-muted">
           Select a publisher above to explore its reporting.
         </p>
       </div>
