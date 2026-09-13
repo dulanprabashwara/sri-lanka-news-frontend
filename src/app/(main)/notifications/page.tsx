@@ -36,8 +36,6 @@ export default function NotificationsPage() {
   const [actionError, setActionError] = useState<string | null>(null);
 
   const { data, mutate, isLoading, error } = useSWR(
-    "notifications-page-0",
-    () => getNotifications(0, 50),
     ["notifications-page-0", displayLanguage],
     () => getNotifications(0, 50, displayLanguage),
   );
@@ -231,17 +229,14 @@ function NotificationItem({
                 onClick={isUnread ? onRead : undefined}
                 className="hover:text-brand transition-colors"
               >
-                {notification.title}
                 {displayTitle}
               </Link>
             ) : (
-              notification.title
               displayTitle
             )}
           </h4>
 
           <p className="text-sm text-foreground-secondary line-clamp-2 leading-relaxed">
-            {notification.message}
             {displayMessage}
           </p>
 
