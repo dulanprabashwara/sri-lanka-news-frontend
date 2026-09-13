@@ -69,7 +69,7 @@ export function Toaster() {
     <div
       aria-live="polite"
       aria-atomic="false"
-      className="fixed bottom-6 right-6 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0"
+      className="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2.5 max-w-sm sm:max-w-md w-full pointer-events-none px-4"
     >
       {toasts.map((item) => {
         const isSuccess = item.type === "success";
@@ -78,7 +78,7 @@ export function Toaster() {
           <div
             key={item.id}
             role="status"
-            className="pointer-events-auto flex items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-lg shadow-black/5 text-sm text-foreground transition-all duration-200"
+            className="pointer-events-auto flex items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-lg shadow-black/10 text-sm text-foreground transition-all duration-200 animate-in fade-in slide-in-from-top-3 w-full"
           >
             <div className="flex items-center gap-2.5 min-w-0">
               {isSuccess ? (
