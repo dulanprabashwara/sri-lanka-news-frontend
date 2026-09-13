@@ -38,6 +38,8 @@ export default function NotificationsPage() {
   const { data, mutate, isLoading, error } = useSWR(
     "notifications-page-0",
     () => getNotifications(0, 50),
+    ["notifications-page-0", displayLanguage],
+    () => getNotifications(0, 50, displayLanguage),
   );
 
   const notifications = data?.content || [];
@@ -194,6 +196,9 @@ function NotificationItem({
     ? "View Article"
     : "View Story";
 
+  const displayTitle = notification.localizedContent?.title || notification.title;
+  const displayMessage = notification.localizedContent?.summary || notification.message;
+
   return (
     <div
       className={`p-5 sm:p-6 transition-colors ${isUnread ? "bg-brand-soft/30" : "bg-surface"}`}
@@ -205,6 +210,14 @@ function NotificationItem({
               <Bell className="w-3.5 h-3.5" />
               {notification.sourceName || "News Intelligence"}
             </span>
+            {notification.localizedContent?.translated && (
+              <>
+                <span className="text-border">&bull;</span>
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-brand/10 text-brand">
+                  Translated
+                </span>
+              </>
+            )}
             <span className="text-border">&bull;</span>
             <span className="text-xs text-foreground-secondary">
               {new Date(notification.createdAt).toLocaleDateString()}
@@ -219,14 +232,17 @@ function NotificationItem({
                 className="hover:text-brand transition-colors"
               >
                 {notification.title}
+                {displayTitle}
               </Link>
             ) : (
               notification.title
+              displayTitle
             )}
           </h4>
 
           <p className="text-sm text-foreground-secondary line-clamp-2 leading-relaxed">
             {notification.message}
+            {displayMessage}
           </p>
 
           <div className="flex items-center gap-4 pt-2">

@@ -1,5 +1,6 @@
 import { requestJson, requestNoContent } from "./client";
 import { createClient } from "@/lib/supabase/client";
+import { DisplayLanguage, LocalizedContent } from "@/types/api";
 
 async function getAccessToken(): Promise<string | undefined> {
   const supabase = createClient();
@@ -23,6 +24,7 @@ export interface Notification {
   linkPath: string;
   createdAt: string;
   readAt: string | null;
+  localizedContent?: LocalizedContent;
 }
 
 export interface NotificationPage {
@@ -54,13 +56,22 @@ export interface NotificationPreference {
 export async function getNotifications(
   page = 0,
   size = 20,
+  displayLanguage?: DisplayLanguage,
 ): Promise<NotificationPage> {
   const accessToken = await getAccessToken();
   if (!accessToken) {
     return { content: [], totalPages: 0, totalElements: 0, size, number: page };
   }
+  const params = new URLSearchParams({
+    page: String(page),
+    size: String(size),
+  });
+  if (displayLanguage) {
+    params.set("displayLanguage", displayLanguage);
+  }
   return requestJson(
     `/api/v1/me/notifications?page=${page}&size=${size}`,
+    `/api/v1/me/notifications?${params.toString()}`,
     (payload: unknown) => payload as NotificationPage,
     { accessToken },
   );
