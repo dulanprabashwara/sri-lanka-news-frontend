@@ -69,7 +69,7 @@ export function Toaster() {
     <div
       aria-live="polite"
       aria-atomic="false"
-      className="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2.5 max-w-sm sm:max-w-md w-full pointer-events-none px-4"
+      className="fixed top-5 right-5 z-50 flex flex-col items-end gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0"
     >
       {toasts.map((item) => {
         const isSuccess = item.type === "success";
