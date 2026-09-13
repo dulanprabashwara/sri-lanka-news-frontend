@@ -70,7 +70,6 @@ export async function getNotifications(
     params.set("displayLanguage", displayLanguage);
   }
   return requestJson(
-    `/api/v1/me/notifications?page=${page}&size=${size}`,
     `/api/v1/me/notifications?${params.toString()}`,
     (payload: unknown) => payload as NotificationPage,
     { accessToken },
