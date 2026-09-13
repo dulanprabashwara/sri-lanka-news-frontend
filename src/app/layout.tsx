@@ -7,6 +7,7 @@ import { getAdminMe } from "@/lib/api/admin";
 import { getPreferences } from "@/lib/api/user";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
 import { MainContentWrapper } from "@/components/ui/main-content-wrapper";
+import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -70,6 +71,7 @@ export default async function RootLayout({
           <MainContentWrapper>{children}</MainContentWrapper>
         </main>
         <SiteFooter />
+        <Toaster />
         <Suspense fallback={null}>
           <AnalyticsTracker />
         </Suspense>

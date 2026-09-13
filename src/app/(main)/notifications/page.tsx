@@ -194,8 +194,10 @@ function NotificationItem({
     ? "View Article"
     : "View Story";
 
-  const displayTitle = notification.localizedContent?.title || notification.title;
-  const displayMessage = notification.localizedContent?.summary || notification.message;
+  const displayTitle =
+    notification.localizedContent?.title || notification.title;
+  const displayMessage =
+    notification.localizedContent?.summary || notification.message;
 
   return (
     <div
