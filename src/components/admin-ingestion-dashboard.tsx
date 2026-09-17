@@ -62,6 +62,21 @@ export function AdminIngestionDashboard({
         description="Manage publisher scraping schedules, trigger manual queued ingestion runs, and monitor run execution history."
       />
 
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-border bg-surface p-4 shadow-xs">
+          <dt className="text-xs font-bold uppercase tracking-wider text-foreground-muted">Publishers</dt>
+          <dd className="mt-1 font-serif text-2xl font-semibold text-foreground">{sources.length}</dd>
+        </div>
+        <div className="rounded-xl border border-success-border bg-success-soft/50 p-4 shadow-xs">
+          <dt className="text-xs font-bold uppercase tracking-wider text-success">Scheduled</dt>
+          <dd className="mt-1 font-serif text-2xl font-semibold text-foreground">{sources.filter((source) => source.enabled).length}</dd>
+        </div>
+        <div className="col-span-2 rounded-xl border border-border bg-surface-muted p-4 shadow-xs sm:col-span-1">
+          <dt className="text-xs font-bold uppercase tracking-wider text-foreground-muted">Paused</dt>
+          <dd className="mt-1 font-serif text-2xl font-semibold text-foreground">{sources.filter((source) => !source.enabled).length}</dd>
+        </div>
+      </dl>
+
       <section aria-labelledby="sources-heading" className="space-y-4">
         <SectionHeader
           id="sources-heading"
@@ -69,7 +84,52 @@ export function AdminIngestionDashboard({
           description="Configured scraping targets, including active schedules and retired ingestion sources."
         />
 
-        <Surface variant="elevated" className="overflow-hidden p-0">
+        <div aria-label="Publisher source cards" className="grid gap-3 lg:hidden">
+          {sources.map((source) => (
+            <article
+              key={source.sourceSlug}
+              className={`rounded-xl border bg-surface p-4 shadow-xs ${source.enabled ? "border-border" : "border-border bg-surface-muted/70"}`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-foreground break-words">{source.displayName}</h3>
+                  <p className="mt-0.5 break-all font-mono text-[0.68rem] text-foreground-muted">{source.sourceSlug}</p>
+                </div>
+                {getHealthBadge(source.health)}
+              </div>
+              <dl className="mt-4 grid grid-cols-2 gap-3 border-y border-border py-3 text-xs">
+                <div>
+                  <dt className="font-bold uppercase tracking-wide text-foreground-muted">Schedule</dt>
+                  <dd className="mt-1 font-semibold text-foreground">{source.enabled ? `Every ${source.intervalMinutes}m` : "Disabled"}</dd>
+                </div>
+                <div>
+                  <dt className="font-bold uppercase tracking-wide text-foreground-muted">Last success</dt>
+                  <dd className="mt-1 text-foreground-secondary">{source.lastSuccessAt ? formatPublishedAt(source.lastSuccessAt) : "Never"}</dd>
+                </div>
+              </dl>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditingSource(source)}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border-strong bg-surface px-3 text-xs font-bold text-foreground hover:border-brand hover:text-brand"
+                >
+                  <Settings className="size-4" aria-hidden="true" /> Configure
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTrigger(source.sourceSlug)}
+                  disabled={!source.enabled || triggeringSlug === source.sourceSlug}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-brand px-3 text-xs font-bold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+                >
+                  <Play className="size-4" aria-hidden="true" />
+                  {!source.enabled ? "Disabled" : triggeringSlug === source.sourceSlug ? "Triggering..." : "Run Now"}
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <Surface variant="elevated" className="hidden overflow-hidden p-0 lg:block">
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-600">
@@ -111,7 +171,7 @@ export function AdminIngestionDashboard({
                         <button
                           type="button"
                           onClick={() => setEditingSource(source)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                          className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                         >
                           <Settings className="h-3.5 w-3.5" />
                           Configure
@@ -120,7 +180,7 @@ export function AdminIngestionDashboard({
                           type="button"
                           onClick={() => handleTrigger(source.sourceSlug)}
                           disabled={!source.enabled || triggeringSlug === source.sourceSlug}
-                          className="inline-flex items-center gap-1 rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-50"
+                          className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-brand px-3 py-2 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-50"
                         >
                           <Play className="h-3.5 w-3.5" />
                           {!source.enabled
@@ -146,7 +206,32 @@ export function AdminIngestionDashboard({
           description="Log of recent scheduled and manual ingestion executions with article discovery metrics."
         />
 
-        <Surface variant="elevated" className="overflow-hidden p-0">
+        <div className="grid gap-3 lg:hidden">
+          {runs.content.length === 0 ? (
+            <p className="rounded-xl border border-border bg-surface p-5 text-sm text-foreground-secondary">No ingestion runs have been recorded yet.</p>
+          ) : runs.content.map((run) => (
+            <article key={run.runId} className="rounded-xl border border-border bg-surface p-4 shadow-xs">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-foreground break-words">{run.sourceSlug}</h3>
+                  <p className="mt-1 break-all font-mono text-[0.68rem] text-foreground-muted">{run.runId}</p>
+                </div>
+                <StatusBadge status={run.status === "COMPLETED" ? "success" : run.status === "FAILED" ? "danger" : "warning"} label={run.status} />
+              </div>
+              <p className="mt-3 text-xs text-foreground-secondary">{run.triggerType} · {run.startedAt ? formatPublishedAt(run.startedAt) : "Pending"}</p>
+              <dl className="mt-3 grid grid-cols-4 gap-1 rounded-lg bg-surface-muted p-3 text-center">
+                {[
+                  ["Found", run.articlesDiscovered], ["Sent", run.articlesSubmitted],
+                  ["OK", run.articlesSucceeded], ["Failed", run.articlesFailed],
+                ].map(([label, value]) => (
+                  <div key={String(label)}><dt className="text-[0.62rem] font-bold uppercase text-foreground-muted">{label}</dt><dd className="mt-1 font-bold text-foreground">{value ?? 0}</dd></div>
+                ))}
+              </dl>
+            </article>
+          ))}
+        </div>
+
+        <Surface variant="elevated" className="hidden overflow-hidden p-0 lg:block">
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-600">
@@ -193,8 +278,8 @@ export function AdminIngestionDashboard({
       </section>
 
       {editingSource && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`Configure ${editingSource.displayName}`}>
+          <div className="max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:rounded-2xl sm:p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="text-base font-bold text-slate-900">
                 Configure {editingSource.displayName}
@@ -202,7 +287,7 @@ export function AdminIngestionDashboard({
               <button
                 type="button"
                 onClick={() => setEditingSource(null)}
-                className="text-slate-400 hover:text-slate-600"
+                className="inline-flex size-11 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -278,13 +363,13 @@ export function AdminIngestionDashboard({
                 <button
                   type="button"
                   onClick={() => setEditingSource(null)}
-                  className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  className="min-h-11 rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-1 rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand-hover"
+                  className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand-hover"
                 >
                   <Check className="h-4 w-4" />
                   Save Changes

@@ -68,8 +68,8 @@ export function AccountLayout({
   ];
 
   return (
-    <div className="w-full px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <div className="grid items-start gap-7 lg:grid-cols-[22rem_minmax(0,1fr)] lg:gap-10">
+    <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+      <div className="grid items-start gap-6 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[22rem_minmax(0,1fr)] xl:gap-10">
         <aside className="w-full overflow-hidden rounded-xl border border-border bg-surface shadow-sm lg:sticky lg:top-[7rem]">
           <div className="relative overflow-hidden bg-foreground px-5 py-5 text-white">
             <div className="absolute -right-8 -top-8 size-28 rounded-full bg-brand/25" aria-hidden="true" />
@@ -117,14 +117,14 @@ export function AccountLayout({
 
             <div className="border-t border-border pt-3">
               <p className="px-2 pb-2 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-foreground-muted">My reading</p>
-              <div className="grid grid-cols-3 gap-1 lg:grid-cols-1">
+              <div className="grid gap-1 sm:grid-cols-3 lg:grid-cols-1">
                 {readingLinks.map((item) => {
                   const Icon = item.icon;
                   return (
                     <Link
                       key={item.href}
                       href={withDisplayLanguage(item.href, displayLanguage)}
-                      className="flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-foreground-secondary transition-colors hover:bg-surface-muted hover:text-brand lg:justify-start"
+                      className="flex min-h-11 items-center justify-start gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-foreground-secondary transition-colors hover:bg-surface-muted hover:text-brand sm:justify-center lg:justify-start"
                     >
                       <Icon className="size-3.5" aria-hidden="true" />
                       {item.label}

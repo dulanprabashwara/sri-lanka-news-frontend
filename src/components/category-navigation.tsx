@@ -26,18 +26,18 @@ export function CategoryNavigation({
   displayLanguage,
 }: CategoryNavigationProps) {
   const getCategoryLinkClasses = (isActive: boolean) =>
-    `inline-flex items-center rounded-lg px-3.5 py-2 text-xs font-bold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer ${
+    `inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-2 text-xs font-bold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer ${
       isActive
-        ? "bg-brand text-white shadow-xs"
-        : "bg-surface border border-transparent text-foreground-secondary hover:border-border hover:text-brand hover:bg-surface-muted"
+        ? "border-brand bg-brand text-white shadow-xs"
+        : "border-border bg-surface text-foreground-secondary hover:border-brand hover:text-brand hover:bg-brand-soft/30"
     }`;
 
   return (
     <nav
       aria-label={label}
-      className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0 scrollbar-none"
+      className="-mx-1 px-1"
     >
-      <ul className="flex min-w-max items-center gap-2">
+      <ul className="flex flex-wrap items-center gap-2">
         <li>
           <Link
             href={withDisplayLanguage(basePath, displayLanguage)}

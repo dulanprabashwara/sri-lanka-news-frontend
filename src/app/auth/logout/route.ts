@@ -1,15 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
-import { safeNextPath } from "@/lib/safe-redirect";
-import { createClient } from "@/lib/supabase/server";
+import type { NextRequest } from "next/server";
+import { createLogoutRedirectResponse } from "@/lib/logout-response";
 import { getSupabaseConfig, isSupabaseConfigured } from "@/lib/supabase/config";
 
 async function handleLogout(request: NextRequest) {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  const next = safeNextPath(request.nextUrl.searchParams.get("next"), "/");
-  return NextResponse.redirect(new URL(next, request.url), 303);
-  const response = NextResponse.redirect(new URL(next, request.url), 303);
+  const response = createLogoutRedirectResponse(
+    request.nextUrl.searchParams.get("next"),
+  );
 
   if (isSupabaseConfigured()) {
     try {

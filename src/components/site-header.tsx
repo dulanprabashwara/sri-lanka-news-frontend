@@ -15,9 +15,6 @@ import {
   Bookmark,
   Sparkles,
   Rss,
-  BookOpen,
-  Building2,
-  LibraryBig,
   Globe,
 } from "lucide-react";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
@@ -26,6 +23,10 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import NotificationBadge from "./notifications/NotificationBadge";
 import { BrandLogo } from "./brand-logo";
 import { getAdminMe } from "@/lib/api/admin";
+import {
+  MobileNavigationDrawer,
+  reduceMobileMenuState,
+} from "./mobile-navigation";
 
 export function SiteHeader({
   authenticated = false,
@@ -191,13 +192,6 @@ export function SiteHeader({
         : "text-foreground-secondary hover:bg-surface-muted hover:text-foreground"
     }`;
 
-  const mobileNavLinkClasses = (href: string) =>
-    `flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
-      isActive(href)
-        ? "bg-brand-soft/40 text-brand font-bold"
-        : "text-foreground-secondary hover:bg-surface-muted hover:text-foreground"
-    }`;
-
   const handleMyNewsKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
       e.preventDefault();
@@ -252,8 +246,8 @@ export function SiteHeader({
           className="group flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand shrink-0"
           aria-label="Ceylon News home"
         >
-          <span className="w-8 sm:hidden" aria-hidden="true">
-            <BrandLogo compact priority />
+          <span className="w-24 sm:hidden">
+            <BrandLogo priority />
           </span>
           <span className="hidden w-[7.25rem] sm:block">
             <BrandLogo priority />
@@ -484,40 +478,19 @@ export function SiteHeader({
         </div>
 
         {/* Mobile Header Bar Controls (< lg) */}
-        <div className="flex lg:hidden items-center gap-2">
-          {/* Quick Search */}
-          <Link
-            href={withDisplayLanguage("/search", displayLanguage)}
-            className="p-2 rounded-lg text-foreground-secondary hover:text-foreground hover:bg-surface-muted"
-            aria-label="Search"
-          >
-            <Search className="size-5" />
-          </Link>
-
-          {/* Quick Language Select */}
-          <select
-            id="mobile-header-language"
-            aria-label="Display language"
-            value={displayLanguage ?? "original"}
-            onChange={(e) => selectLanguage(e.target.value)}
-            className="rounded-lg border border-border-strong bg-surface px-2 py-1 text-xs font-bold text-foreground"
-          >
-            <option value="original">Original</option>
-            <option value="en">EN</option>
-            <option value="si">SI</option>
-            <option value="ta">TA</option>
-          </select>
-
-          {/* Notifications (Authenticated Only) */}
-          {isAuth && <NotificationBadge displayLanguage={displayLanguage} />}
-
+        <div className="flex lg:hidden items-center">
           {/* Mobile Drawer Trigger */}
           <button
             type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-foreground hover:bg-surface-muted cursor-pointer"
+            onClick={() =>
+              setMobileMenuOpen((current) =>
+                reduceMobileMenuState(current, "toggle"),
+              )
+            }
+            className="inline-flex size-11 items-center justify-center rounded-lg text-foreground hover:bg-surface-muted cursor-pointer"
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? (
               <X className="size-6" />
@@ -528,253 +501,17 @@ export function SiteHeader({
         </div>
       </div>
 
-      {/* Mobile Sliding Drawer Overlay & Sheet */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-hidden="true"
-          />
+      <MobileNavigationDrawer
+        open={mobileMenuOpen}
+        authenticated={isAuth}
+        admin={isAdmin}
+        pathname={pathname}
+        displayLanguage={displayLanguage}
+        onClose={() => setMobileMenuOpen(false)}
+        onSignOut={handleSignOut}
+        onLanguageChange={selectLanguage}
+      />
 
-          {/* Drawer Panel */}
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
-            className="relative ml-auto flex h-full w-full max-w-xs flex-col bg-surface p-6 shadow-2xl z-50 overflow-y-auto space-y-6"
-          >
-            {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b border-border pb-4">
-              <div className="flex items-center gap-2.5">
-                <span className="w-8" aria-hidden="true">
-                  <BrandLogo compact />
-                </span>
-                <span className="font-bold text-sm text-foreground">
-                  Ceylon News
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-foreground-secondary hover:text-foreground hover:bg-surface-muted cursor-pointer"
-                aria-label="Close menu"
-              >
-                <X className="size-5" />
-              </button>
-            </div>
-
-            {/* Discovery Links */}
-            <div className="space-y-1">
-              <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
-                Discovery
-              </div>
-              <Link
-                href={withDisplayLanguage("/articles", displayLanguage)}
-                className={mobileNavLinkClasses("/articles")}
-              >
-                <Rss className="size-4" />
-                <span>Latest News</span>
-              </Link>
-              <Link
-                href={withDisplayLanguage("/stories", displayLanguage)}
-                className={mobileNavLinkClasses("/stories")}
-              >
-                <Sparkles className="size-4" />
-                <span>Stories</span>
-              </Link>
-              <Link
-                href={withDisplayLanguage("/trending", displayLanguage)}
-                className={mobileNavLinkClasses("/trending")}
-              >
-                <Rss className="size-4" />
-                <span>Trending</span>
-              </Link>
-              <Link
-                href={withDisplayLanguage("/search", displayLanguage)}
-                className={mobileNavLinkClasses("/search")}
-              >
-                <Search className="size-4" />
-                <span>Search</span>
-              </Link>
-              <Link
-                href={withDisplayLanguage("/articles", displayLanguage)}
-                className={mobileNavLinkClasses("/articles")}
-              >
-                <LibraryBig className="size-4" />
-                <span>All reports</span>
-              </Link>
-              <Link
-                href={withDisplayLanguage("/sources", displayLanguage)}
-                className={mobileNavLinkClasses("/sources")}
-              >
-                <Building2 className="size-4" />
-                <span>Publishers</span>
-              </Link>
-              <Link
-                href={withDisplayLanguage("/guide", displayLanguage)}
-                className={mobileNavLinkClasses("/guide")}
-              >
-                <BookOpen className="size-4" />
-                <span>How to use Ceylon News</span>
-              </Link>
-            </div>
-
-            {/* My News Links (if authenticated) */}
-            {isAuth && (
-              <div className="space-y-1 border-t border-border pt-4">
-                <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
-                  My News
-                </div>
-                <Link
-                  href={withDisplayLanguage("/for-you", displayLanguage)}
-                  className={mobileNavLinkClasses("/for-you")}
-                >
-                  <Sparkles className="size-4" />
-                  <span>For You</span>
-                </Link>
-                <Link
-                  href={withDisplayLanguage("/bookmarks", displayLanguage)}
-                  className={mobileNavLinkClasses("/bookmarks")}
-                >
-                  <Bookmark className="size-4" />
-                  <span>Bookmarks</span>
-                </Link>
-                <Link
-                  href={withDisplayLanguage("/following", displayLanguage)}
-                  className={mobileNavLinkClasses("/following")}
-                >
-                  <Rss className="size-4" />
-                  <span>Following</span>
-                </Link>
-              </div>
-            )}
-
-            {/* Account & Settings */}
-            <div className="space-y-1 border-t border-border pt-4">
-              <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted mb-1">
-                Account & Settings
-              </div>
-              {isAuth ? (
-                <>
-                  <Link
-                    href={withDisplayLanguage("/account", displayLanguage)}
-                    className={mobileNavLinkClasses("/account")}
-                  >
-                    <User className="size-4" />
-                    <span>Account Overview</span>
-                  </Link>
-                  <Link
-                    href={withDisplayLanguage(
-                      "/account/notifications",
-                      displayLanguage,
-                    )}
-                    className={mobileNavLinkClasses("/account/notifications")}
-                  >
-                    <Settings className="size-4" />
-                    <span>Notification Preferences</span>
-                  </Link>
-                  <Link
-                    href={withDisplayLanguage(
-                      "/account/privacy",
-                      displayLanguage,
-                    )}
-                    className={mobileNavLinkClasses("/account/privacy")}
-                  >
-                    <Shield className="size-4" />
-                    <span>Privacy & Telemetry</span>
-                  </Link>
-                  {isAdmin && (
-                    <Link
-                      href={withDisplayLanguage("/admin", displayLanguage)}
-                      className={mobileNavLinkClasses("/admin")}
-                    >
-                      <Settings className="size-4 text-brand" />
-                      <span className="text-brand font-bold">Admin Portal</span>
-                    </Link>
-                  )}
-                </>
-              ) : (
-                <Link
-                  href={withDisplayLanguage("/auth/login", displayLanguage)}
-                  className={mobileNavLinkClasses("/auth/login")}
-                >
-                  <User className="size-4" />
-                  <span>Sign In</span>
-                </Link>
-              )}
-            </div>
-
-            {/* Language Selector Buttons */}
-            <div className="border-t border-border pt-4 space-y-2">
-              <div className="px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted">
-                Language
-              </div>
-              <div className="grid grid-cols-2 gap-2 px-1">
-                <button
-                  type="button"
-                  onClick={() => selectLanguage("original")}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    !displayLanguage
-                      ? "bg-brand text-white border-brand"
-                      : "bg-surface border-border text-foreground"
-                  }`}
-                >
-                  Original
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectLanguage("en")}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    displayLanguage === "en"
-                      ? "bg-brand text-white border-brand"
-                      : "bg-surface border-border text-foreground"
-                  }`}
-                >
-                  English
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectLanguage("si")}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    displayLanguage === "si"
-                      ? "bg-brand text-white border-brand"
-                      : "bg-surface border-border text-foreground"
-                  }`}
-                >
-                  සිංහල
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectLanguage("ta")}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg border text-center cursor-pointer ${
-                    displayLanguage === "ta"
-                      ? "bg-brand text-white border-brand"
-                      : "bg-surface border-border text-foreground"
-                  }`}
-                >
-                  தமிழ்
-                </button>
-              </div>
-            </div>
-
-            {/* Auth Action */}
-            {isAuth && (
-              <div className="border-t border-border pt-4">
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-danger-soft px-4 py-2 text-sm font-bold text-danger hover:bg-red-200 transition-colors cursor-pointer"
-                >
-                  <LogOut className="size-4" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </header>
   );
 }

@@ -22,4 +22,6 @@ test("admin ingestion distinguishes active Lakbima from disabled Hiru", () => {
   assert.match(html, /Hiru News/);
   assert.match(html, /<button[^>]*disabled=""[^>]*>[\s\S]*Disabled/);
   assert.match(html, /Run Now/);
+  assert.match(html, /aria-label="Publisher source cards"/);
+  assert.match(html, /lg:hidden/);
 });

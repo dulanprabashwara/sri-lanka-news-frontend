@@ -138,7 +138,7 @@ export function AdminNav() {
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
           aria-label="Toggle admin section navigation"
-          className="flex w-full items-center justify-between gap-2 rounded-lg bg-white/8 px-3 py-2.5 text-sm font-semibold text-white focus:outline-hidden focus:ring-2 focus:ring-brand"
+          className="flex min-h-11 w-full items-center justify-between gap-2 rounded-lg bg-white/8 px-3 py-2.5 text-sm font-semibold text-white focus:outline-hidden focus:ring-2 focus:ring-brand"
         >
           <span className="flex items-center gap-2">
             <ShieldCheck className="size-4 text-blue-300" aria-hidden="true" />
@@ -159,7 +159,7 @@ export function AdminNav() {
                 <p className="mb-1 px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
                   {pillar.title}
                 </p>
-                <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
+                <div className="grid gap-1 min-[360px]:grid-cols-2 sm:grid-cols-3">
                   {pillar.items.map((item) => {
                     const active = isRouteActive(pathname, item.href);
                     const Icon = item.icon;
@@ -168,7 +168,7 @@ export function AdminNav() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
-                        className={`flex items-center gap-2 rounded-md px-2.5 py-2 text-xs font-medium ${
+                        className={`flex min-h-11 items-center gap-2 rounded-md px-2.5 py-2 text-xs font-medium ${
                           active
                             ? "bg-brand text-white font-semibold"
                             : "text-slate-300 hover:bg-white/8 hover:text-white"

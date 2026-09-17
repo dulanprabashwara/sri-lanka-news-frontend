@@ -125,10 +125,13 @@ html:has(.home-newsroom)::-webkit-scrollbar, .home-newsroom *::-webkit-scrollbar
 
 html {
   background: var(--background);
+  overflow-x: clip;
 }
 
 body {
   margin: 0;
+  min-width: 0;
+  overflow-x: clip;
   background:
     radial-gradient(circle at 8% 0%, rgb(219 234 254 / 0.32), transparent 24rem),
     var(--background);

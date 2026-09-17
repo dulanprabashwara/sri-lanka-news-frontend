@@ -42,7 +42,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     >
       <div className="space-y-6">
         {/* Account Identity Card */}
-        <Surface variant="elevated" className="p-6 space-y-4">
+        <Surface variant="elevated" className="space-y-4 p-4 sm:p-6">
           <SectionHeader
             title="Signed-In Account"
             description="Your active platform identity and authorization status."
@@ -65,7 +65,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
         {/* Settings Shortcuts */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <Surface variant="elevated" className="p-5 flex flex-col justify-between space-y-3">
+          <Surface variant="elevated" className="flex flex-col justify-between space-y-3 p-4 sm:p-5">
             <div>
               <div className="flex items-center gap-2 text-brand font-bold text-sm mb-1">
                 <Bell className="w-4 h-4" />
@@ -83,7 +83,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </Link>
           </Surface>
 
-          <Surface variant="elevated" className="p-5 flex flex-col justify-between space-y-3">
+          <Surface variant="elevated" className="flex flex-col justify-between space-y-3 p-4 sm:p-5">
             <div>
               <div className="flex items-center gap-2 text-brand font-bold text-sm mb-1">
                 <Shield className="w-4 h-4" />
@@ -103,7 +103,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </div>
 
         {/* Content Destination Shortcuts */}
-        <Surface variant="muted" className="p-5 space-y-3">
+        <Surface variant="muted" className="space-y-3 p-4 sm:p-5">
           <SectionHeader
             title="Personal Reading Shortcuts"
             description="Quick links to your saved content and followed entities."
@@ -111,14 +111,14 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <div className="flex flex-wrap gap-3 pt-1">
             <Link
               href={withDisplayLanguage("/bookmarks", language)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-surface text-sm font-semibold text-foreground hover:bg-surface-muted transition-colors"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-surface-muted sm:w-auto"
             >
               <Bookmark className="w-4 h-4 text-brand" />
               View Bookmarks
             </Link>
             <Link
               href={withDisplayLanguage("/following", language)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-surface text-sm font-semibold text-foreground hover:bg-surface-muted transition-colors"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-surface-muted sm:w-auto"
             >
               <UserCheck className="w-4 h-4 text-brand" />
               Followed Topics & Sources
@@ -127,12 +127,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </Surface>
 
         {/* Display & Category Preferences */}
-        <Surface variant="elevated" className="p-6">
+        <Surface variant="elevated" className="p-4 sm:p-6">
           <PreferencesForm initial={preferences} />
         </Surface>
 
         {/* Session Management & Sign Out */}
-        <Surface variant="elevated" className="p-6 border-l-4 border-l-red-500 border-border">
+        <Surface variant="elevated" className="border-border border-l-4 border-l-red-500 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm font-bold text-red-600 dark:text-red-400">
@@ -143,10 +143,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                 End your active session on this device. You can log back in at any time.
               </p>
             </div>
-            <form action={`/auth/logout?next=${encodeURIComponent(withDisplayLanguage("/", language))}`} method="post" className="shrink-0">
+            <form action={`/auth/logout?next=${encodeURIComponent(withDisplayLanguage("/", language))}`} method="post" className="w-full shrink-0 sm:w-auto">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-700 active:bg-red-800 cursor-pointer"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-700 active:bg-red-800 cursor-pointer sm:w-auto"
               >
                 <LogOut className="size-4 text-white" aria-hidden="true" />
                 Sign out

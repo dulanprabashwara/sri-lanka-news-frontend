@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { safeNextPath } from "@/lib/safe-redirect";
 import { BrandLogo } from "@/components/brand-logo";
+import { PasswordInput } from "@/components/password-input";
 import { getPreferences } from "@/lib/api/user";
 
 type Mode = "login" | "sign-up" | "forgot" | "reset";
@@ -110,7 +111,7 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
   }[mode];
 
   return (
-    <section className="mx-auto max-w-lg rounded-xl border border-border border-t-4 border-t-brand bg-surface p-7 shadow-sm sm:p-10">
+    <section className="mx-auto max-w-lg rounded-xl border border-border border-t-4 border-t-brand bg-surface p-5 shadow-sm sm:p-10">
       <div className="mb-6 w-36" aria-label="Ceylon News">
         <BrandLogo priority />
       </div>
@@ -136,20 +137,18 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
           <Field label="Email" name="email" type="email" autoComplete="email" />
         )}
         {needsPassword && (
-          <Field
+          <PasswordInput
             label="Password"
             name="password"
-            type="password"
             autoComplete={
               mode === "login" ? "current-password" : "new-password"
             }
           />
         )}
         {needsConfirmation && (
-          <Field
+          <PasswordInput
             label="Confirm password"
             name="confirmPassword"
-            type="password"
             autoComplete="new-password"
           />
         )}
@@ -165,7 +164,7 @@ export function AuthForm({ mode, next }: { mode: Mode; next?: string }) {
         )}
         <button
           disabled={pending}
-          className="w-full rounded-lg bg-brand px-4 py-2.5 font-semibold text-white hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-60"
+          className="min-h-11 w-full rounded-lg bg-brand px-4 py-2.5 font-semibold text-white hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-60"
         >
           {pending ? "Please wait…" : title}
         </button>
@@ -201,9 +200,8 @@ function Field({
       {label}
       <input
         required={required}
-        minLength={props.type === "password" ? 8 : undefined}
         {...props}
-        className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+        className="mt-1 block min-h-11 w-full rounded-lg border border-slate-300 bg-surface px-3 py-2 text-foreground"
       />
     </label>
   );
