@@ -65,8 +65,8 @@ export function AdminIngestionDashboard({
       <section aria-labelledby="sources-heading" className="space-y-4">
         <SectionHeader
           id="sources-heading"
-          title="Active Publisher Sources"
-          description="Configured automated scraping targets and interval schedules."
+          title="Publisher Sources"
+          description="Configured scraping targets, including active schedules and retired ingestion sources."
         />
 
         <Surface variant="elevated" className="overflow-hidden p-0">
@@ -119,11 +119,15 @@ export function AdminIngestionDashboard({
                         <button
                           type="button"
                           onClick={() => handleTrigger(source.sourceSlug)}
-                          disabled={triggeringSlug === source.sourceSlug}
+                          disabled={!source.enabled || triggeringSlug === source.sourceSlug}
                           className="inline-flex items-center gap-1 rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-50"
                         >
                           <Play className="h-3.5 w-3.5" />
-                          {triggeringSlug === source.sourceSlug ? "Triggering..." : "Run Now"}
+                          {!source.enabled
+                            ? "Disabled"
+                            : triggeringSlug === source.sourceSlug
+                              ? "Triggering..."
+                              : "Run Now"}
                         </button>
                       </div>
                     </td>

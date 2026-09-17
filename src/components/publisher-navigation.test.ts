@@ -44,3 +44,17 @@ test("invalid icon URLs use initials without generating unsafe image requests", 
   assert.match(html, />DM<\/span>/);
   assert.doesNotMatch(html, /<img/);
 });
+
+test("Lakbima uses its first-party favicon fallback and publisher link", () => {
+  const html = renderToStaticMarkup(
+    createElement(PublisherDirectory, {
+      sources: [
+        { name: "Lakbima News", slug: "lakbima-news", baseUrl: "https://lakbima.news" },
+      ],
+      displayLanguage: "si",
+    }),
+  );
+  assert.match(html, /\/source\/lakbima-news\?lang=si/);
+  assert.match(html, /Lakbima News/);
+  assert.match(html, /googleusercontent\.com\/s2\/favicons\?domain=lakbima\.news/);
+});

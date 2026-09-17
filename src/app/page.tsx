@@ -106,6 +106,7 @@ export default async function Home({ searchParams }: HomePageProps) {
     { name: "The Island", slug: "the-island", baseUrl: "https://island.lk" },
     { name: "Newswire", slug: "newswire", baseUrl: "https://www.newswire.lk" },
     { name: "Hiru News", slug: "hiru-news-sinhala", baseUrl: "https://www.hirunews.lk" },
+    { name: "Lakbima News", slug: "lakbima-news", baseUrl: "https://lakbima.news" },
     { name: "Daily Mirror", slug: "daily-mirror", baseUrl: "https://www.dailymirror.lk" },
     { name: "News First", slug: "newsfirst", baseUrl: "https://www.newsfirst.lk" },
   ];

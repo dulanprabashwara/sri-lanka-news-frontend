@@ -36,6 +36,7 @@ const STATIC_SOURCES: Record<string, Source> = {
   "newswire": { name: "Newswire", slug: "newswire", baseUrl: "https://www.newswire.lk", defaultLanguage: "EN" as Language },
   "hiru-news": { name: "Hiru News", slug: "hiru-news-sinhala", baseUrl: "https://www.hirunews.lk", defaultLanguage: "SI" as Language },
   "hiru-news-sinhala": { name: "Hiru News", slug: "hiru-news-sinhala", baseUrl: "https://www.hirunews.lk", defaultLanguage: "SI" as Language },
+  "lakbima-news": { name: "Lakbima News", slug: "lakbima-news", baseUrl: "https://lakbima.news", defaultLanguage: "SI" as Language },
   "lankadeepa": { name: "Lankadeepa", slug: "lankadeepa", baseUrl: "https://www.lankadeepa.lk", defaultLanguage: "SI" as Language },
   "divaina": { name: "Divaina", slug: "divaina", baseUrl: "https://divaina.lk", defaultLanguage: "SI" as Language },
   "the-island": { name: "The Island", slug: "the-island", baseUrl: "https://island.lk", defaultLanguage: "EN" as Language },
