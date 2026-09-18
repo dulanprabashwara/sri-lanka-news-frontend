@@ -35,9 +35,9 @@ export function CategoryNavigation({
   return (
     <nav
       aria-label={label}
-      className="-mx-1 px-1"
+      className="-mx-4 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:px-0"
     >
-      <ul className="flex flex-wrap items-center gap-2">
+      <ul className="flex min-w-max flex-nowrap items-center gap-2 sm:min-w-0 sm:flex-wrap">
         <li>
           <Link
             href={withDisplayLanguage(basePath, displayLanguage)}

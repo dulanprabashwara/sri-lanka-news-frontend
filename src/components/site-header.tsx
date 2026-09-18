@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
-  Search,
   Menu,
   X,
   User,
@@ -15,7 +14,6 @@ import {
   Bookmark,
   Sparkles,
   Rss,
-  Globe,
 } from "lucide-react";
 import { readDisplayLanguage, withDisplayLanguage } from "@/lib/language";
 import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
@@ -27,6 +25,12 @@ import {
   MobileNavigationDrawer,
   reduceMobileMenuState,
 } from "./mobile-navigation";
+import {
+  HeaderGuestActions,
+  HeaderLanguageControl,
+  HeaderSearchAction,
+} from "./header-guest-actions";
+import { navigateToDisplayLanguage } from "@/lib/display-language-navigation";
 
 export function SiteHeader({
   authenticated = false,
@@ -39,7 +43,6 @@ export function SiteHeader({
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const displayLanguage = readDisplayLanguage(searchParams.get("lang"));
 
   const [clientAuth, setClientAuth] = useState<{
@@ -163,11 +166,12 @@ export function SiteHeader({
   }, []);
 
   function selectLanguage(value: string) {
-    const parameters = new URLSearchParams(searchParams.toString());
-    if (value === "original") parameters.delete("lang");
-    else parameters.set("lang", value);
-    const query = parameters.toString();
-    router.push(`${pathname}${query ? `?${query}` : ""}`);
+    const currentPath = `${pathname}${searchParams.size ? `?${searchParams.toString()}` : ""}`;
+    navigateToDisplayLanguage(
+      window.location,
+      currentPath,
+      value === "en" || value === "si" || value === "ta" ? value : "original",
+    );
   }
 
   const isActive = (href: string) => {
@@ -346,37 +350,18 @@ export function SiteHeader({
 
         {/* Desktop Utility Controls (lg+ breakpoint) */}
         <div className="hidden lg:flex items-center gap-2">
-          {/* Search Icon Trigger */}
-          <Link
-            href={withDisplayLanguage("/search", displayLanguage)}
-            className={`group h-9 flex items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground hover:bg-surface-muted hover:border-border-strong shadow-2xs transition-all focus-visible:outline-2 focus-visible:outline-brand ${
-              isActive("/search") ? "text-brand bg-brand-soft/40" : ""
-            }`}
-            aria-label="Search news"
-          >
-            <Search className="size-4 text-foreground-muted group-hover:text-brand transition-colors" />
-            <span>Search</span>
-          </Link>
-
-          {/* Language Selector */}
-          <div className="relative flex items-center">
-            <Globe className="pointer-events-none absolute left-2.5 size-4 text-foreground-muted z-10" />
-            <label className="sr-only" htmlFor="desktop-display-language">
-              Display language
-            </label>
-            <select
-              id="desktop-display-language"
-              value={displayLanguage ?? "original"}
-              onChange={(e) => selectLanguage(e.target.value)}
-              className="h-9 appearance-none rounded-xl border border-border bg-surface pl-8 pr-7 text-xs font-semibold text-foreground hover:bg-surface-muted hover:border-border-strong shadow-2xs transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-brand"
-            >
-              <option value="original">Original</option>
-              <option value="en">English</option>
-              <option value="si">සිංහල</option>
-              <option value="ta">தமிழ்</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2 size-3.5 text-foreground-muted z-10" />
-          </div>
+          {isAuth ? (
+            <>
+              <HeaderSearchAction displayLanguage={displayLanguage} active={isActive("/search")} />
+              <HeaderLanguageControl displayLanguage={displayLanguage} onLanguageChange={selectLanguage} />
+            </>
+          ) : (
+            <HeaderGuestActions
+              displayLanguage={displayLanguage}
+              searchActive={isActive("/search")}
+              onLanguageChange={selectLanguage}
+            />
+          )}
 
           {/* Notifications (Authenticated Only) */}
           {isAuth && <NotificationBadge displayLanguage={displayLanguage} />}
@@ -467,14 +452,7 @@ export function SiteHeader({
                 </div>
               )}
             </div>
-          ) : (
-            <Link
-              href={withDisplayLanguage("/auth/login", displayLanguage)}
-              className="inline-flex items-center justify-center rounded-lg bg-brand px-3.5 py-1.5 text-xs font-bold text-brand-foreground shadow-xs hover:bg-brand-hover transition-colors focus-visible:outline-2 focus-visible:outline-brand"
-            >
-              Sign in
-            </Link>
-          )}
+          ) : null}
         </div>
 
         {/* Mobile Header Bar Controls (< lg) */}

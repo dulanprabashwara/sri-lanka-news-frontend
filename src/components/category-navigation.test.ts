@@ -14,6 +14,7 @@ test("Browse desk categories preserve filtering and clearly identify the selecti
 
   assert.match(html, /href="\/\?category=POLITICS&amp;lang=si"/);
   assert.match(html, /aria-current="page"[^>]*>Politics/);
-  assert.match(html, /flex-wrap/);
-  assert.doesNotMatch(html, /min-w-max/);
+  assert.match(html, /overflow-x-auto/);
+  assert.match(html, /flex-nowrap/);
+  assert.match(html, /min-w-max/);
 });
