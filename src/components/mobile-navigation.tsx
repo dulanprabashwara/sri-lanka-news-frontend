@@ -31,6 +31,57 @@ export function reduceMobileMenuState(
   return action === "toggle" ? !current : false;
 }
 
+interface PageScrollLockDocument {
+  body: {
+    style: Pick<
+      CSSStyleDeclaration,
+      "overflow" | "position" | "top" | "width"
+    >;
+  };
+  documentElement: {
+    style: Pick<CSSStyleDeclaration, "overflow" | "overscrollBehavior">;
+  };
+}
+
+interface PageScrollLockViewport {
+  scrollY: number;
+  scrollTo: (x: number, y: number) => void;
+}
+
+export function lockPageScroll(
+  pageDocument: PageScrollLockDocument = document,
+  viewport: PageScrollLockViewport = window,
+): () => void {
+  const bodyStyle = pageDocument.body.style;
+  const rootStyle = pageDocument.documentElement.style;
+  const scrollY = viewport.scrollY;
+  const previous = {
+    rootOverflow: rootStyle.overflow,
+    rootOverscrollBehavior: rootStyle.overscrollBehavior,
+    bodyOverflow: bodyStyle.overflow,
+    bodyPosition: bodyStyle.position,
+    bodyTop: bodyStyle.top,
+    bodyWidth: bodyStyle.width,
+  };
+
+  rootStyle.overflow = "hidden";
+  rootStyle.overscrollBehavior = "none";
+  bodyStyle.overflow = "hidden";
+  bodyStyle.position = "fixed";
+  bodyStyle.top = `-${scrollY}px`;
+  bodyStyle.width = "100%";
+
+  return () => {
+    rootStyle.overflow = previous.rootOverflow;
+    rootStyle.overscrollBehavior = previous.rootOverscrollBehavior;
+    bodyStyle.overflow = previous.bodyOverflow;
+    bodyStyle.position = previous.bodyPosition;
+    bodyStyle.top = previous.bodyTop;
+    bodyStyle.width = previous.bodyWidth;
+    viewport.scrollTo(0, scrollY);
+  };
+}
+
 interface MobileNavigationDrawerProps {
   open: boolean;
   authenticated: boolean;
@@ -57,12 +108,9 @@ export function MobileNavigationDrawer({
 
   useEffect(() => {
     if (!open) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const unlockPageScroll = lockPageScroll();
     closeButtonRef.current?.focus();
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
+    return unlockPageScroll;
   }, [open]);
 
   if (!open) return null;
@@ -116,7 +164,7 @@ export function MobileNavigationDrawer({
   );
 
   return (
-    <div id="mobile-navigation" className="fixed inset-0 z-50 flex lg:hidden">
+    <div id="mobile-navigation" className="fixed inset-0 z-50 flex overscroll-none lg:hidden">
       <button
         type="button"
         className="absolute inset-0 cursor-default bg-slate-950/55 backdrop-blur-xs"
@@ -129,7 +177,7 @@ export function MobileNavigationDrawer({
         aria-modal="true"
         aria-labelledby="mobile-navigation-title"
         onKeyDown={handlePanelKeyDown}
-        className="relative ml-auto flex h-dvh w-[min(22rem,calc(100%-1.25rem))] flex-col overflow-y-auto bg-surface px-4 py-5 shadow-2xl"
+        className="relative ml-auto flex h-dvh w-[min(22rem,calc(100%-1.25rem))] flex-col overflow-y-auto overscroll-contain bg-surface px-4 py-5 shadow-2xl"
       >
         <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
           <Link

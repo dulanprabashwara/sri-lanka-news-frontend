@@ -3,9 +3,53 @@ import test from "node:test";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
+  lockPageScroll,
   MobileNavigationDrawer,
   reduceMobileMenuState,
 } from "./mobile-navigation";
+
+test("open mobile navigation locks the page and restores its scroll position", () => {
+  const bodyStyle = {
+    overflow: "auto",
+    position: "relative",
+    top: "2px",
+    width: "95%",
+  };
+  const rootStyle = { overflow: "visible", overscrollBehavior: "auto" };
+  const restoredPositions: Array<[number, number]> = [];
+
+  const unlock = lockPageScroll(
+    {
+      body: { style: bodyStyle },
+      documentElement: { style: rootStyle },
+    },
+    {
+      scrollY: 420,
+      scrollTo: (x, y) => restoredPositions.push([x, y]),
+    },
+  );
+
+  assert.equal(rootStyle.overflow, "hidden");
+  assert.equal(rootStyle.overscrollBehavior, "none");
+  assert.equal(bodyStyle.overflow, "hidden");
+  assert.equal(bodyStyle.position, "fixed");
+  assert.equal(bodyStyle.top, "-420px");
+  assert.equal(bodyStyle.width, "100%");
+
+  unlock();
+
+  assert.deepEqual(rootStyle, {
+    overflow: "visible",
+    overscrollBehavior: "auto",
+  });
+  assert.deepEqual(bodyStyle, {
+    overflow: "auto",
+    position: "relative",
+    top: "2px",
+    width: "95%",
+  });
+  assert.deepEqual(restoredPositions, [[0, 420]]);
+});
 
 test("mobile menu opens with toggle and closes for escape, backdrop, and route selection", () => {
   assert.equal(reduceMobileMenuState(false, "toggle"), true);
