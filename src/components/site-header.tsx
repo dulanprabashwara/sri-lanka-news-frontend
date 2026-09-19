@@ -211,7 +211,8 @@ export function SiteHeader({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-surface/95 backdrop-blur-xs">
+    <>
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-surface/95 backdrop-blur-xs">
       <div className="hidden border-b border-border/70 bg-foreground text-slate-300 lg:block">
         <div className="mx-auto flex h-8 w-full max-w-7xl items-center justify-between px-8 text-[0.68rem] font-semibold tracking-wide">
           <p className="flex items-center gap-2">
@@ -478,18 +479,18 @@ export function SiteHeader({
           </button>
         </div>
       </div>
-
-      <MobileNavigationDrawer
-        open={mobileMenuOpen}
-        authenticated={isAuth}
-        admin={isAdmin}
-        pathname={pathname}
-        displayLanguage={displayLanguage}
-        onClose={() => setMobileMenuOpen(false)}
-        onSignOut={handleSignOut}
-        onLanguageChange={selectLanguage}
-      />
-
     </header>
-  );
+
+    <MobileNavigationDrawer
+      open={mobileMenuOpen}
+      authenticated={isAuth}
+      admin={isAdmin}
+      pathname={pathname}
+      displayLanguage={displayLanguage}
+      onClose={() => setMobileMenuOpen(false)}
+      onSignOut={handleSignOut}
+      onLanguageChange={selectLanguage}
+    />
+  </>
+);
 }

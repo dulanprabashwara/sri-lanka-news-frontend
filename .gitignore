@@ -29,6 +29,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
+*-log*.txt
+lint-*.txt
+lint_*.txt
+pre_r8_*.txt
+final.txt
 
 # env files (can opt-in for committing if needed)
 .env*

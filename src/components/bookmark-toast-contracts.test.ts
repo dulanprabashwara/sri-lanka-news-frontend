@@ -2,7 +2,6 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { toast, ToastItem } from "@/components/ui/toast";
 
-test("toast system provides success, info, and error helpers with custom event dispatching", (t) => {
 test("toast system provides success, info, and error helpers with custom event dispatching", () => {
   assert.equal(typeof toast.show, "function");
   assert.equal(typeof toast.success, "function");

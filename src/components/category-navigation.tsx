@@ -37,9 +37,7 @@ export function CategoryNavigation({
 
   const handleMobileSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    const targetUrl = value
-      ? `${basePath}?category=${value}`
-      : basePath;
+    const targetUrl = value ? `${basePath}?category=${value}` : basePath;
     const fullHref = withDisplayLanguage(targetUrl, displayLanguage);
     if (typeof window !== "undefined") {
       window.location.assign(fullHref);
@@ -47,16 +45,6 @@ export function CategoryNavigation({
   };
 
   return (
-    <nav
-      aria-label={label}
-      className="-mx-4 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:px-0"
-    >
-      <ul className="flex min-w-max flex-nowrap items-center gap-2 sm:min-w-0 sm:flex-wrap">
-        <li>
-          <Link
-            href={withDisplayLanguage(basePath, displayLanguage)}
-            aria-current={!activeCategory ? "page" : undefined}
-            className={getCategoryLinkClasses(!activeCategory)}
     <nav aria-label={label} className="w-full">
       {/* Mobile Category Dropdown (< sm) */}
       <div className="relative block sm:hidden">
@@ -71,11 +59,6 @@ export function CategoryNavigation({
             onChange={handleMobileSelect}
             className="min-h-11 w-full cursor-pointer appearance-none rounded-xl bg-transparent pl-4 pr-10 text-xs font-bold text-foreground outline-none"
           >
-            All Categories
-          </Link>
-        </li>
-        {featuredCategories.map((category) => (
-          <li key={category}>
             <option value="">All Categories</option>
             {featuredCategories.map((cat) => (
               <option key={cat} value={cat}>
@@ -95,24 +78,21 @@ export function CategoryNavigation({
         <ul className="flex min-w-max flex-nowrap items-center gap-2 sm:min-w-0 sm:flex-wrap">
           <li>
             <Link
-              href={withDisplayLanguage(`${basePath}?category=${category}`, displayLanguage)}
-              aria-current={activeCategory === category ? "page" : undefined}
-              className={getCategoryLinkClasses(activeCategory === category)}
               href={withDisplayLanguage(basePath, displayLanguage)}
               aria-current={!activeCategory ? "page" : undefined}
               className={getCategoryLinkClasses(!activeCategory)}
               prefetch={false}
             >
-              {formatCategory(category)}
               All Categories
             </Link>
           </li>
-        ))}
-      </ul>
           {featuredCategories.map((category) => (
             <li key={category}>
               <Link
-                href={withDisplayLanguage(`${basePath}?category=${category}`, displayLanguage)}
+                href={withDisplayLanguage(
+                  `${basePath}?category=${category}`,
+                  displayLanguage,
+                )}
                 aria-current={activeCategory === category ? "page" : undefined}
                 className={getCategoryLinkClasses(activeCategory === category)}
                 prefetch={false}

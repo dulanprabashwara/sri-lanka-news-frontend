@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+  type KeyboardEvent,
+} from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   Bell,
@@ -21,6 +27,8 @@ import {
 import { BrandLogo } from "./brand-logo";
 import { withDisplayLanguage } from "@/lib/language";
 import type { DisplayLanguage } from "@/types/api";
+
+const emptySubscribe = () => () => {};
 
 export type MobileMenuAction = "toggle" | "escape" | "backdrop" | "route";
 
@@ -54,7 +62,7 @@ export function lockPageScroll(
 ): () => void {
   const bodyStyle = pageDocument.body.style;
   const rootStyle = pageDocument.documentElement.style;
-  const scrollY = viewport.scrollY;
+  const scrollY = viewport.scrollY ?? 0;
   const previous = {
     rootOverflow: rootStyle.overflow,
     rootOverscrollBehavior: rootStyle.overscrollBehavior,
@@ -78,7 +86,9 @@ export function lockPageScroll(
     bodyStyle.position = previous.bodyPosition;
     bodyStyle.top = previous.bodyTop;
     bodyStyle.width = previous.bodyWidth;
-    viewport.scrollTo(0, scrollY);
+    if (typeof viewport.scrollTo === "function") {
+      viewport.scrollTo(0, scrollY);
+    }
   };
 }
 
@@ -103,13 +113,18 @@ export function MobileNavigationDrawer({
   onSignOut,
   onLanguageChange,
 }: MobileNavigationDrawerProps) {
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
   const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
     const unlockPageScroll = lockPageScroll();
-    closeButtonRef.current?.focus();
+    closeButtonRef.current?.focus({ preventScroll: true });
     return unlockPageScroll;
   }, [open]);
 
@@ -163,11 +178,11 @@ export function MobileNavigationDrawer({
     </Link>
   );
 
-  return (
+  const drawerContent = (
     <div id="mobile-navigation" className="fixed inset-0 z-50 flex overscroll-none lg:hidden">
       <button
         type="button"
-        className="absolute inset-0 cursor-default bg-slate-950/55 backdrop-blur-xs"
+        className="absolute inset-0 cursor-default bg-slate-950/55 backdrop-blur-xs touch-none"
         onClick={onClose}
         aria-label="Close navigation menu"
       />
@@ -290,4 +305,10 @@ export function MobileNavigationDrawer({
       </div>
     </div>
   );
+
+  if (!mounted || typeof document === "undefined") {
+    return drawerContent;
+  }
+
+  return createPortal(drawerContent, document.body);
 }
