@@ -12,6 +12,8 @@ const LOCAL_ICONS: Record<string, string> = {
   "dailymirror": "/icons/dailymirror.png",
   "daily-mirror": "/icons/dailymirror.png",
   "newsfirst": "/icons/newsfirst.png",
+  "lakbima": "/icons/lakbima.png",
+  "lakbima-news": "/icons/lakbima.png",
 };
 
 export type SourceIconSize = "sm" | "md" | "lg" | "xl" | "2xl";
@@ -43,10 +45,12 @@ export function SourceIcon({
     else if (baseUrl.includes("dailymirror")) resolvedSlug = "dailymirror";
     else if (baseUrl.includes("ft.lk")) resolvedSlug = "dailyft";
     else if (baseUrl.includes("newsfirst")) resolvedSlug = "newsfirst";
+    else if (baseUrl.includes("lakbima")) resolvedSlug = "lakbima";
     else if (name.toLowerCase().includes("lankadeepa")) resolvedSlug = "lankadeepa";
     else if (name.toLowerCase().includes("divaina")) resolvedSlug = "divaina";
     else if (name.toLowerCase().includes("island")) resolvedSlug = "the-island";
     else if (name.toLowerCase().includes("newswire")) resolvedSlug = "newswire";
+    else if (name.toLowerCase().includes("lakbima")) resolvedSlug = "lakbima";
   }
 
   let icon: string | undefined = resolvedSlug ? LOCAL_ICONS[resolvedSlug] : undefined;
@@ -82,7 +86,12 @@ export function SourceIcon({
     md: "rounded-lg",
   };
 
-  const isFullBleed = resolvedSlug === "hiru-news" || resolvedSlug === "divaina";
+  const isFullBleed =
+    resolvedSlug === "hiru-news" ||
+    resolvedSlug === "hiru-news-sinhala" ||
+    resolvedSlug === "divaina" ||
+    resolvedSlug === "lakbima" ||
+    resolvedSlug === "lakbima-news";
 
   return (
     <span

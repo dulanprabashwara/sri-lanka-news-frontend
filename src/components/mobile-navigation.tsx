@@ -41,10 +41,7 @@ export function reduceMobileMenuState(
 
 interface PageScrollLockDocument {
   body: {
-    style: Pick<
-      CSSStyleDeclaration,
-      "overflow" | "position" | "top" | "width"
-    >;
+    style: Pick<CSSStyleDeclaration, "overflow" | "position" | "top" | "width">;
   };
   documentElement: {
     style: Pick<CSSStyleDeclaration, "overflow" | "overscrollBehavior">;
@@ -148,7 +145,7 @@ export function MobileNavigationDrawer({
     if (event.key !== "Tab" || !panelRef.current) return;
     const controls = Array.from(
       panelRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), select:not([disabled])',
+        "a[href], button:not([disabled]), select:not([disabled])",
       ),
     );
     if (controls.length === 0) return;
@@ -179,7 +176,10 @@ export function MobileNavigationDrawer({
   );
 
   const drawerContent = (
-    <div id="mobile-navigation" className="fixed inset-0 z-50 flex overscroll-none lg:hidden">
+    <div
+      id="mobile-navigation"
+      className="fixed inset-0 z-50 flex overscroll-none lg:hidden"
+    >
       <button
         type="button"
         className="absolute inset-0 cursor-default bg-slate-950/55 backdrop-blur-xs touch-none"
@@ -216,7 +216,10 @@ export function MobileNavigationDrawer({
 
         <div className="space-y-5 py-5">
           <section aria-labelledby="mobile-navigation-title">
-            <h2 id="mobile-navigation-title" className="mb-1 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted">
+            <h2
+              id="mobile-navigation-title"
+              className="mb-1 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted"
+            >
               Discover
             </h2>
             <nav aria-label="Mobile primary navigation" className="space-y-1">
@@ -230,11 +233,20 @@ export function MobileNavigationDrawer({
           </section>
 
           {authenticated && (
-            <section className="border-t border-border pt-4" aria-labelledby="mobile-my-news-title">
-              <h2 id="mobile-my-news-title" className="mb-1 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted">
+            <section
+              className="border-t border-border pt-4"
+              aria-labelledby="mobile-my-news-title"
+            >
+              <h2
+                id="mobile-my-news-title"
+                className="mb-1 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted"
+              >
                 My News
               </h2>
-              <nav aria-label="Mobile personalized navigation" className="space-y-1">
+              <nav
+                aria-label="Mobile personalized navigation"
+                className="space-y-1"
+              >
                 {link("/for-you", "For You", Sparkles)}
                 {link("/bookmarks", "Bookmarks", Bookmark)}
                 {link("/following", "Following", Rss)}
@@ -243,15 +255,25 @@ export function MobileNavigationDrawer({
             </section>
           )}
 
-          <section className="border-t border-border pt-4" aria-labelledby="mobile-account-title">
-            <h2 id="mobile-account-title" className="mb-1 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted">
+          <section
+            className="border-t border-border pt-4"
+            aria-labelledby="mobile-account-title"
+          >
+            <h2
+              id="mobile-account-title"
+              className="mb-1 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted"
+            >
               Account &amp; settings
             </h2>
             <nav aria-label="Mobile account navigation" className="space-y-1">
               {authenticated ? (
                 <>
                   {link("/account", "Account settings", User)}
-                  {link("/account/notifications", "Notification preferences", Settings)}
+                  {link(
+                    "/account/notifications",
+                    "Notification preferences",
+                    Settings,
+                  )}
                   {link("/account/privacy", "Privacy & telemetry", Shield)}
                   {admin && link("/admin", "Admin portal", Shield)}
                 </>
@@ -261,14 +283,25 @@ export function MobileNavigationDrawer({
             </nav>
           </section>
 
-          <section className="border-t border-border pt-4" aria-labelledby="mobile-language-title">
-            <h2 id="mobile-language-title" className="mb-2 flex items-center gap-2 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted">
+          <section
+            className="border-t border-border pt-4"
+            aria-labelledby="mobile-language-title"
+          >
+            <h2
+              id="mobile-language-title"
+              className="mb-2 flex items-center gap-2 px-3 text-xs font-bold uppercase tracking-wider text-foreground-muted"
+            >
               <Globe className="size-4" aria-hidden="true" /> Language
             </h2>
             <div className="grid grid-cols-2 gap-2">
               {(["original", "en", "si", "ta"] as const).map((language) => {
                 const selected = language === (displayLanguage ?? "original");
-                const labels = { original: "Original", en: "English", si: "සිංහල", ta: "தமிழ்" };
+                const labels = {
+                  original: "Original",
+                  en: "English",
+                  si: "සිංහල",
+                  ta: "தமிழ்",
+                };
                 return (
                   <button
                     key={language}
