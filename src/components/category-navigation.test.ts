@@ -18,3 +18,18 @@ test("Browse desk categories preserve filtering and clearly identify the selecti
   assert.match(html, /flex-nowrap/);
   assert.match(html, /min-w-max/);
 });
+
+test("CategoryNavigation renders responsive mobile dropdown with active selection", () => {
+  const html = renderToStaticMarkup(
+    createElement(CategoryNavigation, {
+      activeCategory: "POLITICS",
+      displayLanguage: "si",
+    }),
+  );
+
+  assert.match(html, /<select[^>]*id="mobile-category-dropdown"/);
+  assert.match(html, /<option value="POLITICS"[^>]*selected/);
+  assert.match(html, /All Categories/);
+  assert.match(html, /Politics/);
+  assert.match(html, /Business/);
+});
